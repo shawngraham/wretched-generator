@@ -1,0 +1,446 @@
+# The Cave - Theme Configuration
+# Dark archaeology aesthetic with warm browns, golds, and cave atmosphere
+
+theme:
+  name: "Dark Archaeology"
+  base: "wretched_classic"      # Extends a base theme
+  description: "Cave exploration with scholarly Victorian atmosphere"
+  
+  # Color Palette
+  colors:
+    # Primary backgrounds
+    primary: "#2c2416"              # Deep brown (main bg)
+    secondary: "#1a1410"            # Darker brown (secondary bg)
+    tertiary: "#3a2f1f"             # Medium brown (panels)
+    
+    # Accent colors
+    accent_primary: "#d4af37"       # Gold (headers, borders)
+    accent_secondary: "#8b6f47"     # Bronze/tan (borders, controls)
+    
+    # Text colors
+    text_primary: "#e8dcc4"         # Cream (main text)
+    text_secondary: "#b8936f"       # Tan (secondary text)
+    text_tertiary: "#8b7355"        # Darker tan (muted text)
+    
+    # UI element colors
+    borders: "#8b6f47"              # Bronze borders
+    shadows: "rgba(0,0,0,0.6)"      # Dark shadows
+    
+    # State colors
+    success: "#4ade80"              # Green (positive)
+    warning: "#fbbf24"              # Amber (caution)
+    danger: "#ef4444"               # Red (danger)
+    info: "#60a5fa"                 # Blue (info)
+    
+    # Suit-specific colors (for cards)
+    suits:
+      spades: "#4a4a4a"             # Dark gray
+      hearts: "#c41e3a"             # Deep red
+      diamonds: "#0066cc"           # Royal blue
+      clubs: "#006400"              # Dark green
+    
+    # Interactive states
+    hover: "#9b7f57"                # Lighter brown on hover
+    active: "#7b6447"               # Medium brown when clicked
+    disabled: "rgba(255,255,255,0.3)"  # Faded for disabled
+  
+  # Typography
+  fonts:
+    # Font families
+    title: "'IM Fell English', serif"
+    body: "'Crimson Text', serif"
+    ui: "'Crimson Text', serif"
+    monospace: "'Courier New', monospace"
+    
+    # Google Fonts to import
+    google_fonts:
+      - family: "Crimson Text"
+        weights: [400, 600]
+        styles: [normal, italic]
+      - family: "IM Fell English"
+        weights: [400]
+        styles: [normal, italic]
+      - family: "Cinzel"
+        weights: [400, 600]
+        styles: [normal]
+    
+    # Font sizes
+    sizes:
+      h1: "3em"
+      h2: "2em"
+      h3: "1.5em"
+      body: "1.1em"
+      small: "0.9em"
+    
+    # Line heights
+    line_heights:
+      title: 1.2
+      body: 1.8
+      compact: 1.4
+    
+    # Letter spacing
+    letter_spacing:
+      title: "2px"
+      normal: "normal"
+      tight: "-0.5px"
+  
+  # Layout Configuration
+  layout:
+    container_max_width: "1600px"
+    grid_columns: "400px 1fr"
+    grid_gap: "30px"
+    
+    # Responsive breakpoints
+    breakpoints:
+      mobile: "768px"
+      tablet: "1024px"
+      desktop: "1440px"
+    
+    # Panel styling
+    panel:
+      border_radius: "12px"
+      border_width: "3px"
+      padding: "25px"
+      margin: "20px 0"
+    
+    # Section spacing
+    section:
+      border_radius: "8px"
+      padding: "15px"
+      margin: "20px 0"
+  
+  # Background Effects
+  background:
+    type: "gradient"
+    
+    # Main gradient
+    gradient:
+      angle: 135
+      stops:
+        - color: "#2c2416"
+          position: 0
+        - color: "#1a1410"
+          position: 100
+    
+    # Overlay effects
+    overlay:
+      enabled: true
+      type: "radial_pattern"
+      patterns:
+        - type: "radial"
+          position: "20% 80%"
+          color: "rgba(139, 69, 19, 0.1)"
+          size: "50%"
+        - type: "radial"
+          position: "80% 20%"
+          color: "rgba(101, 67, 33, 0.1)"
+          size: "50%"
+    
+    # Texture overlay
+    texture:
+      enabled: false
+      type: "noise"
+      opacity: 0.05
+  
+  # Component Styling
+  components:
+    
+    # Dice styling
+    dice:
+      size: "80px"
+      colors:
+        face: "#f5e6d3"           # Cream dice face
+        border: "#8b6f47"         # Bronze border
+        text: "#2a1f14"           # Dark text
+        shadow: "rgba(0,0,0,0.4)"
+      border_radius: "12px"
+      border_width: "3px"
+      animation:
+        type: "roll"
+        duration: "0.6s"
+        keyframes:
+          - transform: "rotate(0deg)"
+            offset: 0
+          - transform: "rotate(90deg) scale(1.1)"
+            offset: 0.25
+          - transform: "rotate(180deg) scale(1.05)"
+            offset: 0.5
+          - transform: "rotate(270deg) scale(1.1)"
+            offset: 0.75
+          - transform: "rotate(360deg) scale(1)"
+            offset: 1
+    
+    # Button styling
+    buttons:
+      style: "gradient"
+      colors:
+        background: "linear-gradient(135deg, #8b6f47 0%, #6b5437 100%)"
+        text: "#e8dcc4"
+        border: "#d4af37"
+        shadow: "rgba(0,0,0,0.3)"
+      border_radius: "6px"
+      border_width: "2px"
+      padding: "12px 20px"
+      
+      # Hover state
+      hover:
+        background: "linear-gradient(135deg, #9b7f57 0%, #7b6447 100%)"
+        border: "#f4bf47"
+        transform: "translateY(-2px)"
+        shadow: "rgba(0,0,0,0.4)"
+      
+      # Active state
+      active:
+        transform: "translateY(0)"
+      
+      # Disabled state
+      disabled:
+        opacity: 0.5
+        cursor: "not-allowed"
+    
+    # Panel styling
+    panels:
+      style: "bordered_gradient"
+      colors:
+        background: "linear-gradient(135deg, #3a2f1f 0%, #2a1f14 100%)"
+        border: "#8b6f47"
+        shadow: "rgba(0,0,0,0.6)"
+      border_radius: "12px"
+      border_width: "3px"
+      shadow_size: "0 8px 32px"
+      
+      # Decorative border glow
+      border_glow:
+        enabled: true
+        color: "rgba(212, 175, 55, 0.3)"
+        blur: "0"
+        spread: "0"
+    
+    # Card display styling
+    cards:
+      display_style: "detailed"    # detailed, compact, minimal
+      
+      # Card container
+      container:
+        background: "rgba(42, 31, 20, 0.8)"
+        border: "#8b6f47"
+        border_radius: "8px"
+        padding: "20px"
+        shadow: "0 4px 16px rgba(0,0,0,0.4)"
+      
+      # Card title
+      title:
+        font_size: "1.4em"
+        color: "#d4af37"
+        margin_bottom: "10px"
+      
+      # Card description
+      description:
+        font_size: "1.1em"
+        line_height: 1.8
+        color: "#e8dcc4"
+      
+      # Show metadata
+      show_suit_symbols: true
+      show_effects: true
+      show_tokens: true
+      show_blocks: true
+      
+      # Effect indicators
+      effects:
+        tokens_positive_color: "#4ade80"
+        tokens_negative_color: "#ef4444"
+        blocks_color: "#ef4444"
+    
+    # Journal/textarea styling
+    journal:
+      colors:
+        background: "rgba(42, 31, 20, 0.4)"
+        text: "#e8dcc4"
+        border: "#5a4a3a"
+        placeholder: "#8b7355"
+      border_radius: "8px"
+      border_width: "2px"
+      padding: "20px"
+      font_family: "'Crimson Text', serif"
+      font_size: "1.1em"
+      line_height: 1.8
+      min_height: "400px"
+      
+      # Scrollbar styling
+      scrollbar:
+        width: "10px"
+        track_color: "#2a1f14"
+        thumb_color: "#8b6f47"
+        thumb_hover: "#9b7f57"
+    
+    # Stability meter styling
+    stability:
+      # Display format
+      display: "text_and_bar"     # text_only, bar_only, text_and_bar
+      
+      # Text colors by state
+      text_colors:
+        safe: "#4ade80"
+        danger: "#fbbf24"
+        critical: "#ef4444"
+      
+      # Progress bar (if enabled)
+      bar:
+        height: "20px"
+        background: "rgba(42, 31, 20, 0.6)"
+        border: "#5a4a3a"
+        border_radius: "10px"
+        
+        # Fill colors by state
+        fill_colors:
+          safe: "#4ade80"
+          danger: "#fbbf24"
+          critical: "#ef4444"
+    
+    # Token counter styling
+    tokens:
+      display: "numeric"          # numeric, icons, both
+      
+      # Container
+      container:
+        background: "rgba(42, 31, 20, 0.6)"
+        border: "#8b6f47"
+        border_radius: "8px"
+        padding: "15px"
+      
+      # Counter display
+      counter:
+        font_size: "2em"
+        font_weight: "bold"
+        colors:
+          positive: "#4ade80"
+          zero: "#e8dcc4"
+          negative: "#ef4444"
+  
+  # Modal/Dialog styling
+  modals:
+    overlay:
+      background: "rgba(0, 0, 0, 0.85)"
+      backdrop_filter: "blur(4px)"
+    
+    content:
+      background: "linear-gradient(135deg, #3a2818 0%, #2a1810 100%)"
+      border: "#8b6f47"
+      border_radius: "12px"
+      padding: "40px"
+      max_width: "800px"
+      shadow: "0 20px 60px rgba(0,0,0,0.8)"
+    
+    close_button:
+      size: "40px"
+      color: "#d4af37"
+      hover_color: "#f4bf47"
+  
+  # Animation Settings
+  animations:
+    # Global animation toggle
+    enabled: true
+    
+    # Timing functions
+    easing:
+      standard: "ease"
+      smooth: "ease-in-out"
+      bounce: "cubic-bezier(0.68, -0.55, 0.265, 1.55)"
+    
+    # Durations
+    durations:
+      fast: "0.2s"
+      normal: "0.3s"
+      slow: "0.6s"
+    
+    # Specific animations
+    dice_roll: true
+    button_hover: true
+    card_draw: true
+    panel_slide: false
+  
+  # Accessibility
+  accessibility:
+    high_contrast_mode: false
+    focus_indicators: true
+    focus_color: "#d4af37"
+    focus_width: "3px"
+    
+    # Screen reader labels
+    screen_reader_labels: true
+    
+    # Keyboard navigation
+    keyboard_navigation: true
+  
+  # Narrative Flavor
+  # Affects flavor text and atmospheric messaging
+  narrative:
+    tone: "scholarly"             # scholarly, gritty, whimsical, horror, noir
+    
+    # Stability/tower messages by tone
+    stability_messages:
+      safe:
+        - "Your methodology remains sound and systematic."
+        - "The work proceeds with scholarly precision."
+        - "You maintain your academic composure."
+        - "Your reputation stands firm—for now."
+      
+      danger:
+        - "Self-doubt creeps into your thinking."
+        - "The pressure from your peers weighs heavily."
+        - "Your confidence wavers slightly."
+        - "The academic establishment watches, judging."
+      
+      critical:
+        - "Your reputation hangs by a thread."
+        - "Desperation clouds your judgment."
+        - "The academic world watches, waiting for you to fail."
+        - "One more misstep and you're ruined."
+    
+    # Game over messages
+    collapse_messages:
+      - "💔 Academic Credibility Destroyed"
+      - "Your reputation lies in ruins."
+      - "The scholarly world has turned against you."
+  
+  # Print Styling (if generating print version)
+  print:
+    enabled: false
+    page_size: "A4"
+    margins: "20mm"
+    colors:
+      background: "white"
+      text: "black"
+      accent: "#333333"
+    hide_elements:
+      - ".dice-container"
+      - ".controls"
+      - "button"
+
+# Custom CSS overrides
+# For advanced users who want to add custom styles
+custom_css: |
+  /* Add any custom CSS here */
+  .special-highlight {
+    border-left: 4px solid #d4af37;
+    padding-left: 15px;
+  }
+  
+  .quote-box {
+    background: rgba(212, 175, 55, 0.1);
+    border: 2px solid #8b6f47;
+    border-radius: 8px;
+    padding: 20px;
+    font-style: italic;
+    margin: 20px 0;
+  }
+
+# Custom JavaScript
+# For advanced users who want to add custom behaviors
+custom_js: |
+  // Add any custom JavaScript here
+  // This runs after the main game engine loads
+  
+  // Example: Add a special sound effect
+  // (Not included in base generator, just an example)
