@@ -242,7 +242,7 @@ Open the generated HTML file in your browser!
 
 ## Example Game Included
 
-The `example-game/` directory contains a fully-configured version of "The Cave" - an archaeological mystery game. Study these files to understand the system:
+The `example-game/` directory contains a fully-configured version of "What Lies Beneath" - an archaeological mystery game. Study these files to understand the system:
 
 - **config.yaml** (5.3 KB) - Game mechanics and rules
 - **cards.yaml** (17 KB) - All 52 card prompts with narrative
@@ -278,7 +278,7 @@ The generator includes **three complete themes** you can use for your games (but
 - **Best for:** Mobile gameplay, touch interfaces, battery efficiency, outdoor play
 - **Features:** 44px touch targets, system fonts, single-column layout, minimal animations
 - **Colors:** Dark background (#1a1a1a), bright blue accents (#4a9eff), high contrast
-- **Documentation:** See [MOBILE-THEME.md](templates/MOBILE-THEME.md) for details
+- **Documentation:** See [MOBILE-THEME.md](themes/MOBILE-THEME.md) for details
 
 ### Using a Theme
 
