@@ -14,6 +14,9 @@ This tool transforms simple YAML and Markdown files into complete, playable HTML
 - Visual styling in `theme.yaml`
 - Story/instructions in `story.md`
 
+See [getting started doc.](GETTING-STARTED.md)
+
+
 **You get:**
 - A single self-contained HTML file
 - Professional-looking game
@@ -253,7 +256,7 @@ After building, you get:
 
 ### Current Features
 
-✅ **Core Functionality**
+**Core Functionality**
 - Parse YAML configurations with full error handling
 - Generate CSS from theme config
 - Generate JavaScript game engine
@@ -262,7 +265,7 @@ After building, you get:
 - Comprehensive validation system
 - Full command-line interface with colored output
 
-✅ **Game Mechanics**
+**Game Mechanics**
 - Card deck mechanics
 - Dice rolling
 - Stability/tower system
@@ -270,34 +273,6 @@ After building, you get:
 - Auto-save to browser localStorage
 - Journal with download
 - Win/loss conditions
-
-✅ **Developer Experience** (NEW!)
-- `new` command to scaffold new game projects
-- Colored CLI output with progress indicators
-- Detailed error messages
-- Type hints throughout codebase
-- Comprehensive docstrings
-- HTML minification option
-
-✅ **Accessibility & UX** (NEW!)
-- Fully responsive design (mobile-friendly)
-- ARIA labels for screen readers
-- Keyboard navigation support
-- Print-friendly journal styles
-- Loading states and visual feedback
-- Better color-coded stability indicator
-
-### Planned Features
-
-- Development server with hot reload
-- Theme inheritance system
-- Custom mechanics support
-- Multiple layout templates
-- Asset inlining (images, fonts)
-- Multi-language support
-- Automated testing suite
-
-## Technical Details
 
 ### Dependencies
 
@@ -389,19 +364,6 @@ Check your YAML syntax. Common issues:
 
 This is a minimal viable product (MVP). Contributions welcome!
 
-### To Do List
-
-- [ ] Add development server with hot reload
-- [ ] Implement theme inheritance
-- [ ] Add more layout templates
-- [ ] Support custom mechanics
-- [ ] Add image/asset inlining
-- [ ] Create minification option
-- [ ] Add more example games
-- [ ] Write comprehensive tests
-- [ ] Improve error messages
-- [ ] Add progress bar for builds
-
 ## License
 
 Open source - use however you want!
@@ -428,4 +390,3 @@ cp -r example-game my-game
 python3 cli/wretched.py build my-game
 ```
 
-Happy game making! 🎲📖
