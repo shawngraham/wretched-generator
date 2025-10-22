@@ -1,4 +1,4 @@
-# The Cave - Example Game Configuration
+# What Lies Beneath - Example Game Configuration
 
 This directory contains a complete example of how a game would be configured in the Wretched & Alone Game Generator system. These files demonstrate the separation of concerns between content, mechanics, and presentation.
 
