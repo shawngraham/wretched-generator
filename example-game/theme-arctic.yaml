@@ -1,0 +1,605 @@
+# Arctic Theme Configuration
+# Inspired by "Whoever Finds This Paper" - Franklin Expedition aesthetic
+# Icy blues, frost effects, and harsh Arctic atmosphere
+
+theme:
+  name: "Arctic"
+  base: "wretched_classic"
+  description: "Arctic exploration with icy blues, frost effects, and stark isolation"
+
+  # Color Palette - Arctic/Ice theme
+  colors:
+    # Primary backgrounds - Icy blues and grays
+    primary: "#8a9ba8"              # Steel blue-gray (main bg)
+    secondary: "#5d6d7e"            # Darker slate (secondary bg)
+    tertiary: "#c5d8e1"             # Light ice blue (panels)
+
+    # Accent colors - Frost and steel
+    accent_primary: "#5d6d7e"       # Steel blue (headers, borders)
+    accent_secondary: "#8a9ba8"     # Slate gray (borders, controls)
+
+    # Text colors
+    text_primary: "#2c3e50"         # Dark blue-gray (main text)
+    text_secondary: "#34495e"       # Medium blue-gray (secondary text)
+    text_tertiary: "#5d6d7e"        # Steel blue (muted text)
+
+    # UI element colors
+    borders: "#5d6d7e"              # Steel blue borders
+    shadows: "rgba(0,0,0,0.3)"      # Softer shadows for arctic light
+
+    # State colors
+    success: "#27ae60"              # Green (positive)
+    warning: "#f39c12"              # Orange (caution)
+    danger: "#e74c3c"               # Red (danger)
+    info: "#2980b9"                 # Blue (info)
+
+    # Suit-specific colors (for cards)
+    suits:
+      spades: "#2c3e50"             # Dark blue-gray
+      hearts: "#c0392b"             # Deep red
+      diamonds: "#2980b9"           # Blue
+      clubs: "#27ae60"              # Green
+
+    # Interactive states
+    hover: "#b8c8d4"                # Lighter blue-gray on hover
+    active: "#6d7d8e"               # Medium blue when clicked
+    disabled: "rgba(93,109,126,0.5)"  # Faded steel blue for disabled
+
+  # Typography
+  fonts:
+    # Font families - Same as original Franklin game
+    title: "'IM Fell English', serif"
+    body: "'Crimson Text', serif"
+    ui: "'Libre Baskerville', serif"
+    monospace: "'Courier New', monospace"
+
+    # Google Fonts to import
+    google_fonts:
+      - family: "Crimson Text"
+        weights: [400, 600]
+        styles: [normal, italic]
+      - family: "IM Fell English"
+        weights: [400]
+        styles: [normal, italic]
+      - family: "Libre Baskerville"
+        weights: [400, 700]
+        styles: [normal, italic]
+
+    # Font sizes
+    sizes:
+      h1: "3em"
+      h2: "2em"
+      h3: "1.5em"
+      body: "1.1em"
+      small: "0.9em"
+
+    # Line heights
+    line_heights:
+      title: 1.2
+      body: 1.8
+      compact: 1.4
+
+    # Letter spacing
+    letter_spacing:
+      title: "2px"
+      normal: "normal"
+      tight: "-0.5px"
+
+  # Layout Configuration
+  layout:
+    container_max_width: "1400px"
+    grid_columns: "380px 1fr"
+    grid_gap: "25px"
+
+    # Responsive breakpoints
+    breakpoints:
+      mobile: "768px"
+      tablet: "1024px"
+      desktop: "1440px"
+
+    # Panel styling
+    panel:
+      border_radius: "12px"
+      border_width: "3px"
+      padding: "25px"
+      margin: "20px 0"
+
+    # Section spacing
+    section:
+      border_radius: "8px"
+      padding: "15px"
+      margin: "15px 0"
+
+  # Background Effects - Arctic frost and ice
+  background:
+    type: "gradient_with_overlay"
+
+    # Main gradient - Icy blues
+    gradient:
+      angle: 135
+      stops:
+        - color: "#c5d8e1"
+          position: 0
+        - color: "#8a9ba8"
+          position: 50
+        - color: "#5d6d7e"
+          position: 100
+
+    # Overlay effects - Frost/ice texture
+    overlay:
+      enabled: true
+      type: "radial_pattern"
+      patterns:
+        - type: "radial"
+          position: "20% 30%"
+          color: "rgba(255,255,255,0.3)"
+          size: "40%"
+        - type: "radial"
+          position: "80% 70%"
+          color: "rgba(200,220,240,0.2)"
+          size: "40%"
+        - type: "radial"
+          position: "40% 80%"
+          color: "rgba(255,255,255,0.15)"
+          size: "30%"
+
+    # Texture overlay - subtle noise
+    texture:
+      enabled: false
+      type: "noise"
+      opacity: 0.03
+
+  # Component Styling
+  components:
+
+    # Dice styling - Paper-like with steel borders
+    dice:
+      size: "70px"
+      colors:
+        face: "linear-gradient(135deg, #f5f5dc 0%, #e8dcc4 100%)"  # Aged paper
+        border: "#5d6d7e"         # Steel blue border
+        text: "#2c3e50"           # Dark text
+        shadow: "rgba(0,0,0,0.3)"
+      border_radius: "10px"
+      border_width: "3px"
+      animation:
+        type: "roll"
+        duration: "0.6s"
+        keyframes:
+          - transform: "rotate(0deg)"
+            offset: 0
+          - transform: "rotate(90deg) scale(1.1)"
+            offset: 0.25
+          - transform: "rotate(180deg) scale(1.05)"
+            offset: 0.5
+          - transform: "rotate(270deg) scale(1.1)"
+            offset: 0.75
+          - transform: "rotate(360deg) scale(1)"
+            offset: 1
+
+    # Button styling - Steel and frost
+    buttons:
+      style: "gradient"
+      colors:
+        background: "linear-gradient(135deg, #5d6d7e 0%, #4a5a6e 100%)"
+        text: "#f5f5dc"
+        border: "#3a4a5e"
+        shadow: "rgba(0,0,0,0.2)"
+      border_radius: "6px"
+      border_width: "2px"
+      padding: "12px 20px"
+
+      # Hover state
+      hover:
+        background: "linear-gradient(135deg, #6d7d8e 0%, #5a6a7e 100%)"
+        border: "#4a5a6e"
+        transform: "translateY(-2px)"
+        shadow: "rgba(0,0,0,0.3)"
+
+      # Active state
+      active:
+        transform: "translateY(0)"
+
+      # Disabled state
+      disabled:
+        opacity: 0.5
+        cursor: "not-allowed"
+
+    # Panel styling - Aged paper with steel borders
+    panels:
+      style: "bordered_gradient"
+      colors:
+        background: "linear-gradient(135deg, #f5f5dc 0%, #e8dcc4 100%)"
+        border: "#8b7355"
+        shadow: "rgba(0,0,0,0.3)"
+      border_radius: "12px"
+      border_width: "3px"
+      shadow_size: "0 8px 32px"
+
+      # Paper texture overlay
+      texture:
+        enabled: true
+        type: "line_grid"
+        color: "rgba(139,115,85,0.03)"
+        spacing: "40px"
+
+      # Decorative border glow
+      border_glow:
+        enabled: false
+
+    # Card display styling
+    cards:
+      display_style: "detailed"
+
+      # Card container
+      container:
+        background: "rgba(232, 220, 196, 0.7)"
+        border: "#8b7355"
+        border_radius: "8px"
+        padding: "20px"
+        shadow: "0 4px 16px rgba(0,0,0,0.2)"
+
+      # Drawn card styling
+      drawn_cards:
+        width: "100px"
+        height: "140px"
+        background: "linear-gradient(135deg, #f5f5dc 0%, #e8dcc4 100%)"
+        border: "#8b7355"
+        border_width: "3px"
+        border_radius: "10px"
+
+        # Hover effects
+        hover:
+          transform: "translateY(-10px) scale(1.05)"
+          shadow: "0 8px 16px rgba(93, 109, 126, 0.5)"
+          border_color: "#5d6d7e"
+
+        # Resolved state
+        resolved:
+          opacity: 0.4
+          border_color: "#a89575"
+
+        # Active/selected state
+        active:
+          border_color: "#2980b9"
+          border_width: "4px"
+          shadow: "0 0 20px rgba(41, 128, 185, 0.6)"
+
+      # Card title
+      title:
+        font_size: "1.5em"
+        color: "#2c3e50"
+        margin_bottom: "10px"
+
+      # Card description
+      description:
+        font_size: "1.05em"
+        line_height: 1.6
+        color: "#2c3e50"
+
+      # Show metadata
+      show_suit_symbols: true
+      show_effects: true
+      show_tokens: true
+      show_blocks: true
+
+      # Effect indicators
+      effects:
+        tokens_positive_color: "#27ae60"
+        tokens_negative_color: "#c0392b"
+        blocks_color: "#c0392b"
+
+    # Journal/textarea styling - Paper-like
+    journal:
+      colors:
+        background: "linear-gradient(135deg, #fdfcf8 0%, #f5f5dc 100%)"
+        text: "#2c3e50"
+        border: "#8b7355"
+        placeholder: "#95a5a6"
+      border_radius: "8px"
+      border_width: "3px"
+      padding: "20px"
+      font_family: "'Crimson Text', serif"
+      font_size: "1.1em"
+      line_height: 1.8
+      min_height: "400px"
+
+      # Scrollbar styling
+      scrollbar:
+        width: "10px"
+        track_color: "#d4c4a8"
+        thumb_color: "#8b7355"
+        thumb_hover: "#9b7f57"
+
+    # Stability meter styling
+    stability:
+      display: "text_and_bar"
+
+      # Container
+      container:
+        name: "Crew Cohesion"
+        description: "The mental and physical stability of your crew"
+
+      # Text colors by state
+      text_colors:
+        safe: "#2c3e50"
+        danger: "#f39c12"
+        critical: "#c0392b"
+
+      # Progress bar
+      bar:
+        height: "30px"
+        background: "rgba(189, 195, 199, 0.3)"
+        border: "#8b7355"
+        border_width: "2px"
+        border_radius: "6px"
+
+        # Fill colors by state
+        fill_colors:
+          safe: "linear-gradient(90deg, #27ae60 0%, #229954 50%, #1e8449 100%)"
+          danger: "linear-gradient(90deg, #f39c12 0%, #e67e22 50%, #d35400 100%)"
+          critical: "linear-gradient(90deg, #e74c3c 0%, #c0392b 50%, #a93226 100%)"
+
+    # Token counter styling
+    tokens:
+      display: "numeric"
+
+      # Container
+      container:
+        background: "linear-gradient(135deg, #e8dcc4 0%, #d4c4a8 100%)"
+        border: "#8b7355"
+        border_width: "2px"
+        border_radius: "8px"
+        padding: "15px"
+        shadow: "inset 0 2px 4px rgba(0,0,0,0.1)"
+
+      # Counter display
+      counter:
+        font_size: "2.5em"
+        font_weight: "bold"
+        colors:
+          positive: "#2c3e50"
+          zero: "#e74c3c"
+          negative: "#c0392b"
+
+  # Modal/Dialog styling
+  modals:
+    overlay:
+      background: "rgba(0, 0, 0, 0.7)"
+      backdrop_filter: "blur(4px)"
+
+    content:
+      background: "linear-gradient(135deg, #f5f5dc 0%, #e8dcc4 100%)"
+      border: "#8b7355"
+      border_width: "3px"
+      border_radius: "12px"
+      padding: "30px"
+      max_width: "800px"
+      shadow: "0 10px 40px rgba(0,0,0,0.5)"
+
+    close_button:
+      size: "35px"
+      color: "#ffffff"
+      background: "#c0392b"
+      hover_color: "#e74c3c"
+
+  # Tab styling
+  tabs:
+    button:
+      background: "linear-gradient(135deg, #d4d4d4 0%, #a8b8c4 100%)"
+      text_color: "#2c3e50"
+      border: "#5d6d7e"
+      border_width: "2px"
+      border_radius: "8px 8px 0 0"
+      padding: "15px 30px"
+
+      hover:
+        background: "linear-gradient(135deg, #e4e4e4 0%, #b8c8d4 100%)"
+
+      active:
+        background: "linear-gradient(135deg, #f5f5dc 0%, #e8dcc4 100%)"
+        shadow: "0 -4px 8px rgba(0,0,0,0.1)"
+
+    border:
+      color: "#5d6d7e"
+      width: "3px"
+
+  # Header styling
+  header:
+    background: "linear-gradient(135deg, #f5f5dc 0%, #e8dcc4 100%)"
+    border: "#5d6d7e"
+    border_width: "3px"
+    border_radius: "12px"
+    padding: "30px"
+    shadow: "0 8px 32px rgba(0,0,0,0.3)"
+    text_align: "center"
+
+    # Paper texture overlay
+    texture:
+      enabled: true
+      type: "line_grid"
+      color: "rgba(0,0,0,0.03)"
+      spacing: "40px"
+
+    # Title styling
+    title:
+      font_family: "'IM Fell English', serif"
+      font_size: "3em"
+      color: "#2c3e50"
+      text_shadow: "2px 2px 4px rgba(255,255,255,0.5)"
+      letter_spacing: "2px"
+      margin_bottom: "10px"
+
+    # Subtitle styling
+    subtitle:
+      font_style: "italic"
+      font_size: "1.2em"
+      color: "#5d6d7e"
+
+    # Byline styling
+    byline:
+      font_size: "1.1em"
+      color: "#34495e"
+      margin_top: "10px"
+
+  # Animation Settings
+  animations:
+    enabled: true
+
+    # Timing functions
+    easing:
+      standard: "ease"
+      smooth: "ease-in-out"
+      bounce: "cubic-bezier(0.68, -0.55, 0.265, 1.55)"
+
+    # Durations
+    durations:
+      fast: "0.2s"
+      normal: "0.3s"
+      slow: "0.6s"
+
+    # Specific animations
+    dice_roll: true
+    button_hover: true
+    card_draw: true
+    panel_slide: false
+
+  # Accessibility
+  accessibility:
+    high_contrast_mode: false
+    focus_indicators: true
+    focus_color: "#2980b9"
+    focus_width: "3px"
+
+    screen_reader_labels: true
+    keyboard_navigation: true
+
+  # Narrative Flavor - Arctic/Survival theme
+  narrative:
+    tone: "gritty"
+
+    # Stability/crew cohesion messages
+    stability_messages:
+      safe:
+        - "The crew maintains discipline despite the cold."
+        - "Morale remains steady in the face of adversity."
+        - "Your leadership keeps hope alive."
+        - "The men trust in your judgment."
+
+      danger:
+        - "Fear begins to take hold among the men."
+        - "Whispers of doubt spread through camp."
+        - "The cold gnaws at everyone's resolve."
+        - "Discipline begins to crack under pressure."
+
+      critical:
+        - "Madness lurks at the edges of consciousness."
+        - "The crew teeters on the brink of mutiny."
+        - "Desperation drives men to dark thoughts."
+        - "One more setback and all will be lost."
+
+    # Game over messages
+    collapse_messages:
+      - "💔 Descent into Madness"
+      - "The isolation has proven too much to bear."
+      - "The Arctic has claimed another expedition."
+
+  # Print Styling
+  print:
+    enabled: false
+    page_size: "A4"
+    margins: "20mm"
+    colors:
+      background: "white"
+      text: "black"
+      accent: "#333333"
+
+# Custom CSS for Arctic-specific effects
+custom_css: |
+  /* Ice/frost texture overlay on body */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(255,255,255,0.3) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(200,220,240,0.2) 0%, transparent 40%),
+      radial-gradient(circle at 40% 80%, rgba(255,255,255,0.15) 0%, transparent 30%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Paper texture on panels and headers */
+  .panel::before,
+  header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      repeating-linear-gradient(90deg, transparent 0px, rgba(0,0,0,0.03) 1px, transparent 2px, transparent 40px),
+      repeating-linear-gradient(0deg, transparent 0px, rgba(0,0,0,0.03) 1px, transparent 2px, transparent 40px);
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  /* Character intro box - special Arctic styling */
+  .character-intro {
+    background: linear-gradient(135deg, #d4c4a8 0%, #c4b498 100%);
+    border: 3px solid #8b7355;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .character-intro h2 {
+    font-family: 'IM Fell English', serif;
+    font-size: 1.8em;
+    color: #2c3e50;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .character-intro .date {
+    text-align: right;
+    font-style: italic;
+    color: #5d6d7e;
+    margin-bottom: 10px;
+    font-size: 0.95em;
+  }
+
+  /* Empty cards message styling */
+  .empty-cards-message {
+    color: #5d6d7e;
+    font-style: italic;
+    text-align: center;
+    font-size: 1.1em;
+  }
+
+  /* Game won/lost states */
+  .game-over {
+    text-align: center;
+    padding: 30px;
+    background: rgba(231, 76, 60, 0.1);
+    border: 3px solid #c0392b;
+    border-radius: 10px;
+  }
+
+  .game-won {
+    text-align: center;
+    padding: 30px;
+    background: rgba(39, 174, 96, 0.1);
+    border: 3px solid #27ae60;
+    border-radius: 10px;
+  }
+
+# Custom JavaScript (if needed for Arctic-specific behaviors)
+custom_js: |
+  // Arctic theme custom behaviors
+  // Could add snow effects, wind sounds, etc.

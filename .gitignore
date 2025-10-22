@@ -35,5 +35,5 @@ env/
 .DS_Store
 Thumbs.db
 
-# Generated HTML files (optional - uncomment if you don't want to track them)
-# *.html
+# Generated HTML files (build artifacts)
+example-game/*.html
