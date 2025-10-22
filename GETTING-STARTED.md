@@ -31,13 +31,13 @@ Validating...
 Generating CSS...
 Generating JavaScript...
 Rendering template...
-✓ Successfully built: example-game/the-cave.html
+✓ Successfully built: example-game/what-lies-beneath.html
   File size: 49.6 KB
 ```
 
 ## Play the Game
 
-Open `example-game/the-cave.html` in your web browser. You now have a fully functional solo journaling RPG!
+Open `example-game/what-lies-beneath.html` in your web browser. You now have a fully functional solo journaling RPG!
 
 ## Create Your Own Game (5 minutes)
 
@@ -150,7 +150,7 @@ mechanics:
 
 1. **Start Small** - Edit just a few cards first
 2. **Validate Often** - Run validate after changes
-3. **Study the Example** - The Cave shows all features
+3. **Study the Example** - What Lies Beneath shows all features
 4. **Iterate Quickly** - Build, play, adjust, rebuild
 5. **One Change at a Time** - Easier to debug
 

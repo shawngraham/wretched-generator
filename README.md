@@ -1,6 +1,6 @@
 # Wretched & Alone Game Generator
 
-A static site generator for solo journaling RPGs in the "Wretched & Alone" style.
+A static site generator for solo journaling RPGs in the "Wretched & Alone" style. In this kind of game, you're most likely to die wretched and alone, but how you get there is up to you. Roll the die, follow the prompts, craft your story, see what happens next.
 
 **Not Complete. Just an experiment**
 
