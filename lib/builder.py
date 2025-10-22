@@ -529,6 +529,161 @@ button[onclick*="applyCurrentCard"] {
 button[onclick*="applyCurrentCard"]:hover {
     background: linear-gradient(135deg, #66BB6A 0%, #4CAF50 100%) !important;
 }
+
+/* Visual Card Display Styles */
+.cards-drawn-area {
+    background: linear-gradient(135deg, #2a1f14 0%, #1a0f0a 100%);
+    border: 3px solid var(--color-borders);
+    border-radius: 12px;
+    padding: 20px;
+    min-height: 150px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.cards-drawn-area.empty {
+    justify-content: center;
+    align-items: center;
+}
+
+.drawn-card {
+    width: 100px;
+    height: 140px;
+    background: linear-gradient(135deg, #f5f5dc 0%, #e8dcc4 100%);
+    border: 3px solid var(--color-borders);
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    position: relative;
+}
+
+.drawn-card:hover:not(.resolved) {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 8px 16px rgba(212, 175, 55, 0.5);
+    border-color: var(--color-accent_primary);
+}
+
+.drawn-card.resolved {
+    opacity: 0.4;
+    cursor: default;
+    border-color: #5a4a3a;
+}
+
+.drawn-card.active {
+    border: 4px solid var(--color-accent_primary);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
+}
+
+.drawn-card-value {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.drawn-card-suit {
+    font-size: 1.5em;
+}
+
+.drawn-card.red-card .drawn-card-value,
+.drawn-card.red-card .drawn-card-suit {
+    color: #d32f2f;
+}
+
+.drawn-card.black-card .drawn-card-value,
+.drawn-card.black-card .drawn-card-suit {
+    color: #2a1f14;
+}
+
+.drawn-card-resolved-badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #4a7c59;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.empty-cards-message {
+    color: var(--color-text_secondary);
+    font-style: italic;
+    text-align: center;
+    font-size: 1.1em;
+}
+
+/* Card count result display */
+#cardCountResult {
+    background: rgba(212, 175, 55, 0.2);
+    border: 2px solid var(--color-accent_primary);
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    font-size: 1.3em;
+    font-weight: bold;
+    color: var(--color-accent_primary);
+    margin-top: 10px;
+}
+
+/* Deck status */
+.deck-status {
+    text-align: center;
+    color: var(--color-text_secondary);
+    margin-top: 10px;
+    font-style: italic;
+}
+
+/* Card prompt panel enhancements */
+#promptPanel {
+    background: linear-gradient(135deg, #3a2818 0%, #2a1810 100%);
+    border: 2px solid var(--color-borders);
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 15px;
+}
+
+#promptPanel h3 {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--color-borders);
+}
+
+/* Dice container enhancements */
+.die-label {
+    position: absolute;
+    bottom: 5px;
+    font-size: 12px;
+    color: #6b5437;
+    font-weight: normal;
+}
+
+.result {
+    background: rgba(212, 175, 55, 0.15);
+    border: 1px solid var(--color-borders);
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 10px;
+    text-align: center;
+    font-weight: 600;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 """)
 
         # Custom CSS from theme
@@ -536,7 +691,7 @@ button[onclick*="applyCurrentCard"]:hover {
         if custom_css:
             css.append("\n/* Custom CSS */\n")
             css.append(custom_css)
-        
+
         return '\n'.join(css)
     
     def generate_javascript(self) -> str:
@@ -547,9 +702,10 @@ button[onclick*="applyCurrentCard"]:hover {
         - Game configuration and card data (as JSON)
         - Game state management
         - Deck initialization and shuffling
-        - Dice rolling mechanics
-        - Card drawing system
-        - Stability/tower mechanics
+        - Dice rolling mechanics (turn dice + effect dice)
+        - Card drawing system with visual display
+        - Multi-card turn system
+        - Stability/tower mechanics with escalating risk
         - Token management
         - Save/load system (localStorage)
         - Journal auto-save
@@ -560,409 +716,21 @@ button[onclick*="applyCurrentCard"]:hover {
         """
         config = self.config
         cards = self.cards
-        
+
         # Convert cards to JavaScript format
         card_data_js = json.dumps(cards, indent=2)
-        
-        # Build JavaScript
-        js = f"""
-// Game Configuration
-const GAME_CONFIG = {json.dumps(config, indent=2)};
-const CARD_DATA = {card_data_js};
 
-// Game State
-let gameState = {{
-    tokens: {config['mechanics']['tokens']['initial']},
-    stability: {config['mechanics']['stability']['initial']},
-    deck: [],
-    drawnCards: [],
-    cardHistory: [],
-    pendingCard: null,
-    gameEnded: false
-}};
+        # Load the enhanced JavaScript template
+        template_path = Path(__file__).parent.parent / 'new_js_template.txt'
+        with open(template_path, 'r', encoding='utf-8') as f:
+            js_template = f.read()
 
-// Initialize deck
-function initializeDeck() {{
-    const suits = ['spades', 'hearts', 'diamonds', 'clubs'];
-    const values = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2'];
-    gameState.deck = [];
-    
-    for (let suit of suits) {{
-        for (let value of values) {{
-            gameState.deck.push({{ suit, value }});
-        }}
-    }}
-    
-    shuffleDeck();
-    updateDeckDisplay();
-}}
+        # Replace placeholders with actual values
+        js = js_template.replace('CONFIG_PLACEHOLDER', json.dumps(config, indent=2))
+        js = js.replace('CARDS_PLACEHOLDER', card_data_js)
+        js = js.replace('TOKENS_INIT', str(config['mechanics']['tokens']['initial']))
+        js = js.replace('STABILITY_INIT', str(config['mechanics']['stability']['initial']))
 
-function shuffleDeck() {{
-    for (let i = gameState.deck.length - 1; i > 0; i--) {{
-        const j = Math.floor(Math.random() * (i + 1));
-        [gameState.deck[i], gameState.deck[j]] = [gameState.deck[j], gameState.deck[i]];
-    }}
-}}
-
-// Dice rolling
-function rollDice() {{
-    const die1 = document.getElementById('die1');
-    const die2 = document.getElementById('die2');
-    
-    die1.classList.add('rolling');
-    die2.classList.add('rolling');
-    
-    setTimeout(() => {{
-        const result1 = Math.floor(Math.random() * 6) + 1;
-        const result2 = Math.floor(Math.random() * 6) + 1;
-        const total = result1 + result2;
-        
-        die1.firstChild.textContent = result1;
-        die2.firstChild.textContent = result2;
-        
-        document.getElementById('diceResult').textContent = `Total: ${{total}}`;
-        
-        die1.classList.remove('rolling');
-        die2.classList.remove('rolling');
-    }}, 600);
-}}
-
-// Card drawing
-function drawCard() {{
-    if (gameState.deck.length === 0) {{
-        if (GAME_CONFIG.mechanics.deck.reshuffle) {{
-            alert('Deck empty! Reshuffling...');
-            initializeDeck();
-        }} else {{
-            alert('Deck is empty!');
-            return;
-        }}
-    }}
-
-    // Check if there's already a pending card
-    if (gameState.pendingCard) {{
-        alert('Please apply the current card effects before drawing another card.');
-        return;
-    }}
-
-    const card = gameState.deck.pop();
-    const cardData = CARD_DATA[card.suit][card.value];
-
-    // Store as pending card
-    gameState.pendingCard = {{ card, cardData }};
-
-    // Display card for examination
-    displayCard(card, cardData);
-
-    // Update displays
-    updateDeckDisplay();
-    saveGameState();
-}}
-
-function applyCurrentCard() {{
-    if (!gameState.pendingCard) {{
-        alert('No card to apply.');
-        return;
-    }}
-
-    const {{ card, cardData }} = gameState.pendingCard;
-
-    // Add to history
-    gameState.cardHistory.unshift({{ ...card, ...cardData }});
-    if (gameState.cardHistory.length > 10) {{
-        gameState.cardHistory.pop();
-    }}
-
-    // Apply effects
-    applyCardEffects(cardData);
-
-    // Clear pending card
-    gameState.pendingCard = null;
-
-    // Update displays
-    updateHistoryDisplay();
-
-    // Clear the card display
-    document.getElementById('cardResult').innerHTML = 'No card drawn yet';
-
-    saveGameState();
-}}
-
-function displayCard(card, cardData) {{
-    const suitSymbols = {{
-        'spades': '♠️',
-        'hearts': '♥️',
-        'diamonds': '♦️',
-        'clubs': '♣️'
-    }};
-
-    const display = document.getElementById('cardResult');
-
-    // Build effects preview
-    let effectsHTML = '';
-    if (cardData.tokens !== 0) {{
-        effectsHTML += `<p><strong>Effect: ${{cardData.tokens > 0 ? '+' : ''}}${{cardData.tokens}} Tokens</strong></p>`;
-    }}
-    if (cardData.blocks > 0) {{
-        effectsHTML += `<p><strong>Effect: Pull ${{cardData.blocks}} block(s)</strong></p>`;
-    }}
-
-    display.innerHTML = `
-        <div style="border: 3px solid var(--color-accent_primary); border-radius: 8px; padding: 15px; background: rgba(42, 31, 20, 0.9);">
-            <h3 style="margin-bottom: 10px;">${{suitSymbols[card.suit]}} ${{card.value}} - ${{cardData.title}}</h3>
-            <div style="margin: 15px 0; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 4px;">
-                <p style="line-height: 1.6; white-space: pre-wrap;">${{cardData.description}}</p>
-            </div>
-            ${{effectsHTML}}
-            <div style="margin-top: 15px; text-align: center;">
-                <button
-                    onclick="applyCurrentCard()"
-                    style="width: 100%; background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%); font-size: 1.1em; padding: 15px;"
-                    aria-label="Apply card effects and add to journal">
-                    ✓ Apply Card Effects
-                </button>
-            </div>
-            <p style="margin-top: 10px; font-size: 0.9em; font-style: italic; color: var(--color-text_secondary); text-align: center;">
-                Read the prompt and write in your journal before applying effects
-            </p>
-        </div>
-    `;
-}}
-
-function applyCardEffects(cardData) {{
-    // Apply token changes
-    if (cardData.tokens) {{
-        gameState.tokens += cardData.tokens;
-        updateTokenDisplay();
-    }}
-    
-    // Handle block pulls
-    if (cardData.blocks > 0) {{
-        for (let i = 0; i < cardData.blocks; i++) {{
-            pullBlock();
-        }}
-    }}
-    
-    // Check win/loss conditions
-    checkGameEnd();
-}}
-
-// Stability/Tower mechanics
-function pullBlock() {{
-    if (gameState.stability <= 0) return;
-    
-    const thresholds = GAME_CONFIG.mechanics.stability.thresholds;
-    let failureThreshold = 1;
-    
-    if (gameState.stability <= thresholds.critical) {{
-        failureThreshold = 3;
-    }} else if (gameState.stability <= thresholds.danger) {{
-        failureThreshold = 2;
-    }}
-    
-    // Roll dice pool
-    let lost = 0;
-    for (let i = 0; i < gameState.stability; i++) {{
-        if (Math.random() * 6 + 1 <= failureThreshold) {{
-            lost++;
-        }}
-    }}
-    
-    gameState.stability -= lost;
-    if (gameState.stability < 0) gameState.stability = 0;
-    
-    updateStabilityDisplay();
-    
-    if (gameState.stability === 0) {{
-        endGame('stability');
-    }}
-}}
-
-// Token management
-function adjustTokens(amount) {{
-    gameState.tokens += amount;
-    updateTokenDisplay();
-    saveGameState();
-}}
-
-// Display updates
-function updateTokenDisplay() {{
-    const tokenName = GAME_CONFIG.mechanics.tokens.name;
-    document.getElementById('tokenValue').textContent = gameState.tokens;
-    document.getElementById('tokenName').textContent = tokenName;
-}}
-
-function updateStabilityDisplay() {{
-    const stabilityName = GAME_CONFIG.mechanics.stability.name;
-    const maxStability = GAME_CONFIG.mechanics.stability.initial;
-    document.getElementById('stabilityValue').textContent = gameState.stability;
-    document.getElementById('stabilityName').textContent = stabilityName;
-
-    const thresholds = GAME_CONFIG.mechanics.stability.thresholds;
-    let className = 'stability-safe';
-    if (gameState.stability <= thresholds.critical) {{
-        className = 'stability-critical';
-    }} else if (gameState.stability <= thresholds.danger) {{
-        className = 'stability-danger';
-    }}
-
-    document.getElementById('stabilityValue').className = className;
-
-    // Update visual bar
-    const barElement = document.getElementById('stabilityBar');
-    if (barElement) {{
-        const percentage = (gameState.stability / maxStability) * 100;
-        barElement.style.width = percentage + '%';
-
-        // Update bar color class
-        barElement.className = 'stability-fill';
-        if (gameState.stability <= thresholds.critical) {{
-            barElement.className = 'stability-fill critical';
-        }} else if (gameState.stability <= thresholds.danger) {{
-            barElement.className = 'stability-fill danger';
-        }}
-    }}
-}}
-
-function updateDeckDisplay() {{
-    document.getElementById('deckCount').textContent = gameState.deck.length;
-}}
-
-function updateHistoryDisplay() {{
-    const history = document.getElementById('cardHistory');
-    const suitSymbols = {{
-        'spades': '♠️',
-        'hearts': '♥️',
-        'diamonds': '♦️',
-        'clubs': '♣️'
-    }};
-    
-    history.innerHTML = gameState.cardHistory
-        .map(card => `<div class="history-item">${{suitSymbols[card.suit]}} ${{card.value}} - ${{card.title}}</div>`)
-        .join('');
-}}
-
-// Game end conditions
-function checkGameEnd() {{
-    const conditions = GAME_CONFIG.conditions;
-    
-    // Check loss conditions
-    if (gameState.stability <= 0) {{
-        endGame('stability');
-        return;
-    }}
-    
-    if (gameState.tokens <= 0) {{
-        endGame('tokens');
-        return;
-    }}
-    
-    // Check win condition
-    if (gameState.deck.length === 0 && gameState.tokens > 0 && gameState.stability > 0) {{
-        endGame('win');
-    }}
-}}
-
-function endGame(reason) {{
-    gameState.gameEnded = true;
-    
-    const conditions = GAME_CONFIG.conditions;
-    let message = '';
-    
-    if (reason === 'win') {{
-        const winCondition = conditions.win.find(c => c.type === 'deck_empty');
-        message = winCondition.message;
-    }} else if (reason === 'stability') {{
-        const loseCondition = conditions.lose.find(c => c.type === 'stability_zero');
-        message = loseCondition.message || 'Game Over: Stability collapsed';
-    }} else if (reason === 'tokens') {{
-        const loseCondition = conditions.lose.find(c => c.type === 'tokens_zero');
-        message = loseCondition.message || 'Game Over: All resources lost';
-    }}
-    
-    document.getElementById('cardResult').innerHTML = `
-        <div class="game-end">
-            <h2>Game Over</h2>
-            <p>${{message}}</p>
-            <button onclick="newGame()">New Game</button>
-        </div>
-    `;
-    
-    document.querySelectorAll('button:not([onclick*="newGame"])').forEach(btn => {{
-        btn.disabled = true;
-    }});
-}}
-
-// Save/Load
-function saveGameState() {{
-    localStorage.setItem('gameState', JSON.stringify(gameState));
-    localStorage.setItem('journalContent', document.getElementById('journal').value);
-}}
-
-function loadGameState() {{
-    const saved = localStorage.getItem('gameState');
-    if (saved) {{
-        gameState = JSON.parse(saved);
-        updateTokenDisplay();
-        updateStabilityDisplay();
-        updateDeckDisplay();
-        updateHistoryDisplay();
-
-        // Restore pending card if exists
-        if (gameState.pendingCard) {{
-            displayCard(gameState.pendingCard.card, gameState.pendingCard.cardData);
-        }}
-
-        if (gameState.gameEnded) {{
-            document.querySelectorAll('button:not([onclick*="newGame"])').forEach(btn => {{
-                btn.disabled = true;
-            }});
-        }}
-    }}
-
-    const journal = localStorage.getItem('journalContent');
-    if (journal) {{
-        document.getElementById('journal').value = journal;
-    }}
-}}
-
-function newGame() {{
-    if (confirm('Start a new game? This will erase all progress.')) {{
-        localStorage.clear();
-        location.reload();
-    }}
-}}
-
-// Journal auto-save
-let saveTimeout;
-function autoSaveJournal() {{
-    clearTimeout(saveTimeout);
-    saveTimeout = setTimeout(() => {{
-        saveGameState();
-    }}, 1000);
-}}
-
-function downloadJournal() {{
-    const text = document.getElementById('journal').value;
-    const blob = new Blob([text], {{ type: 'text/plain' }});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `journal-${{new Date().toISOString().slice(0,10)}}.txt`;
-    a.click();
-    URL.revokeObjectURL(a.href);
-}}
-
-// Initialize on load
-window.onload = function() {{
-    initializeDeck();
-    loadGameState();
-    updateTokenDisplay();
-    updateStabilityDisplay();
-    
-    document.getElementById('journal').addEventListener('input', autoSaveJournal);
-}};
-"""
-        
         return js
     
     def build(self, output_path: Optional[str] = None, minify: bool = False) -> Path:

@@ -1,0 +1,577 @@
+// Game Configuration
+const GAME_CONFIG = CONFIG_PLACEHOLDER;
+const CARD_DATA = CARDS_PLACEHOLDER;
+
+// Game State - Enhanced with multi-card turn system
+let gameState = {
+    tokens: TOKENS_INIT,
+    stability: STABILITY_INIT,
+    deck: [],
+    cardHistory: [],
+    gameEnded: false,
+    cardsToDraw: 0,           // Number of cards to draw this turn (from 1d6 roll)
+    cardsDrawnThisTurn: 0,    // Number of cards already drawn this turn
+    drawnCards: [],           // Array of cards drawn this turn with their state
+    activeCardIndex: null     // Which card is currently being viewed
+};
+
+// Initialize deck
+function initializeDeck() {
+    const suits = ['spades', 'hearts', 'diamonds', 'clubs'];
+    const values = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2'];
+    gameState.deck = [];
+
+    for (let suit of suits) {
+        for (let value of values) {
+            gameState.deck.push({ suit, value });
+        }
+    }
+
+    shuffleDeck();
+    updateDeckDisplay();
+}
+
+function shuffleDeck() {
+    for (let i = gameState.deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [gameState.deck[i], gameState.deck[j]] = [gameState.deck[j], gameState.deck[i]];
+    }
+}
+
+function reshuffleDeck() {
+    initializeDeck();
+    gameState.cardHistory = [];
+    updateDeckDisplay();
+    updateHistoryDisplay();
+}
+
+// Roll 1d6 to determine how many cards to draw this turn
+function rollForCardCount() {
+    const die = Math.floor(Math.random() * 6) + 1;
+    gameState.cardsToDraw = die;
+    gameState.cardsDrawnThisTurn = 0;
+    gameState.drawnCards = [];
+    gameState.activeCardIndex = null;
+
+    const resultDiv = document.getElementById('cardCountResult');
+    if (resultDiv) {
+        resultDiv.style.display = 'block';
+        const cardsToDrawSpan = document.getElementById('cardsToDraw');
+        if (cardsToDrawSpan) cardsToDrawSpan.textContent = die;
+    }
+
+    updateCardsDrawnDisplay();
+    const promptPanel = document.getElementById('cardPrompt');
+    if (promptPanel) {
+        promptPanel.innerHTML = '<p style="color: #b8936f; font-style: italic;">Draw your cards, then click on any card to see its prompt.</p>';
+    }
+
+    saveGameState();
+}
+
+// Draw a single card (call multiple times based on cardsToDraw)
+function drawCard() {
+    if (gameState.gameEnded) return;
+
+    if (gameState.cardsToDraw === 0) {
+        alert('⚠️ Roll 1d6 first to determine how many cards to draw this turn!');
+        return;
+    }
+
+    if (gameState.cardsDrawnThisTurn >= gameState.cardsToDraw) {
+        alert(`✓ You've drawn all ${gameState.cardsToDraw} cards for this turn. Start a new turn by rolling 1d6 again.`);
+        return;
+    }
+
+    if (gameState.deck.length === 0) {
+        if (GAME_CONFIG.mechanics.deck.reshuffle) {
+            alert('Deck empty! Reshuffling...');
+            reshuffleDeck();
+        } else {
+            alert('Deck is empty!');
+            return;
+        }
+    }
+
+    const card = gameState.deck.pop();
+    gameState.cardHistory.push(card);
+    gameState.cardsDrawnThisTurn++;
+
+    // Add card to drawn cards array
+    gameState.drawnCards.push({
+        card: card,
+        resolved: false
+    });
+
+    updateDeckDisplay();
+    updateHistoryDisplay();
+    updateCardsDrawnDisplay();
+
+    saveGameState();
+}
+
+// Update the visual display of drawn cards
+function updateCardsDrawnDisplay() {
+    const container = document.getElementById('cardsDrawnArea');
+    if (!container) return;
+
+    if (gameState.drawnCards.length === 0) {
+        container.className = 'cards-drawn-area empty';
+        container.innerHTML = '<div class="empty-cards-message">No cards drawn yet. Roll 1d6 and draw cards to begin.</div>';
+        return;
+    }
+
+    container.className = 'cards-drawn-area';
+
+    const suitSymbols = {
+        'spades': '♠',
+        'hearts': '♥',
+        'diamonds': '♦',
+        'clubs': '♣'
+    };
+
+    container.innerHTML = gameState.drawnCards.map((cardObj, index) => {
+        const card = cardObj.card;
+        const isRed = card.suit === 'hearts' || card.suit === 'diamonds';
+        const colorClass = isRed ? 'red-card' : 'black-card';
+        const resolvedClass = cardObj.resolved ? 'resolved' : '';
+        const activeClass = gameState.activeCardIndex === index ? 'active' : '';
+        const resolvedBadge = cardObj.resolved ? '<div class="drawn-card-resolved-badge">✓</div>' : '';
+
+        return `
+            <div class="drawn-card ${colorClass} ${resolvedClass} ${activeClass}" onclick="viewCard(${index})">
+                ${resolvedBadge}
+                <div class="drawn-card-value">${card.value}</div>
+                <div class="drawn-card-suit">${suitSymbols[card.suit]}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+// View a specific card's prompt
+function viewCard(index) {
+    const cardObj = gameState.drawnCards[index];
+    if (!cardObj || cardObj.resolved) return;
+
+    gameState.activeCardIndex = index;
+    updateCardsDrawnDisplay();
+    displayCardPrompt(cardObj.card, index);
+}
+
+// Mark a card as resolved
+function markCardResolved(index) {
+    if (gameState.drawnCards[index]) {
+        gameState.drawnCards[index].resolved = true;
+        gameState.activeCardIndex = null;
+        updateCardsDrawnDisplay();
+
+        const unresolvedCount = gameState.drawnCards.filter(c => !c.resolved).length;
+        const promptPanel = document.getElementById('cardPrompt');
+        if (unresolvedCount === 0) {
+            if (promptPanel) {
+                promptPanel.innerHTML = '<p style="color: #d4af37; font-weight: bold;">All cards resolved! Roll 1d6 to start your next turn.</p>';
+            }
+        } else {
+            if (promptPanel) {
+                promptPanel.innerHTML = `<p style="color: #b8936f; font-style: italic;">${unresolvedCount} card${unresolvedCount > 1 ? 's' : ''} remaining. Click any unresolved card to continue.</p>`;
+            }
+        }
+
+        saveGameState();
+    }
+}
+
+// Display a card's prompt
+function displayCardPrompt(card, cardIndex) {
+    const cardData = CARD_DATA[card.suit][card.value];
+    const promptPanel = document.getElementById('cardPrompt');
+    if (!promptPanel) return;
+
+    const suitSymbols = {
+        'spades': '♠',
+        'hearts': '♥',
+        'diamonds': '♦',
+        'clubs': '♣'
+    };
+
+    const suitNames = {
+        'spades': 'The Cave\'s Secrets',
+        'hearts': 'Academic Relations',
+        'diamonds': 'Resources and Methodology',
+        'clubs': 'Mental Strain'
+    };
+
+    const isRed = card.suit === 'hearts' || card.suit === 'diamonds';
+    const colorStyle = isRed ? 'color: #d32f2f;' : 'color: #e8dcc4;';
+
+    let html = `
+        <h3 style="${colorStyle}">${suitSymbols[card.suit]} ${card.value} - ${cardData.title}</h3>
+        <p style="font-size: 1.1em; line-height: 1.6; margin: 15px 0;">${cardData.description}</p>
+    `;
+
+    // For basic cards with just tokens/blocks
+    let effectsHTML = '';
+    if (cardData.tokens !== undefined && cardData.tokens !== 0) {
+        effectsHTML += `<p><strong>Effect: ${cardData.tokens > 0 ? '+' : ''}${cardData.tokens} tokens</strong></p>`;
+    }
+    if (cardData.blocks !== undefined && cardData.blocks > 0) {
+        effectsHTML += `<p><strong>Effect: Pull ${cardData.blocks} block(s)</strong></p>`;
+    }
+
+    if (effectsHTML) {
+        html += effectsHTML;
+        html += `<button onclick="applyBasicCardEffects(${cardIndex})" style="margin-top: 15px;">Apply Effects</button>`;
+    }
+
+    html += `<button onclick="markCardResolved(${cardIndex})" style="margin-top: 10px; background: linear-gradient(135deg, #4a7c59 0%, #3a6c49 100%);">✓ Done with This Card</button>`;
+
+    promptPanel.innerHTML = html;
+}
+
+// Apply basic card effects (tokens and blocks)
+function applyBasicCardEffects(cardIndex) {
+    const cardObj = gameState.drawnCards[cardIndex];
+    if (!cardObj) return;
+
+    const cardData = CARD_DATA[cardObj.card.suit][cardObj.card.value];
+
+    if (cardData.tokens !== undefined && cardData.tokens !== 0) {
+        adjustTokens(cardData.tokens);
+    }
+
+    if (cardData.blocks !== undefined && cardData.blocks > 0) {
+        for (let i = 0; i < cardData.blocks; i++) {
+            pullBlock();
+        }
+    }
+
+    checkGameEnd();
+}
+
+// Roll one die (for binary outcomes in card prompts)
+function rollOneDie() {
+    const die = Math.floor(Math.random() * 6) + 1;
+    const container = document.getElementById('diceContainer');
+    if (container) {
+        container.innerHTML = `<div class="die rolling">${die}<div class="die-label">d6</div></div>`;
+
+        setTimeout(() => {
+            const dieEl = container.querySelector('.die');
+            if (dieEl) dieEl.classList.remove('rolling');
+        }, 600);
+    }
+
+    const result = die <= 3 ? 'Negative Outcome (1-3)' : 'Positive Outcome (4-6)';
+    const resultDiv = document.getElementById('diceResult');
+    if (resultDiv) {
+        resultDiv.textContent = `Rolled ${die}: ${result}`;
+    }
+
+    return die;
+}
+
+// Roll two dice (for interpretation in card prompts)
+function rollTwoDice() {
+    const die1 = Math.floor(Math.random() * 6) + 1;
+    const die2 = Math.floor(Math.random() * 6) + 1;
+    const total = die1 + die2;
+
+    const container = document.getElementById('diceContainer');
+    if (container) {
+        container.innerHTML = `
+            <div class="die rolling">${die1}<div class="die-label">d6</div></div>
+            <div class="die rolling">${die2}<div class="die-label">d6</div></div>
+        `;
+
+        setTimeout(() => {
+            container.querySelectorAll('.die').forEach(d => d.classList.remove('rolling'));
+        }, 600);
+    }
+
+    let interpretation;
+    if (total <= 5) interpretation = 'Disturbing/Unexplainable';
+    else if (total <= 8) interpretation = 'Ambiguous/Debatable';
+    else interpretation = 'Scientifically Significant';
+
+    const resultDiv = document.getElementById('diceResult');
+    if (resultDiv) {
+        resultDiv.textContent = `Rolled ${die1} + ${die2} = ${total}: ${interpretation}`;
+    }
+
+    return total;
+}
+
+// Stability/Tower mechanics with escalating risk
+function pullBlock() {
+    if (gameState.stability <= 0) return;
+
+    const thresholds = GAME_CONFIG.mechanics.stability.thresholds;
+    let failureThreshold = 1;
+
+    if (gameState.stability <= thresholds.critical) {
+        failureThreshold = 3;  // CRITICAL: 3 in 6 chance
+    } else if (gameState.stability <= thresholds.danger) {
+        failureThreshold = 2;  // HIGH: 2 in 6 chance
+    }  // else: Normal 1 in 6 chance
+
+    // Roll dice pool equal to current stability
+    let lost = 0;
+    for (let i = 0; i < gameState.stability; i++) {
+        if (Math.floor(Math.random() * 6) + 1 <= failureThreshold) {
+            lost++;
+        }
+    }
+
+    // Always lose at least 1
+    lost = Math.max(lost, 1);
+    gameState.stability -= lost;
+    if (gameState.stability < 0) gameState.stability = 0;
+
+    updateStabilityDisplay();
+
+    const riskLevel = gameState.stability <= 20 ? 'CRITICAL' : (gameState.stability <= 50 ? 'HIGH' : 'Normal');
+    console.log(`⚠️ Block pulled! Lost ${lost} stability. Risk level: ${riskLevel}. Current: ${gameState.stability}`);
+
+    if (gameState.stability === 0) {
+        endGame('stability');
+    }
+
+    saveGameState();
+}
+
+// Token management
+function adjustTokens(amount) {
+    gameState.tokens += amount;
+    if (gameState.tokens < 0) gameState.tokens = 0;
+    updateTokenDisplay();
+
+    if (gameState.tokens === 0) {
+        checkGameEnd();
+    }
+
+    saveGameState();
+}
+
+// Display updates
+function updateTokenDisplay() {
+    const tokenName = GAME_CONFIG.mechanics.tokens.name;
+    const tokenValueEl = document.getElementById('tokenValue');
+    const tokenNameEl = document.getElementById('tokenName');
+    if (tokenValueEl) tokenValueEl.textContent = gameState.tokens;
+    if (tokenNameEl) tokenNameEl.textContent = tokenName;
+}
+
+function updateStabilityDisplay() {
+    const stabilityName = GAME_CONFIG.mechanics.stability.name;
+    const maxStability = GAME_CONFIG.mechanics.stability.initial;
+    const stabilityValueEl = document.getElementById('stabilityValue');
+    const stabilityNameEl = document.getElementById('stabilityName');
+
+    if (stabilityValueEl) {
+        stabilityValueEl.textContent = gameState.stability;
+
+        const thresholds = GAME_CONFIG.mechanics.stability.thresholds;
+        stabilityValueEl.className = 'stability-safe';
+        if (gameState.stability <= thresholds.critical) {
+            stabilityValueEl.className = 'stability-critical';
+        } else if (gameState.stability <= thresholds.danger) {
+            stabilityValueEl.className = 'stability-danger';
+        }
+    }
+
+    if (stabilityNameEl) stabilityNameEl.textContent = stabilityName;
+
+    // Update visual bar
+    const barElement = document.getElementById('stabilityBar');
+    if (barElement) {
+        const percentage = (gameState.stability / maxStability) * 100;
+        barElement.style.width = percentage + '%';
+
+        const thresholds = GAME_CONFIG.mechanics.stability.thresholds;
+        barElement.className = 'stability-fill';
+        if (gameState.stability <= thresholds.critical) {
+            barElement.className = 'stability-fill critical';
+        } else if (gameState.stability <= thresholds.danger) {
+            barElement.className = 'stability-fill danger';
+        }
+    }
+}
+
+function updateDeckDisplay() {
+    const deckCountEl = document.getElementById('deckCount');
+    if (deckCountEl) {
+        deckCountEl.textContent = gameState.deck.length;
+    }
+}
+
+function updateHistoryDisplay() {
+    const historyEl = document.getElementById('cardHistory');
+    if (!historyEl) return;
+
+    const suitSymbols = {
+        'spades': '♠️',
+        'hearts': '♥️',
+        'diamonds': '♦️',
+        'clubs': '♣️'
+    };
+
+    historyEl.innerHTML = gameState.cardHistory.slice(-10).reverse().map(card => {
+        return `<div class="history-item">${suitSymbols[card.suit]} ${card.value}</div>`;
+    }).join('');
+}
+
+// Game end conditions
+function checkGameEnd() {
+    if (gameState.gameEnded) return;
+
+    if (gameState.stability <= 0) {
+        endGame('stability');
+        return;
+    }
+
+    if (gameState.tokens <= 0 && GAME_CONFIG.mechanics.tokens.allow_negative === false) {
+        endGame('tokens');
+        return;
+    }
+}
+
+function endGame(reason) {
+    gameState.gameEnded = true;
+
+    const conditions = GAME_CONFIG.conditions;
+    let message = '';
+
+    if (reason === 'win') {
+        const winCondition = conditions.win.find(c => c.type === 'deck_empty');
+        message = winCondition ? winCondition.message : 'You win!';
+    } else if (reason === 'stability') {
+        const loseCondition = conditions.lose.find(c => c.type === 'stability_zero');
+        message = loseCondition ? loseCondition.message : 'Game Over: Stability collapsed';
+    } else if (reason === 'tokens') {
+        const loseCondition = conditions.lose.find(c => c.type === 'tokens_zero');
+        message = loseCondition ? loseCondition.message : 'Game Over: All resources lost';
+    }
+
+    const promptPanel = document.getElementById('cardPrompt');
+    if (promptPanel) {
+        promptPanel.innerHTML = `
+            <div class="game-end" style="text-align: center; padding: 20px; background: linear-gradient(135deg, #4a1a1a 0%, #2a0a0a 100%); border: 3px solid #c41e3a; border-radius: 12px;">
+                <h2 style="color: #ff6b6b; margin-bottom: 15px;">Game Over</h2>
+                <p style="line-height: 1.8; white-space: pre-wrap;">${message}</p>
+                <button onclick="newGame()" style="margin-top: 20px;">Begin Another Excavation</button>
+            </div>
+        `;
+    }
+
+    document.querySelectorAll('button:not([onclick*="newGame"])').forEach(btn => {
+        btn.disabled = true;
+    });
+
+    saveGameState();
+}
+
+// Save/Load
+function saveGameState() {
+    const state = {
+        tokens: gameState.tokens,
+        stability: gameState.stability,
+        deck: gameState.deck,
+        cardHistory: gameState.cardHistory,
+        gameEnded: gameState.gameEnded,
+        cardsToDraw: gameState.cardsToDraw,
+        cardsDrawnThisTurn: gameState.cardsDrawnThisTurn,
+        drawnCards: gameState.drawnCards,
+        activeCardIndex: gameState.activeCardIndex
+    };
+    localStorage.setItem('gameState', JSON.stringify(state));
+
+    const journalEl = document.getElementById('journal');
+    if (journalEl) {
+        localStorage.setItem('journalContent', journalEl.value);
+    }
+}
+
+function loadGameState() {
+    const saved = localStorage.getItem('gameState');
+    if (saved) {
+        const state = JSON.parse(saved);
+        gameState.tokens = state.tokens || gameState.tokens;
+        gameState.stability = state.stability || gameState.stability;
+        gameState.deck = state.deck || [];
+        gameState.cardHistory = state.cardHistory || [];
+        gameState.gameEnded = state.gameEnded || false;
+        gameState.cardsToDraw = state.cardsToDraw || 0;
+        gameState.cardsDrawnThisTurn = state.cardsDrawnThisTurn || 0;
+        gameState.drawnCards = state.drawnCards || [];
+        gameState.activeCardIndex = state.activeCardIndex || null;
+
+        updateTokenDisplay();
+        updateStabilityDisplay();
+        updateDeckDisplay();
+        updateHistoryDisplay();
+        updateCardsDrawnDisplay();
+
+        if (gameState.cardsToDraw > 0) {
+            const resultDiv = document.getElementById('cardCountResult');
+            if (resultDiv) {
+                resultDiv.style.display = 'block';
+                const cardsToDrawSpan = document.getElementById('cardsToDraw');
+                if (cardsToDrawSpan) cardsToDrawSpan.textContent = gameState.cardsToDraw;
+            }
+        }
+
+        if (gameState.gameEnded) {
+            document.querySelectorAll('button:not([onclick*="newGame"])').forEach(btn => {
+                btn.disabled = true;
+            });
+        }
+    }
+
+    const journal = localStorage.getItem('journalContent');
+    const journalEl = document.getElementById('journal');
+    if (journal && journalEl) {
+        journalEl.value = journal;
+    }
+}
+
+function newGame() {
+    if (confirm('Start a new game? This will erase all progress.')) {
+        localStorage.clear();
+        location.reload();
+    }
+}
+
+// Journal auto-save
+let saveTimeout;
+function autoSaveJournal() {
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => {
+        saveGameState();
+    }, 1000);
+}
+
+function downloadJournal() {
+    const journalEl = document.getElementById('journal');
+    if (!journalEl) return;
+
+    const text = journalEl.value;
+    const blob = new Blob([text], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `journal-${new Date().toISOString().slice(0,10)}.txt`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+}
+
+// Initialize on load
+window.onload = function() {
+    initializeDeck();
+    loadGameState();
+    updateTokenDisplay();
+    updateStabilityDisplay();
+
+    const journalEl = document.getElementById('journal');
+    if (journalEl) {
+        journalEl.addEventListener('input', autoSaveJournal);
+    }
+};
