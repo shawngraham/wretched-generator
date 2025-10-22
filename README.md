@@ -39,7 +39,7 @@ pip install -r requirements.txt
 python3 cli/wretched.py build example-game
 ```
 
-This creates `the-cave.html` - a complete, playable game!
+This creates `what-lies-beneath.html` - a complete, playable game!
 
 ### Validate Configuration
 
