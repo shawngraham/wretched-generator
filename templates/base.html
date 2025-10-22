@@ -208,6 +208,9 @@
                 <div style="font-size: 2em; font-weight: bold; margin: 10px 0;">
                     <span id="stabilityValue" class="stability-safe" aria-live="polite" role="status">{{ config.mechanics.stability.initial }}</span>
                 </div>
+                <div class="stability-bar" role="progressbar" aria-label="Stability level" aria-valuemin="0" aria-valuemax="{{ config.mechanics.stability.initial }}">
+                    <div id="stabilityBar" class="stability-fill" style="width: 100%;"></div>
+                </div>
                 <button onclick="pullBlock()" id="pullButton" aria-label="Pull a block from the stability tower">Pull Block</button>
             </div>
             {% endif %}
