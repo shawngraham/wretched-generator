@@ -71,13 +71,7 @@ The escalating risk mechanics:
 
 ### Winning
 
-You **win** if you complete the excavation successfully:
-
-- Draw all 52 cards from the deck
-- Maintain positive Evidence Fragments
-- Keep your Academic Credibility above 0
-
-Your triumph is complete: your work survives peer review and publication. You revolutionize archaeology! Dr. Elisabeth Blackwood's name will echo through history.
+There's no winning, not really. It's all just a matter of how you go.
 
 ### Losing
 
