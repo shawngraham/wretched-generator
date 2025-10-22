@@ -1,0 +1,559 @@
+# The Cave - Card Definitions
+# Each suit represents a different aspect of the excavation
+
+# ♠️ SPADES - The Cave's Secrets
+# These cards represent discoveries, mysteries, and revelations within the cave
+spades:
+  A:
+    title: "The First Chamber"
+    description: |
+      You push through the narrow entrance and emerge into a vast underground chamber. 
+      The walls glitter with moisture and ancient mineral deposits. In the flickering light 
+      of your torch, you can make out marks on the walls—deliberate patterns, perhaps?
+      
+      *What do you hope to find here?*
+    tokens: 2
+    blocks: 0
+    
+  K:
+    title: "The Inscription"
+    description: |
+      On the far wall, you discover a series of carved symbols—a written language! 
+      Your heart races. This could revolutionize everything we know about this region's history.
+      But the symbols are unlike anything in the literature...
+      
+      *What do the symbols seem to depict?*
+    tokens: 3
+    blocks: 0
+    
+  Q:
+    title: "The Golden Idol"
+    description: |
+      Half-buried in sediment, you uncover a golden figurine—exquisitely crafted, 
+      depicting a figure with outstretched arms. It's beautiful, valuable, and unlike 
+      anything found in this region before. But removing it might destabilize the cave structure.
+      
+      *Do you take it? What does it represent?*
+    tokens: 3
+    blocks: 2
+    
+  J:
+    title: "Ancient Tools"
+    description: |
+      You find a cache of stone tools—scrapers, blades, and points—still sharp after 
+      millennia. They're arranged with care, perhaps a craftsperson's kit. Evidence of 
+      sophisticated technology!
+      
+      *What does this tell you about the people who lived here?*
+    tokens: 2
+    blocks: 0
+    
+  "10":
+    title: "The Fossil Wall"
+    description: |
+      An entire wall is embedded with fossils—shells, ancient fish, strange plants. 
+      This area was underwater millions of years ago. The geological evidence is pristine.
+      
+      *What does this reveal about the site's history?*
+    tokens: 2
+    blocks: 0
+    
+  "9":
+    title: "Wall Paintings"
+    description: |
+      You discover ochre paintings on the cave wall—animals, hand prints, abstract 
+      patterns. Art! Human expression from thousands of years ago. Each image tells a story.
+      
+      *What scenes are depicted? What do they mean?*
+    tokens: 3
+    blocks: 0
+    
+  "8":
+    title: "The Burial Site"
+    description: |
+      You uncover human remains, carefully arranged with grave goods—beads, tools, 
+      and a peculiar clay vessel. A burial chamber. Someone was laid to rest here with honor.
+      
+      *Who was this person? What do the grave goods suggest?*
+    tokens: 2
+    blocks: 1
+    
+  "7":
+    title: "Strange Acoustics"
+    description: |
+      You notice the cave has unusual acoustic properties. Certain spots amplify sound 
+      in eerie ways. Was this intentional? A ceremonial space, perhaps?
+      
+      *Test the acoustics. What do you hear?*
+    tokens: 1
+    blocks: 0
+    
+  "6":
+    title: "Animal Bones"
+    description: |
+      A scatter of animal bones—deer, rabbit, birds. Some show cut marks from butchering. 
+      Evidence of meals, of daily life. The mundane details that make history human.
+      
+      *What can you learn from these remains?*
+    tokens: 1
+    blocks: 0
+    
+  "5":
+    title: "The Side Passage"
+    description: |
+      You discover a narrow side passage you hadn't noticed before. It slopes downward 
+      into darkness. Do you follow it, or continue in the main chamber?
+      
+      *What do you do? What might lie deeper?*
+    tokens: 1
+    blocks: 1
+    
+  "4":
+    title: "Pottery Shards"
+    description: |
+      You find fragments of pottery—decorated with geometric patterns. The pieces are 
+      too broken to reconstruct fully, but the craftsmanship is evident.
+      
+      *What patterns do you see? What might the vessels have contained?*
+    tokens: 1
+    blocks: 0
+    
+  "3":
+    title: "The Echo Chamber"
+    description: |
+      You find a small alcove that creates perfect echoes. Standing here, you imagine 
+      ancient voices, songs, stories told in this very spot.
+      
+      *What do you imagine was said here?*
+    tokens: 1
+    blocks: 0
+    
+  "2":
+    title: "Charcoal Marks"
+    description: |
+      Black marks on the ceiling—charcoal from ancient fires. Evidence of habitation, 
+      of warmth and cooking. You can date these marks!
+      
+      *What do the fire patterns tell you?*
+    tokens: 1
+    blocks: 0
+
+# ♥️ HEARTS - Academic Relations
+# These cards deal with your peers, rivals, and the academic establishment
+hearts:
+  A:
+    title: "Letter from the Society"
+    description: |
+      A telegram arrives from London. The Royal Archaeological Society questions your 
+      methods and demands you return immediately for review. Roll a die—on a 6, your 
+      defense is persuasive enough to buy time.
+      
+      *How do you respond to their challenge?*
+    tokens: 0
+    blocks: 0
+    special: "roll_for_token_adjustment"
+    
+  K:
+    title: "Sir Reginald's Mockery"
+    description: |
+      You receive word that Sir Reginald Watterly has published an article dismissing 
+      your work as "amateur speculation by a woman playing at archaeology." The old guard 
+      closes ranks against you.
+      
+      *How does this affect your resolve?*
+    tokens: -1
+    blocks: 1
+    
+  Q:
+    title: "Unexpected Ally"
+    description: |
+      Professor Morrison from Cambridge sends an encouraging letter. She believes in 
+      your work and promises to defend your findings at the next conference. A rare 
+      supporter in a hostile field.
+      
+      *Write your grateful reply.*
+    tokens: 1
+    blocks: 0
+    
+  J:
+    title: "The Journalist"
+    description: |
+      A journalist from The Times wants to write about your excavation. This could 
+      bring attention—and funding—but also scrutiny. Do you grant an interview?
+      
+      *What do you tell them?*
+    tokens: 0
+    blocks: 1
+    
+  "10":
+    title: "Funding Crisis"
+    description: |
+      Your benefactor writes that they're withdrawing support unless you produce results 
+      immediately. The financial pressure mounts. You need discoveries, now.
+      
+      *How do you cope with this pressure?*
+    tokens: -2
+    blocks: 1
+    
+  "9":
+    title: "Academic Jealousy"
+    description: |
+      You learn that Dr. Thornton is planning his own expedition to a nearby site, 
+      hoping to overshadow your work. The race is on.
+      
+      *How does competition affect your work?*
+    tokens: 0
+    blocks: 1
+    
+  "8":
+    title: "Supportive Letter"
+    description: |
+      Your former mentor writes with encouragement and advice. Their wisdom steadies you. 
+      Remember why you became an archaeologist.
+      
+      *What wisdom do they share?*
+    tokens: 1
+    blocks: 0
+    
+  "7":
+    title: "Museum Interest"
+    description: |
+      The British Museum expresses interest in your finds. They want first right to 
+      any significant artifacts. This is validation—but also pressure.
+      
+      *How do you feel about their interest?*
+    tokens: 1
+    blocks: 0
+    
+  "6":
+    title: "Peer Review Fears"
+    description: |
+      You worry about how your peers will receive your findings. What if you're wrong? 
+      What if they ridicule you? The doubt gnaws at you.
+      
+      *Confront these fears in your journal.*
+    tokens: 0
+    blocks: 1
+    
+  "5":
+    title: "Conference Invitation"
+    description: |
+      You're invited to present preliminary findings at a regional conference. 
+      An opportunity—or a trap? They'll scrutinize every claim.
+      
+      *Do you accept? What will you present?*
+    tokens: 0
+    blocks: 0
+    
+  "4":
+    title: "Student's Letter"
+    description: |
+      A student writes asking to join your excavation. Fresh enthusiasm and an extra 
+      pair of hands—but also responsibility and teaching duties.
+      
+      *Do you accept the student?*
+    tokens: 0
+    blocks: 0
+    
+  "3":
+    title: "Praise and Pressure"
+    description: |
+      A colleague praises your ambition but warns that you're risking everything on 
+      this one site. What if it yields nothing spectacular?
+      
+      *How do you respond to this warning?*
+    tokens: 0
+    blocks: 1
+    
+  "2":
+    title: "Family Concern"
+    description: |
+      A letter from home. Your family worries about you, alone in this remote place, 
+      pursuing what they see as a quixotic dream. They want you to come home.
+      
+      *What do you tell them?*
+    tokens: 0
+    blocks: 0
+
+# ♦️ DIAMONDS - Resources and Methodology
+# These cards affect your tools, methods, and practical challenges
+diamonds:
+  A:
+    title: "Perfect Documentation"
+    description: |
+      You achieve perfect documentation of a key find—photographs, sketches, measurements, 
+      context. This is the gold standard of archaeological work. Your methodology is impeccable.
+      
+      *What have you documented so perfectly?*
+    tokens: 3
+    blocks: 0
+    
+  K:
+    title: "Tool Malfunction"
+    description: |
+      Your best trowel breaks. A lamp fails. Equipment wears out in the damp cave environment. 
+      You'll need to improvise or work more slowly.
+      
+      *How do you adapt?*
+    tokens: -1
+    blocks: 1
+    
+  Q:
+    title: "Revolutionary Technique"
+    description: |
+      You develop a new excavation technique perfectly suited to the cave's conditions. 
+      This method could become standard practice. A methodological breakthrough!
+      
+      *Describe your innovation.*
+    tokens: 2
+    blocks: 0
+    
+  J:
+    title: "Supply Shipment"
+    description: |
+      Fresh supplies arrive from town—new notebooks, lamp oil, preservation materials. 
+      You're well-equipped to continue the work.
+      
+      *What supplies are most welcome?*
+    tokens: 2
+    blocks: 0
+    
+  "10":
+    title: "Weather Delay"
+    description: |
+      Heavy rain makes the cave entrance treacherous. You must halt work for days. 
+      Frustrating delays, but safety first. Time to catch up on notes.
+      
+      *How do you use this forced break?*
+    tokens: 0
+    blocks: 0
+    
+  "9":
+    title: "Careful Excavation"
+    description: |
+      You work with painstaking care, brushing away sediment grain by grain. Slow, 
+      meticulous, professional. This is how it should be done.
+      
+      *What emerges from your careful work?*
+    tokens: 2
+    blocks: 0
+    
+  "8":
+    title: "Contamination Risk"
+    description: |
+      You realize you've been careless—modern materials have mixed with ancient deposits. 
+      This could compromise dating. A methodological error that haunts you.
+      
+      *How do you address this mistake?*
+    tokens: -2
+    blocks: 1
+    
+  "7":
+    title: "Photography Session"
+    description: |
+      Perfect lighting today. You photograph everything from multiple angles, creating 
+      a comprehensive visual record. These images will be invaluable.
+      
+      *What do the photographs reveal?*
+    tokens: 1
+    blocks: 0
+    
+  "6":
+    title: "Note-Taking Marathon"
+    description: |
+      You spend the day organizing field notes, cross-referencing observations, building 
+      a coherent narrative from scattered details. The intellectual work of archaeology.
+      
+      *What patterns emerge from your notes?*
+    tokens: 1
+    blocks: 0
+    
+  "5":
+    title: "Equipment Shortage"
+    description: |
+      You're running low on essential supplies—paper for notes, lamp oil, preservation 
+      chemicals. You'll need to ration carefully.
+      
+      *What do you prioritize?*
+    tokens: -1
+    blocks: 0
+    
+  "4":
+    title: "Sampling Success"
+    description: |
+      You collect perfect samples for dating—charcoal, bone, sediment—all properly 
+      labeled and preserved. Laboratory analysis will be conclusive.
+      
+      *What do you hope the lab results will show?*
+    tokens: 1
+    blocks: 0
+    
+  "3":
+    title: "Mapping Progress"
+    description: |
+      Your map of the cave grows more detailed. Every passage, every chamber, carefully 
+      measured and drawn. A cartographic achievement.
+      
+      *What does the map reveal about the cave's structure?*
+    tokens: 1
+    blocks: 0
+    
+  "2":
+    title: "Preservation Challenge"
+    description: |
+      A delicate artifact begins to deteriorate in the air. You must stabilize it 
+      immediately with the materials at hand. A race against decay.
+      
+      *How do you save it?*
+    tokens: 0
+    blocks: 1
+
+# ♣️ CLUBS - Mental Strain and Exhaustion
+# These cards test your psychological fortitude and physical endurance
+clubs:
+  A:
+    title: "Existential Crisis"
+    description: |
+      In the darkness, you question everything. Why are you here? What does any of 
+      this matter? The weight of time presses down. Who will remember these ancient 
+      people—or you?
+      
+      *Confront these dark thoughts.*
+    tokens: 0
+    blocks: 2
+    
+  K:
+    title: "Physical Exhaustion"
+    description: |
+      Your body aches. Days of crouching, crawling, digging have taken their toll. 
+      Every muscle screams. You're not as young as you once were.
+      
+      *How do you push through?*
+    tokens: 0
+    blocks: 2
+    
+  Q:
+    title: "Nightmare"
+    description: |
+      You dream of the cave collapsing, of being buried alive, of failure and mockery. 
+      You wake in a cold sweat. The dreams are becoming more frequent.
+      
+      *What haunts your dreams?*
+    tokens: 0
+    blocks: 1
+    
+  J:
+    title: "Isolation"
+    description: |
+      The loneliness weighs on you. Days without real conversation. Just you and the 
+      silent stones. Sometimes you talk to yourself just to hear a human voice.
+      
+      *What do you miss most about civilization?*
+    tokens: 0
+    blocks: 1
+    
+  "10":
+    title: "Claustrophobia"
+    description: |
+      The walls seem closer today. The ceiling lower. Your breath quickens. The weight 
+      of rock above you is suddenly, terribly real. You need air.
+      
+      *How do you calm yourself?*
+    tokens: 0
+    blocks: 2
+    
+  "9":
+    title: "Doubt and Despair"
+    description: |
+      What if this cave yields nothing significant? What if years of work produce 
+      nothing but mundane artifacts? What if you've wasted everything?
+      
+      *Fight back against despair.*
+    tokens: -1
+    blocks: 1
+    
+  "8":
+    title: "The Darkness"
+    description: |
+      Your lamp flickers. For a moment, absolute darkness. The terror of being lost 
+      forever in the earth. The lamp steadies, but the fear remains.
+      
+      *Describe that moment of darkness.*
+    tokens: 0
+    blocks: 1
+    
+  "7":
+    title: "Fever"
+    description: |
+      You feel unwell—perhaps the damp, perhaps bad food, perhaps exhaustion. You 
+      work through it, but you're not at your best. Mistakes creep in.
+      
+      *What mistakes do you make?*
+    tokens: -1
+    blocks: 1
+    
+  "6":
+    title: "Paranoia"
+    description: |
+      You sense you're being watched. Ridiculous, of course. You're alone. But the 
+      feeling persists. Shadows move at the edge of your vision.
+      
+      *What's real and what's imagination?*
+    tokens: 0
+    blocks: 1
+    
+  "5":
+    title: "Memory Lapse"
+    description: |
+      You can't remember if you documented a crucial find. Did you photograph it? 
+      Measure it? Take notes? The fatigue is affecting your mind.
+      
+      *Retrace your steps.*
+    tokens: 0
+    blocks: 1
+    
+  "4":
+    title: "Accident"
+    description: |
+      You slip and fall, dropping your equipment. A scrape, a bruise, a close call. 
+      The cave is dangerous. You could get seriously hurt here.
+      
+      *How does this affect your caution?*
+    tokens: 0
+    blocks: 1
+    
+  "3":
+    title: "Homesickness"
+    description: |
+      You long for familiar places—a comfortable chair, a proper meal, friends who 
+      understand. The primitive conditions wear on you.
+      
+      *What comforts do you miss?*
+    tokens: 0
+    blocks: 1
+    
+  "2":
+    title: "Lost Time"
+    description: |
+      Hours pass and you realize you've been staring at the wall, mind blank. Fatigue 
+      or something worse? You're losing track of time.
+      
+      *What breaks your trance?*
+    tokens: 0
+    blocks: 1
+
+# Special Card Behaviors
+# Some cards have special mechanics that trigger additional effects
+
+special_cards:
+  # Ace of Hearts requires a die roll
+  ace_of_hearts:
+    type: "roll_check"
+    die: "1d6"
+    success_value: 6
+    on_success:
+      tokens: 1
+      message: "Rolled a 6! Your defense is persuasive. Gain 1 Evidence."
+    on_failure:
+      tokens: -1
+      message: "Your defense falls flat. Lose 1 Evidence."

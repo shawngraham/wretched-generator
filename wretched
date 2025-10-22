@@ -1,0 +1,8 @@
+#!/bin/bash
+# Wretched & Alone Game Generator wrapper script
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PYTHON_SCRIPT="$SCRIPT_DIR/cli/wretched.py"
+
+# Run the Python CLI
+python3 "$PYTHON_SCRIPT" "$@"

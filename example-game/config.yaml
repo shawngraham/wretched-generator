@@ -1,0 +1,182 @@
+# The Cave - Main Game Configuration
+# A solo journaling RPG about archaeological discovery
+
+game:
+  title: "The Cave"
+  subtitle: "An Archaeological Mystery"
+  author: "Shawn Graham"
+  version: "1.0.0"
+  description: "You are Dr. Elisabeth Blackwood, excavating a mysterious cave in 1924. Can you survive the discovery?"
+  
+# Core mechanics to include in this game
+mechanics:
+  systems:
+    - dice        # 2d6 rolling for turn determination
+    - cards       # Standard 52-card deck for prompts
+    - stability   # Mental state / Jenga tower mechanic
+    - tokens      # Evidence collection mechanic
+  
+  # Stability/Mental State Configuration
+  stability:
+    initial: 100
+    name: "Academic Credibility"
+    description: "Your reputation and mental state"
+    narrative_flavor: "academic"
+    
+    # Risk escalation thresholds
+    thresholds:
+      critical: 20      # Below this: high risk
+      danger: 50        # Below this: moderate risk
+      safe: 51          # Above this: low risk
+    
+    # Enable risk scaling (more dice lost at lower stability)
+    risk_scaling: true
+    
+    # Failure thresholds for dice pool
+    failure_thresholds:
+      critical: 3       # At ≤20 stability, lose dice on 1-3
+      danger: 2         # At ≤50 stability, lose dice on 1-2
+      safe: 1           # At >50 stability, lose dice on 1
+    
+    # Narrative messages by state
+    messages:
+      safe:
+        - "Your methodology remains sound and systematic."
+        - "The work proceeds with scholarly precision."
+        - "You maintain your academic composure."
+      danger:
+        - "Self-doubt creeps into your thinking."
+        - "The pressure from your peers weighs heavily."
+        - "Your confidence wavers slightly."
+      critical:
+        - "Your reputation hangs by a thread."
+        - "Desperation clouds your judgment."
+        - "The academic world watches, waiting for you to fail."
+    
+    # End game message
+    collapse_message: "💔 Academic Credibility Destroyed - Your reputation is ruined."
+  
+  # Token/Resource Configuration
+  tokens:
+    initial: 10
+    name: "Evidence Fragments"
+    description: "Archaeological evidence you've collected"
+    count_up: false              # Tokens decrease (can go negative)
+    display_type: "numeric"      # numeric, hearts, or custom icon
+    allow_negative: true
+    
+    # Token adjustment controls
+    controls:
+      show_manual_adjust: true
+      increment: 1
+  
+  # Deck Configuration
+  deck:
+    type: "standard_52"
+    reshuffle: true
+    track_history: true
+    show_remaining_count: true
+  
+  # Dice Configuration
+  dice:
+    main:
+      name: "Turn Dice"
+      count: 2
+      sides: 6
+      function: "determine_cards"   # Result determines cards to draw
+      animation: true
+
+# Win and Loss Conditions
+conditions:
+  win:
+    - type: "deck_empty"
+      additional_checks:
+        - tokens_positive
+        - stability_above_zero
+      message: |
+        🏆 TRIUMPHANT SUCCESS!
+        Your work survives peer review and publication. You revolutionize archaeology!
+        
+        Write the opening for your public lecture at The Society's annual meeting.
+        
+        Dr. Elisabeth Blackwood's name will echo through history.
+  
+  lose:
+    - type: "stability_zero"
+      endings:
+        - title: "Retreat in Shame"
+          text: "Your academic reputation is ruined. You retreat to a cottage in the far country, spending your days cataloguing moss."
+        - title: "Unpaid Assistant"
+          text: "Sir Reginald Watterly smiles with satisfaction as he deposits your paper in the wastebasket. You become his unpaid assistant."
+      message: "Record your final thoughts in your journal..."
+    
+    - type: "tokens_zero"
+      message: |
+        💔 All Evidence Destroyed
+        You have managed to destroy all archaeological evidence. The cave has lost its mystery.
+        You develop a reputation for carelessness and take a schoolmistress position in the village.
+
+# UI Configuration
+ui:
+  layout: "two_column"
+  
+  panels:
+    left_width: "400px"
+    show_instructions: true
+    show_help_button: true
+    show_card_reference: true
+  
+  journal:
+    placeholder: "Record your archaeological discoveries here..."
+    autosave: true
+    save_indicator: true
+    download_button: true
+    load_button: true
+  
+  controls:
+    new_game_confirmation: true
+    show_card_history: true
+    history_clear_button: true
+
+# Special Game-Specific Mechanics
+special:
+  # Some games track Queens for alternate endings
+  queen_tracker:
+    enabled: false
+  
+  # Some games have Ace of Hearts special rules
+  ace_of_hearts:
+    enabled: false
+  
+  # Custom: Draw multiple cards per turn based on dice
+  turn_sequence:
+    roll_determines_cards: true
+    # 2d6 result = number of cards to draw this turn
+    formula: "sum"
+    min_cards: 2
+    max_cards: 12
+
+# Game Flow Settings
+flow:
+  starting_prompt: |
+    Welcome, Dr. Blackwood.
+    
+    Roll the dice to determine how many cards to draw this turn.
+    Each card represents a discovery, challenge, or moment in your excavation.
+    
+    Draw cards and respond to their prompts in your journal.
+  
+  end_turn_button: false    # Game is free-form, no explicit turns
+  auto_advance: false
+
+# Localization
+locale:
+  language: "en"
+  date_format: "MMMM DD, YYYY"
+  time_format: "12h"
+
+# Build Options
+build:
+  minify: true
+  inline_assets: true
+  generate_print_version: false

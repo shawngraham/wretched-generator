@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ config.game.title }}</title>
+    <style>
+        {{ css | safe }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Panel: Game Controls -->
+        <div class="panel controls-panel">
+            <h1>{{ config.game.title }}</h1>
+            {% if config.game.subtitle %}
+            <p class="subtitle">{{ config.game.subtitle }}</p>
+            {% endif %}
+            
+            <!-- Dice Section -->
+            {% if 'dice' in config.mechanics.systems %}
+            <div class="section">
+                <h3>Roll Dice</h3>
+                <div class="dice-container">
+                    <div class="die" id="die1">
+                        <span>-</span>
+                    </div>
+                    <div class="die" id="die2">
+                        <span>-</span>
+                    </div>
+                </div>
+                <button onclick="rollDice()">Roll 2d6</button>
+                <div id="diceResult" style="margin-top: 10px; font-weight: bold;">Total: -</div>
+            </div>
+            {% endif %}
+            
+            <!-- Card Drawing Section -->
+            {% if 'cards' in config.mechanics.systems %}
+            <div class="section">
+                <h3>Draw Card</h3>
+                <button onclick="drawCard()">Draw Card</button>
+                <div style="margin-top: 10px;">
+                    <strong>Cards Remaining: <span id="deckCount">52</span></strong>
+                </div>
+                <div class="card-display" id="cardResult">
+                    No card drawn yet
+                </div>
+                
+                {% if config.mechanics.deck.track_history %}
+                <h4 style="margin-top: 20px;">Recent Cards</h4>
+                <div id="cardHistory" style="font-size: 0.9em;"></div>
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            <!-- Stability Section -->
+            {% if 'stability' in config.mechanics.systems %}
+            <div class="section">
+                <h3><span id="stabilityName">{{ config.mechanics.stability.name }}</span></h3>
+                <div style="font-size: 2em; font-weight: bold; margin: 10px 0;">
+                    <span id="stabilityValue" class="stability-safe">{{ config.mechanics.stability.initial }}</span>
+                </div>
+                <button onclick="pullBlock()" id="pullButton">Pull Block</button>
+            </div>
+            {% endif %}
+            
+            <!-- Tokens Section -->
+            {% if 'tokens' in config.mechanics.systems %}
+            <div class="section">
+                <h3><span id="tokenName">{{ config.mechanics.tokens.name }}</span></h3>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin: 10px 0;">
+                    <button onclick="adjustTokens(-1)">-</button>
+                    <span style="font-size: 2em; font-weight: bold;" id="tokenValue">{{ config.mechanics.tokens.initial }}</span>
+                    <button onclick="adjustTokens(1)">+</button>
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="section">
+                <button onclick="newGame()" style="width: 100%; background: #c0392b;">New Game</button>
+            </div>
+        </div>
+        
+        <!-- Right Panel: Story and Journal -->
+        <div class="panel journal-panel">
+            <!-- Story/Instructions -->
+            {% if story %}
+            <div class="section">
+                <button onclick="document.getElementById('storyModal').classList.add('active')">
+                    📖 Read Instructions
+                </button>
+            </div>
+            {% endif %}
+            
+            <!-- Journal -->
+            <h2>Journal</h2>
+            <p style="font-style: italic; margin-bottom: 10px;">{{ config.ui.journal.placeholder }}</p>
+            <textarea id="journal" placeholder="{{ config.ui.journal.placeholder }}"></textarea>
+            
+            <div style="margin-top: 15px; display: flex; gap: 10px;">
+                <button onclick="downloadJournal()">💾 Save to File</button>
+            </div>
+            
+            <div style="margin-top: 20px; font-size: 0.9em; font-style: italic; color: var(--color-text_secondary);">
+                <p>Game by {{ config.game.author }}</p>
+                {% if config.game.version %}
+                <p>Version {{ config.game.version }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Story Modal -->
+    {% if story %}
+    <div id="storyModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="document.getElementById('storyModal').classList.remove('active')">&times;</button>
+            {{ story | safe }}
+        </div>
+    </div>
+    {% endif %}
+    
+    <script>
+        {{ js | safe }}
+    </script>
+</body>
+</html>
