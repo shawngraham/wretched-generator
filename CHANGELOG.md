@@ -6,6 +6,20 @@ All notable changes to the Wretched & Alone Game Generator will be documented in
 
 ### Added
 
+#### Game Mechanics Enhancements
+- **Card Examination System** - Players can now examine cards before applying effects
+  - Cards are drawn and displayed with full details
+  - "Apply Card Effects" button allows players to read and journal before applying mechanics
+  - Pending card state persists through page reloads
+  - Visual glow effect on pending cards
+  - Helpful reminder text encourages journaling before applying effects
+- **Visual Tension/Stability Meter** - Color-coded progress bar for stability tracking
+  - Dynamic bar that fills based on current stability percentage
+  - Color changes: Green (safe) → Orange (danger) → Red (critical)
+  - Smooth animations and transitions
+  - Pulsing animation when stability is critical
+  - Accessible with ARIA progressbar role
+
 #### CLI Improvements
 - **New `new` command** - Quickly scaffold new game projects from template
 - **Colored terminal output** - Beautiful, informative output with color-coded messages
