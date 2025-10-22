@@ -2,10 +2,158 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config.game.title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="{{ config.game.description if config.game.description else 'A solo journaling RPG' }}">
+    <meta name="author" content="{{ config.game.author }}">
+    <meta name="generator" content="Wretched & Alone Game Generator">
+    <title>{{ config.game.title }}{% if config.game.subtitle %} - {{ config.game.subtitle }}{% endif %}</title>
+
     <style>
         {{ css | safe }}
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr !important;
+                gap: 20px;
+            }
+
+            h1 {
+                font-size: 2em !important;
+            }
+
+            h2 {
+                font-size: 1.5em !important;
+            }
+
+            .die {
+                width: 60px !important;
+                height: 60px !important;
+                font-size: 30px !important;
+            }
+
+            .panel {
+                padding: 15px !important;
+            }
+
+            .section {
+                padding: 12px !important;
+            }
+        }
+
+        /* Accessibility Improvements */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* Focus styles for keyboard navigation */
+        button:focus,
+        textarea:focus {
+            outline: 3px solid var(--color-accent_primary);
+            outline-offset: 2px;
+        }
+
+        /* Loading state */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* Print styles for journal */
+        @media print {
+            .controls-panel {
+                display: none !important;
+            }
+
+            .panel {
+                box-shadow: none !important;
+                border: 1px solid #000 !important;
+            }
+
+            button {
+                display: none !important;
+            }
+
+            textarea {
+                border: none !important;
+                background: white !important;
+                color: black !important;
+            }
+
+            body {
+                background: white !important;
+                color: black !important;
+            }
+        }
+
+        /* Better history display */
+        .history-item {
+            padding: 6px 10px;
+            margin: 4px 0;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+            border-left: 3px solid var(--color-accent_primary);
+            font-size: 0.9em;
+        }
+
+        /* Stability color coding */
+        .stability-safe {
+            color: #4caf50;
+        }
+
+        .stability-danger {
+            color: #ff9800;
+        }
+
+        .stability-critical {
+            color: #f44336;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Game end styling */
+        .game-end {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .game-end h2 {
+            margin-bottom: 15px;
+        }
+
+        /* Subtitle styling */
+        .subtitle {
+            text-align: center;
+            font-style: italic;
+            color: var(--color-text_secondary);
+            margin-bottom: 20px;
+        }
+
+        /* Better button hover effects */
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Improved modal accessibility */
+        .modal-overlay:focus {
+            outline: none;
+        }
+
+        .modal-content:focus {
+            outline: 2px solid var(--color-accent_primary);
+        }
     </style>
 </head>
 <body>
@@ -19,88 +167,93 @@
             
             <!-- Dice Section -->
             {% if 'dice' in config.mechanics.systems %}
-            <div class="section">
+            <div class="section" role="region" aria-label="Dice Rolling">
                 <h3>Roll Dice</h3>
                 <div class="dice-container">
-                    <div class="die" id="die1">
+                    <div class="die" id="die1" role="img" aria-label="Die 1">
                         <span>-</span>
                     </div>
-                    <div class="die" id="die2">
+                    <div class="die" id="die2" role="img" aria-label="Die 2">
                         <span>-</span>
                     </div>
                 </div>
-                <button onclick="rollDice()">Roll 2d6</button>
-                <div id="diceResult" style="margin-top: 10px; font-weight: bold;">Total: -</div>
+                <button onclick="rollDice()" aria-label="Roll two six-sided dice">Roll 2d6</button>
+                <div id="diceResult" style="margin-top: 10px; font-weight: bold;" role="status" aria-live="polite">Total: -</div>
             </div>
             {% endif %}
             
             <!-- Card Drawing Section -->
             {% if 'cards' in config.mechanics.systems %}
-            <div class="section">
+            <div class="section" role="region" aria-label="Card Drawing">
                 <h3>Draw Card</h3>
-                <button onclick="drawCard()">Draw Card</button>
+                <button onclick="drawCard()" aria-label="Draw a card from the deck">Draw Card</button>
                 <div style="margin-top: 10px;">
-                    <strong>Cards Remaining: <span id="deckCount">52</span></strong>
+                    <strong>Cards Remaining: <span id="deckCount" aria-live="polite">52</span></strong>
                 </div>
-                <div class="card-display" id="cardResult">
+                <div class="card-display" id="cardResult" role="status" aria-live="polite">
                     No card drawn yet
                 </div>
-                
+
                 {% if config.mechanics.deck.track_history %}
                 <h4 style="margin-top: 20px;">Recent Cards</h4>
-                <div id="cardHistory" style="font-size: 0.9em;"></div>
+                <div id="cardHistory" style="font-size: 0.9em;" aria-label="Recently drawn cards"></div>
                 {% endif %}
             </div>
             {% endif %}
             
             <!-- Stability Section -->
             {% if 'stability' in config.mechanics.systems %}
-            <div class="section">
+            <div class="section" role="region" aria-label="Stability Tracker">
                 <h3><span id="stabilityName">{{ config.mechanics.stability.name }}</span></h3>
                 <div style="font-size: 2em; font-weight: bold; margin: 10px 0;">
-                    <span id="stabilityValue" class="stability-safe">{{ config.mechanics.stability.initial }}</span>
+                    <span id="stabilityValue" class="stability-safe" aria-live="polite" role="status">{{ config.mechanics.stability.initial }}</span>
                 </div>
-                <button onclick="pullBlock()" id="pullButton">Pull Block</button>
+                <button onclick="pullBlock()" id="pullButton" aria-label="Pull a block from the stability tower">Pull Block</button>
             </div>
             {% endif %}
-            
+
             <!-- Tokens Section -->
             {% if 'tokens' in config.mechanics.systems %}
-            <div class="section">
+            <div class="section" role="region" aria-label="Token Counter">
                 <h3><span id="tokenName">{{ config.mechanics.tokens.name }}</span></h3>
                 <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin: 10px 0;">
-                    <button onclick="adjustTokens(-1)">-</button>
-                    <span style="font-size: 2em; font-weight: bold;" id="tokenValue">{{ config.mechanics.tokens.initial }}</span>
-                    <button onclick="adjustTokens(1)">+</button>
+                    <button onclick="adjustTokens(-1)" aria-label="Decrease tokens by 1">-</button>
+                    <span style="font-size: 2em; font-weight: bold;" id="tokenValue" aria-live="polite" role="status">{{ config.mechanics.tokens.initial }}</span>
+                    <button onclick="adjustTokens(1)" aria-label="Increase tokens by 1">+</button>
                 </div>
             </div>
             {% endif %}
-            
+
             <div class="section">
-                <button onclick="newGame()" style="width: 100%; background: #c0392b;">New Game</button>
+                <button onclick="newGame()" style="width: 100%; background: #c0392b;" aria-label="Start a new game (erases current progress)">New Game</button>
             </div>
         </div>
         
         <!-- Right Panel: Story and Journal -->
-        <div class="panel journal-panel">
+        <div class="panel journal-panel" role="region" aria-label="Journal">
             <!-- Story/Instructions -->
             {% if story %}
             <div class="section">
-                <button onclick="document.getElementById('storyModal').classList.add('active')">
+                <button onclick="document.getElementById('storyModal').classList.add('active')" aria-label="Read game instructions and story">
                     📖 Read Instructions
                 </button>
             </div>
             {% endif %}
-            
+
             <!-- Journal -->
-            <h2>Journal</h2>
+            <h2 id="journal-heading">Journal</h2>
             <p style="font-style: italic; margin-bottom: 10px;">{{ config.ui.journal.placeholder }}</p>
-            <textarea id="journal" placeholder="{{ config.ui.journal.placeholder }}"></textarea>
-            
+            <textarea
+                id="journal"
+                placeholder="{{ config.ui.journal.placeholder }}"
+                aria-labelledby="journal-heading"
+                aria-describedby="journal-description"></textarea>
+            <span id="journal-description" class="sr-only">Your journal entries are automatically saved to your browser's local storage</span>
+
             <div style="margin-top: 15px; display: flex; gap: 10px;">
-                <button onclick="downloadJournal()">💾 Save to File</button>
+                <button onclick="downloadJournal()" aria-label="Download journal as text file">💾 Save to File</button>
             </div>
-            
+
             <div style="margin-top: 20px; font-size: 0.9em; font-style: italic; color: var(--color-text_secondary);">
                 <p>Game by {{ config.game.author }}</p>
                 {% if config.game.version %}
@@ -112,10 +265,15 @@
     
     <!-- Story Modal -->
     {% if story %}
-    <div id="storyModal" class="modal-overlay">
-        <div class="modal-content">
-            <button class="modal-close" onclick="document.getElementById('storyModal').classList.remove('active')">&times;</button>
-            {{ story | safe }}
+    <div id="storyModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="story-title">
+        <div class="modal-content" tabindex="-1">
+            <button
+                class="modal-close"
+                onclick="document.getElementById('storyModal').classList.remove('active')"
+                aria-label="Close instructions dialog">&times;</button>
+            <div id="story-title">
+                {{ story | safe }}
+            </div>
         </div>
     </div>
     {% endif %}

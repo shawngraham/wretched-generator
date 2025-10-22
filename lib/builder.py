@@ -1,6 +1,14 @@
 """
 Wretched & Alone Game Generator
 Core builder module
+
+This module provides the GameBuilder class which handles:
+- Loading game configuration files (YAML and Markdown)
+- Validating game data (cards, config, theme)
+- Generating CSS from theme configuration
+- Generating JavaScript game engine
+- Rendering HTML templates
+- Building self-contained HTML game files
 """
 
 import yaml
@@ -8,65 +16,195 @@ import json
 import markdown
 from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
+from typing import Dict, List, Optional, Any, Tuple
 import re
 
+
+class ValidationError(Exception):
+    """Raised when game configuration validation fails"""
+    pass
+
+
+class BuildError(Exception):
+    """Raised when game building fails"""
+    pass
+
+
 class GameBuilder:
-    """Main game builder class"""
-    
+    """
+    Main game builder class for Wretched & Alone style games.
+
+    This class handles the complete build pipeline from loading configuration
+    files to generating a single self-contained HTML game file.
+
+    Attributes:
+        game_path (Path): Path to the game directory containing config files
+        config (dict): Loaded game configuration from config.yaml
+        cards (dict): Loaded card definitions from cards.yaml
+        theme (dict): Loaded theme configuration from theme.yaml
+        story (str): Loaded and converted story content from story.md
+
+    Example:
+        >>> builder = GameBuilder('example-game')
+        >>> builder.load_all()
+        >>> output = builder.build()
+    """
+
     def __init__(self, game_path: str):
+        """
+        Initialize the GameBuilder.
+
+        Args:
+            game_path: Path to the game directory (string or Path object)
+        """
         self.game_path = Path(game_path)
-        self.config = None
-        self.cards = None
-        self.theme = None
-        self.story = None
+        self.config: Optional[Dict[str, Any]] = None
+        self.cards: Optional[Dict[str, Any]] = None
+        self.theme: Optional[Dict[str, Any]] = None
+        self.story: Optional[str] = None
         
-    def load_config(self):
-        """Load and parse config.yaml"""
+    def load_config(self) -> Dict[str, Any]:
+        """
+        Load and parse config.yaml.
+
+        Returns:
+            dict: Parsed configuration data
+
+        Raises:
+            FileNotFoundError: If config.yaml doesn't exist
+            yaml.YAMLError: If config.yaml has invalid syntax
+        """
         config_file = self.game_path / "config.yaml"
-        with open(config_file, 'r', encoding='utf-8') as f:
-            self.config = yaml.safe_load(f)
-        return self.config
-    
-    def load_cards(self):
-        """Load and parse cards.yaml"""
+        try:
+            with open(config_file, 'r', encoding='utf-8') as f:
+                self.config = yaml.safe_load(f)
+            return self.config
+        except FileNotFoundError:
+            raise FileNotFoundError(
+                f"Config file not found: {config_file}\n"
+                f"Make sure config.yaml exists in {self.game_path}"
+            )
+        except yaml.YAMLError as e:
+            raise BuildError(f"Invalid YAML in config.yaml: {e}")
+
+    def load_cards(self) -> Dict[str, Any]:
+        """
+        Load and parse cards.yaml.
+
+        Returns:
+            dict: Parsed card definitions (suits -> values -> card data)
+
+        Raises:
+            FileNotFoundError: If cards.yaml doesn't exist
+            yaml.YAMLError: If cards.yaml has invalid syntax
+        """
         cards_file = self.game_path / "cards.yaml"
-        with open(cards_file, 'r', encoding='utf-8') as f:
-            self.cards = yaml.safe_load(f)
-        return self.cards
-    
-    def load_theme(self):
-        """Load and parse theme.yaml"""
+        try:
+            with open(cards_file, 'r', encoding='utf-8') as f:
+                self.cards = yaml.safe_load(f)
+            return self.cards
+        except FileNotFoundError:
+            raise FileNotFoundError(
+                f"Cards file not found: {cards_file}\n"
+                f"Make sure cards.yaml exists in {self.game_path}"
+            )
+        except yaml.YAMLError as e:
+            raise BuildError(f"Invalid YAML in cards.yaml: {e}")
+
+    def load_theme(self) -> Dict[str, Any]:
+        """
+        Load and parse theme.yaml.
+
+        Returns:
+            dict: Parsed theme configuration
+
+        Raises:
+            FileNotFoundError: If theme.yaml doesn't exist
+            yaml.YAMLError: If theme.yaml has invalid syntax
+        """
         theme_file = self.game_path / "theme.yaml"
-        with open(theme_file, 'r', encoding='utf-8') as f:
-            self.theme = yaml.safe_load(f)
-        return self.theme
-    
-    def load_story(self):
-        """Load and parse story.md"""
+        try:
+            with open(theme_file, 'r', encoding='utf-8') as f:
+                self.theme = yaml.safe_load(f)
+            return self.theme
+        except FileNotFoundError:
+            raise FileNotFoundError(
+                f"Theme file not found: {theme_file}\n"
+                f"Make sure theme.yaml exists in {self.game_path}"
+            )
+        except yaml.YAMLError as e:
+            raise BuildError(f"Invalid YAML in theme.yaml: {e}")
+
+    def load_story(self) -> str:
+        """
+        Load and parse story.md, converting markdown to HTML.
+
+        Returns:
+            str: HTML-formatted story content
+
+        Raises:
+            FileNotFoundError: If story.md doesn't exist
+        """
         story_file = self.game_path / "story.md"
-        with open(story_file, 'r', encoding='utf-8') as f:
-            md_content = f.read()
-            # Convert markdown to HTML
-            self.story = markdown.markdown(md_content, extensions=['extra', 'nl2br'])
-        return self.story
+        try:
+            with open(story_file, 'r', encoding='utf-8') as f:
+                md_content = f.read()
+                # Convert markdown to HTML with extensions for tables, code blocks, etc.
+                self.story = markdown.markdown(
+                    md_content,
+                    extensions=['extra', 'nl2br', 'sane_lists']
+                )
+            return self.story
+        except FileNotFoundError:
+            raise FileNotFoundError(
+                f"Story file not found: {story_file}\n"
+                f"Make sure story.md exists in {self.game_path}"
+            )
+
+    def load_all(self) -> None:
+        """
+        Load all configuration files in one call.
+
+        This is a convenience method that loads config, cards, theme, and story
+        in the correct order.
+
+        Raises:
+            FileNotFoundError: If any required file is missing
+            BuildError: If any file has invalid syntax
+        """
+        self.load_config()
+        self.load_cards()
+        self.load_theme()
+        self.load_story()
     
-    def validate(self):
-        """Validate all loaded configurations"""
+    def validate(self) -> List[str]:
+        """
+        Validate all loaded configurations.
+
+        Checks:
+        - All config files are loaded
+        - All 52 cards are defined
+        - Required config fields are present
+        - Card data has required fields
+
+        Returns:
+            list: List of error messages (empty if validation passes)
+        """
         errors = []
-        
+
         # Check that all configs are loaded
         if not self.config:
-            errors.append("Config file not loaded")
+            errors.append("Config file not loaded - call load_config() first")
         if not self.cards:
-            errors.append("Cards file not loaded")
+            errors.append("Cards file not loaded - call load_cards() first")
         if not self.theme:
-            errors.append("Theme file not loaded")
-        
+            errors.append("Theme file not loaded - call load_theme() first")
+
         # Validate cards (all 52 should be present)
         if self.cards:
             suits = ['spades', 'hearts', 'diamonds', 'clubs']
             values = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2']
-            
+
             for suit in suits:
                 if suit not in self.cards:
                     errors.append(f"Missing suit: {suit}")
@@ -74,18 +212,50 @@ class GameBuilder:
                 for value in values:
                     if value not in self.cards[suit]:
                         errors.append(f"Missing card: {value} of {suit}")
-        
+                    else:
+                        # Validate card structure
+                        card = self.cards[suit][value]
+                        if not isinstance(card, dict):
+                            errors.append(f"Invalid card data for {value} of {suit}")
+                            continue
+                        # Check required card fields
+                        required_card_fields = ['title', 'description']
+                        for field in required_card_fields:
+                            if field not in card:
+                                errors.append(
+                                    f"Card {value} of {suit} missing required field: {field}"
+                                )
+
         # Validate config required fields
         if self.config:
             required = ['game', 'mechanics', 'conditions', 'ui']
             for field in required:
                 if field not in self.config:
                     errors.append(f"Missing required config field: {field}")
-        
+
+            # Validate game metadata
+            if 'game' in self.config:
+                game_required = ['title', 'author']
+                for field in game_required:
+                    if field not in self.config['game']:
+                        errors.append(f"Missing required game field: {field}")
+
         return errors
     
-    def generate_css(self):
-        """Generate CSS from theme configuration"""
+    def generate_css(self) -> str:
+        """
+        Generate CSS from theme configuration.
+
+        Converts theme.yaml settings into CSS including:
+        - Google Fonts imports
+        - CSS custom properties (variables)
+        - Base styles
+        - Component styles
+        - Custom CSS from theme
+
+        Returns:
+            str: Complete CSS stylesheet as a string
+        """
         theme = self.theme.get('theme', {})
         colors = theme.get('colors', {})
         fonts = theme.get('fonts', {})
@@ -322,8 +492,25 @@ textarea {
         
         return '\n'.join(css)
     
-    def generate_javascript(self):
-        """Generate JavaScript game engine"""
+    def generate_javascript(self) -> str:
+        """
+        Generate JavaScript game engine.
+
+        Creates a complete game engine including:
+        - Game configuration and card data (as JSON)
+        - Game state management
+        - Deck initialization and shuffling
+        - Dice rolling mechanics
+        - Card drawing system
+        - Stability/tower mechanics
+        - Token management
+        - Save/load system (localStorage)
+        - Journal auto-save
+        - Win/loss condition checking
+
+        Returns:
+            str: Complete JavaScript code as a string
+        """
         config = self.config
         cards = self.cards
         
@@ -657,43 +844,87 @@ window.onload = function() {{
         
         return js
     
-    def build(self, output_path: str = None):
-        """Build the complete game HTML file"""
-        # Load all configs
-        self.load_config()
-        self.load_cards()
-        self.load_theme()
-        self.load_story()
-        
-        # Validate
-        errors = self.validate()
-        if errors:
-            raise ValueError(f"Validation errors:\\n" + "\\n".join(errors))
-        
-        # Generate CSS and JS
-        css = self.generate_css()
-        js = self.generate_javascript()
-        
-        # Load template
-        template_dir = Path(__file__).parent.parent / 'templates'
-        env = Environment(loader=FileSystemLoader(str(template_dir)))
-        template = env.get_template('base.html')
-        
-        # Render template
-        html = template.render(
-            config=self.config,
-            story=self.story,
-            css=css,
-            js=js
-        )
-        
-        # Determine output path
-        if not output_path:
-            game_title = self.config['game']['title'].lower().replace(' ', '-')
-            output_path = self.game_path / f"{game_title}.html"
-        
-        # Write output
-        with open(output_path, 'w', encoding='utf-8') as f:
-            f.write(html)
-        
-        return output_path
+    def build(self, output_path: Optional[str] = None, minify: bool = False) -> Path:
+        """
+        Build the complete game HTML file.
+
+        This is the main build method that orchestrates the entire build process:
+        1. Load all configuration files
+        2. Validate all data
+        3. Generate CSS and JavaScript
+        4. Render HTML template
+        5. Write output file
+
+        Args:
+            output_path: Optional custom output path. If not provided, uses
+                        game title to generate filename in game directory
+            minify: If True, minify the output HTML (requires htmlmin package)
+
+        Returns:
+            Path: Path to the generated HTML file
+
+        Raises:
+            ValidationError: If configuration validation fails
+            BuildError: If build process encounters an error
+        """
+        try:
+            # Load all configs
+            self.load_all()
+
+            # Validate
+            errors = self.validate()
+            if errors:
+                raise ValidationError(
+                    f"Validation failed with {len(errors)} error(s):\n" +
+                    "\n".join(f"  - {error}" for error in errors)
+                )
+
+            # Generate CSS and JS
+            css = self.generate_css()
+            js = self.generate_javascript()
+
+            # Load template
+            template_dir = Path(__file__).parent.parent / 'templates'
+            if not template_dir.exists():
+                raise BuildError(f"Templates directory not found: {template_dir}")
+
+            env = Environment(loader=FileSystemLoader(str(template_dir)))
+            template = env.get_template('base.html')
+
+            # Render template
+            html = template.render(
+                config=self.config,
+                story=self.story,
+                css=css,
+                js=js
+            )
+
+            # Minify if requested
+            if minify:
+                try:
+                    import htmlmin
+                    html = htmlmin.minify(html, remove_comments=True, remove_empty_space=True)
+                except ImportError:
+                    print("Warning: htmlmin not installed, skipping minification")
+                    print("Install with: pip install htmlmin")
+
+            # Determine output path
+            if not output_path:
+                game_title = self.config['game']['title'].lower().replace(' ', '-')
+                # Remove any characters that aren't alphanumeric or hyphens
+                game_title = re.sub(r'[^a-z0-9-]', '', game_title)
+                output_path = self.game_path / f"{game_title}.html"
+            else:
+                output_path = Path(output_path)
+
+            # Write output
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(output_path, 'w', encoding='utf-8') as f:
+                f.write(html)
+
+            return Path(output_path)
+
+        except (FileNotFoundError, ValidationError, BuildError):
+            raise
+        except Exception as e:
+            raise BuildError(f"Build failed: {e}")

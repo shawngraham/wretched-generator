@@ -76,22 +76,43 @@ wretched-generator/
 
 ## Commands
 
+### new
+
+Create a new game project from template.
+
+```bash
+python3 cli/wretched.py new <project-name>
+```
+
+**Arguments:**
+- `project-name`: Name for your new game project
+
+**Example:**
+```bash
+python3 cli/wretched.py new my-awesome-game
+cd my-awesome-game
+# Edit the config files...
+python3 ../cli/wretched.py build .
+```
+
 ### build
 
 Build a game from configuration files.
 
 ```bash
-python3 cli/wretched.py build <game-path> [-o output.html]
+python3 cli/wretched.py build <game-path> [-o output.html] [-m]
 ```
 
 **Arguments:**
 - `game-path`: Directory containing config files
 - `-o, --output`: Optional output path (default: `<game-title>.html`)
+- `-m, --minify`: Minify the output HTML (requires htmlmin package)
 
 **Example:**
 ```bash
 python3 cli/wretched.py build example-game
 python3 cli/wretched.py build my-game -o dist/my-game.html
+python3 cli/wretched.py build my-game --minify
 ```
 
 ### validate
@@ -132,9 +153,33 @@ python3 cli/wretched.py info <game-path>
 python3 cli/wretched.py info example-game
 ```
 
+### Global Options
+
+All commands support these global options:
+
+```bash
+--no-color    # Disable colored output
+--debug       # Show detailed error messages and stack traces
+```
+
+**Example:**
+```bash
+python3 cli/wretched.py build my-game --no-color
+python3 cli/wretched.py validate my-game --debug
+```
+
 ## Creating Your Own Game
 
-### Step 1: Copy the Example
+### Step 1: Create New Project
+
+The easiest way to start is using the `new` command:
+
+```bash
+python3 cli/wretched.py new my-awesome-game
+cd my-awesome-game
+```
+
+Or manually copy the example:
 
 ```bash
 cp -r example-game my-awesome-game
@@ -206,22 +251,41 @@ After building, you get:
 
 ## Features
 
-### Current Features (MVP)
+### Current Features
 
-✅ Parse YAML configurations  
-✅ Generate CSS from theme config  
-✅ Generate JavaScript game engine  
-✅ Render HTML template  
-✅ Single self-contained output  
-✅ Validation system  
-✅ Command-line interface  
-✅ Card deck mechanics  
-✅ Dice rolling  
-✅ Stability/tower system  
-✅ Token/resource system  
-✅ Auto-save to browser  
-✅ Journal with download  
-✅ Win/loss conditions  
+✅ **Core Functionality**
+- Parse YAML configurations with full error handling
+- Generate CSS from theme config
+- Generate JavaScript game engine
+- Render HTML template
+- Single self-contained output
+- Comprehensive validation system
+- Full command-line interface with colored output
+
+✅ **Game Mechanics**
+- Card deck mechanics
+- Dice rolling
+- Stability/tower system
+- Token/resource system
+- Auto-save to browser localStorage
+- Journal with download
+- Win/loss conditions
+
+✅ **Developer Experience** (NEW!)
+- `new` command to scaffold new game projects
+- Colored CLI output with progress indicators
+- Detailed error messages
+- Type hints throughout codebase
+- Comprehensive docstrings
+- HTML minification option
+
+✅ **Accessibility & UX** (NEW!)
+- Fully responsive design (mobile-friendly)
+- ARIA labels for screen readers
+- Keyboard navigation support
+- Print-friendly journal styles
+- Loading states and visual feedback
+- Better color-coded stability indicator
 
 ### Planned Features
 
@@ -230,9 +294,8 @@ After building, you get:
 - Custom mechanics support
 - Multiple layout templates
 - Asset inlining (images, fonts)
-- Minification option
-- Print-friendly export
 - Multi-language support
+- Automated testing suite
 
 ## Technical Details
 
