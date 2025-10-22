@@ -1,9 +1,9 @@
-# The Cave: An Archaeological Mystery
+# What Lies Beneath: An Archaeological Mystery
 
 ## Your Character
 
 **Name:** Dr. Elisabeth Blackwood  
-**Occupation:** Independent Archaeologist  
+**Occupation:** The Most Junior Member of the Department 
 **Location:** A remote cave system in the English countryside  
 **Date:** June 15th, 1924
 
