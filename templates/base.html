@@ -165,53 +165,71 @@
             <p class="subtitle">{{ config.game.subtitle }}</p>
             {% endif %}
             
-            <!-- Dice Section -->
-            {% if 'dice' in config.mechanics.systems %}
-            <div class="section" role="region" aria-label="Dice Rolling">
-                <h3>Roll Dice</h3>
-                <div class="dice-container">
-                    <div class="die" id="die1" role="img" aria-label="Die 1">
-                        <span>-</span>
-                    </div>
-                    <div class="die" id="die2" role="img" aria-label="Die 2">
-                        <span>-</span>
-                    </div>
+            <!-- Turn Start Section - Roll for Card Count -->
+            <div class="section turn-section" style="background: rgba(139, 111, 71, 0.15); border: 2px solid var(--color-borders);">
+                <h3 style="font-size: 1.3em;">🎲 START YOUR TURN</h3>
+                <p style="font-size: 0.9em; color: var(--color-text_secondary); font-style: italic; margin-bottom: 10px;">
+                    Each turn, roll 1d6 to determine how many cards to draw for this day's discoveries.
+                </p>
+                <button onclick="rollForCardCount()">🎲 Roll 1d6 for Number of Cards</button>
+                <div id="cardCountResult" style="display: none;">
+                    Draw <span id="cardsToDraw">0</span> cards this turn
                 </div>
-                <button onclick="rollDice()" aria-label="Roll two six-sided dice">Roll 2d6</button>
-                <div id="diceResult" style="margin-top: 10px; font-weight: bold;" role="status" aria-live="polite">Total: -</div>
             </div>
-            {% endif %}
             
             <!-- Card Drawing Section -->
             {% if 'cards' in config.mechanics.systems %}
             <div class="section" role="region" aria-label="Card Drawing">
-                <h3>Draw Card</h3>
-                <button onclick="drawCard()" aria-label="Draw a card from the deck">Draw Card</button>
-                <div style="margin-top: 10px;">
-                    <strong>Cards Remaining: <span id="deckCount" aria-live="polite">52</span></strong>
+                <h3>🎴 1. Draw Cards</h3>
+                <p style="font-size: 0.9em; color: var(--color-text_secondary); font-style: italic; margin-bottom: 10px;">
+                    Draw the number of cards indicated above. You can resolve them in any order you choose.
+                </p>
+                <button onclick="drawCard()" aria-label="Draw a card from the deck">🎴 Draw Next Event</button>
+                <div class="deck-status" id="deckStatus">
+                    <span id="deckCount">52</span> cards remaining
                 </div>
-                <div class="card-display" id="cardResult" role="status" aria-live="polite">
-                    No card drawn yet
-                </div>
-
                 {% if config.mechanics.deck.track_history %}
-                <h4 style="margin-top: 20px;">Recent Cards</h4>
-                <div id="cardHistory" style="font-size: 0.9em;" aria-label="Recently drawn cards"></div>
+                <div id="cardHistory" style="margin-top: 10px; max-height: 150px; overflow-y: auto; font-size: 0.9em;" aria-label="Recently drawn cards"></div>
                 {% endif %}
             </div>
             {% endif %}
+
+            <!-- Dice Rolling Section (for card prompts) -->
+            <div class="section" role="region" aria-label="Dice Rolling">
+                <h3>🎲 2. Roll Dice (When Prompted by Card)</h3>
+                <p style="font-size: 0.9em; color: var(--color-text_secondary); font-style: italic; margin-bottom: 10px;">
+                    Some cards require dice rolls to resolve their prompts:
+                </p>
+                <div style="margin-bottom: 10px; font-size: 0.9em; color: var(--color-text_secondary);">
+                    <strong>Roll 1d6:</strong> 1-3 = Negative, 4-6 = Positive<br>
+                    <strong>Roll 2d6 (Interpret):</strong> 2-5 = Disturbing, 6-8 = Ambiguous, 9-12 = Significant
+                </div>
+                <button onclick="rollOneDie()">Roll 1d6</button>
+                <button onclick="rollTwoDice()" style="margin-top: 5px;">Roll 2d6 (Interpret)</button>
+                <div class="dice-container" id="diceContainer"></div>
+                <div class="result" id="diceResult">Ready to roll when prompted</div>
+            </div>
             
             <!-- Stability Section -->
             {% if 'stability' in config.mechanics.systems %}
             <div class="section" role="region" aria-label="Stability Tracker">
-                <h3><span id="stabilityName">{{ config.mechanics.stability.name }}</span></h3>
-                <div style="font-size: 2em; font-weight: bold; margin: 10px 0;">
-                    <span id="stabilityValue" class="stability-safe" aria-live="polite" role="status">{{ config.mechanics.stability.initial }}</span>
+                <h3>🏛️ 3. Pull Block (When Prompted by Card)</h3>
+                <p style="font-size: 0.9em; color: var(--color-text_secondary); font-style: italic; margin-bottom: 10px;">
+                    When a card prompts you to pull a block, your {{ config.mechanics.stability.name | lower }} is tested.
+                </p>
+                <div style="font-size: 1.5em; font-weight: bold; margin: 10px 0; text-align: center;">
+                    <span id="stabilityName">{{ config.mechanics.stability.name }}</span>: <span id="stabilityValue" class="stability-safe" aria-live="polite" role="status">{{ config.mechanics.stability.initial }}</span>
                 </div>
                 <div class="stability-bar" role="progressbar" aria-label="Stability level" aria-valuemin="0" aria-valuemax="{{ config.mechanics.stability.initial }}">
                     <div id="stabilityBar" class="stability-fill" style="width: 100%;"></div>
                 </div>
-                <button onclick="pullBlock()" id="pullButton" aria-label="Pull a block from the stability tower">Pull Block</button>
+                <button onclick="pullBlock()" id="pullButton" style="margin-top: 15px;" aria-label="Pull a block from the stability tower">Pull Block</button>
+                <div style="font-size: 0.85em; color: var(--color-text_secondary); margin-top: 10px; line-height: 1.5;">
+                    <strong>Risk increases as stability drops:</strong><br>
+                    • 51-100: Normal risk<br>
+                    • 21-50: High risk<br>
+                    • 1-20: CRITICAL risk
+                </div>
             </div>
             {% endif %}
 
@@ -232,17 +250,37 @@
             </div>
         </div>
         
-        <!-- Right Panel: Story and Journal -->
-        <div class="panel journal-panel" role="region" aria-label="Journal">
+        <!-- Right Panel: Cards and Journal -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
             <!-- Story/Instructions -->
             {% if story %}
-            <div class="section">
+            <div class="section panel">
                 <button onclick="document.getElementById('storyModal').classList.add('active')" aria-label="Read game instructions and story">
                     📖 Read Instructions
                 </button>
             </div>
             {% endif %}
 
+            <!-- Cards Drawn This Turn -->
+            <div class="section panel">
+                <h3>🎴 Cards This Turn</h3>
+                <p style="font-size: 0.9em; color: var(--color-text_secondary); font-style: italic; margin-bottom: 10px;">
+                    Click any card to see its prompt and resolve it. Resolved cards are dimmed.
+                </p>
+                <div class="cards-drawn-area" id="cardsDrawnArea">
+                    <div class="empty-cards-message">No cards drawn yet. Roll 1d6 and draw cards to begin.</div>
+                </div>
+            </div>
+
+            <!-- Card Prompt Panel -->
+            <div class="panel" id="promptPanel">
+                <div id="cardPrompt">
+                    <p style="color: var(--color-text_secondary); font-style: italic;">Roll 1d6 to start, then draw and click cards to see their prompts.</p>
+                </div>
+            </div>
+
+            <!-- Journal Section -->
+            <div class="panel journal-panel" role="region" aria-label="Journal">
             <!-- Journal -->
             <h2 id="journal-heading">Journal</h2>
             <p style="font-style: italic; margin-bottom: 10px;">{{ config.ui.journal.placeholder }}</p>
@@ -262,6 +300,7 @@
                 {% if config.game.version %}
                 <p>Version {{ config.game.version }}</p>
                 {% endif %}
+            </div>
             </div>
         </div>
     </div>
