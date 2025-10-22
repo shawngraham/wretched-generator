@@ -241,14 +241,8 @@ The frost overlay is subtle by design. To make it more prominent:
 - Franklin Expedition historical aesthetic
 - Arctic exploration narratives
 
-**Theme Created:**
-- By Claude (AI Assistant) for Wretched & Alone Generator
-- Based on the Wretched & Alone SRD system by Chris Bissette
 
 ## License
 
 This theme configuration is provided as part of the Wretched & Alone Game Generator and can be freely used and modified for your own games.
 
----
-
-**Questions or feedback?** Open an issue on the project repository or modify the theme to suit your needs!
