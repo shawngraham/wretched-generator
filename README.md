@@ -251,25 +251,35 @@ After building, you get:
 
 ## Themes
 
-The generator includes **two complete themes** you can use for your games:
+The generator includes **three complete themes** you can use for your games:
 
 ### Dark Archaeology Theme (Default)
-- **File:** `theme.yaml`
+- **File:** `example-game/theme.yaml`
+- **Platform:** Desktop
 - **Aesthetic:** Cave exploration with warm browns, golds, and scholarly Victorian atmosphere
 - **Best for:** Archaeological mysteries, historical exploration, academic pursuits
 - **Colors:** Deep browns (#2c2416), gold accents (#d4af37), cream text (#e8dcc4)
 
 ### Arctic Theme
-- **File:** `theme-arctic.yaml`
+- **File:** `example-game/theme-arctic.yaml`
+- **Platform:** Desktop
 - **Aesthetic:** Icy blues, frost effects, and harsh Arctic isolation
 - **Best for:** Polar exploration, survival scenarios, frozen wasteland settings
 - **Colors:** Steel blues (#5d6d7e, #8a9ba8), ice blues (#c5d8e1), aged paper panels
 - **Documentation:** See [ARCTIC-THEME.md](example-game/ARCTIC-THEME.md) for details
 
+### Wretched Mobile Theme (NEW!)
+- **File:** `templates/wretched_mobile.yaml`
+- **Platform:** Mobile-first (responsive)
+- **Aesthetic:** Dark, high-contrast interface optimized for touch
+- **Best for:** Mobile gameplay, touch interfaces, battery efficiency, outdoor play
+- **Features:** 44px touch targets, system fonts, single-column layout, minimal animations
+- **Colors:** Dark background (#1a1a1a), bright blue accents (#4a9eff), high contrast
+- **Documentation:** See [MOBILE-THEME.md](templates/MOBILE-THEME.md) for details
+
 ### Using a Theme
 
-To use the Arctic theme (or switch between themes):
-
+**Desktop themes (Arctic or Dark Archaeology):**
 ```bash
 # Backup current theme
 cp example-game/theme.yaml example-game/theme-backup.yaml
@@ -278,6 +288,18 @@ cp example-game/theme.yaml example-game/theme-backup.yaml
 cp example-game/theme-arctic.yaml example-game/theme.yaml
 
 # Build with new theme
+python3 cli/wretched.py build example-game
+```
+
+**Mobile theme:**
+```bash
+# For a new game
+python3 cli/wretched.py new my-mobile-game
+cp templates/wretched_mobile.yaml my-mobile-game/theme.yaml
+python3 cli/wretched.py build my-mobile-game
+
+# For existing game
+cp templates/wretched_mobile.yaml example-game/theme.yaml
 python3 cli/wretched.py build example-game
 ```
 

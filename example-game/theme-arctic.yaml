@@ -474,35 +474,37 @@ theme:
     screen_reader_labels: true
     keyboard_navigation: true
 
-  # Narrative Flavor - Arctic/Survival theme
+  # Narrative Flavor - Gritty/Survival tone (generic, story-agnostic)
   narrative:
     tone: "gritty"
 
-    # Stability/crew cohesion messages
+    # Stability messages - generic survival/isolation theme
+    # These can be overridden by config.yaml for story-specific messages
     stability_messages:
       safe:
-        - "The crew maintains discipline despite the cold."
+        - "You maintain discipline despite the harsh conditions."
         - "Morale remains steady in the face of adversity."
         - "Your leadership keeps hope alive."
-        - "The men trust in your judgment."
+        - "Trust remains strong among the group."
 
       danger:
-        - "Fear begins to take hold among the men."
+        - "Fear begins to take hold."
         - "Whispers of doubt spread through camp."
-        - "The cold gnaws at everyone's resolve."
+        - "The harsh conditions gnaw at everyone's resolve."
         - "Discipline begins to crack under pressure."
 
       critical:
         - "Madness lurks at the edges of consciousness."
-        - "The crew teeters on the brink of mutiny."
-        - "Desperation drives men to dark thoughts."
+        - "The group teeters on the brink of collapse."
+        - "Desperation drives dark thoughts."
         - "One more setback and all will be lost."
 
-    # Game over messages
+    # Game over messages - generic survival/collapse theme
+    # These should be overridden by config.yaml for story-specific context
     collapse_messages:
-      - "💔 Descent into Madness"
+      - "💔 Total Collapse"
       - "The isolation has proven too much to bear."
-      - "The Arctic has claimed another expedition."
+      - "You have succumbed to the harsh conditions."
 
   # Print Styling
   print:
