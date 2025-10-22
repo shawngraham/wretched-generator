@@ -2,6 +2,8 @@
 
 A static site generator for solo journaling RPGs in the "Wretched & Alone" style.
 
+**Not Complete. Just an experiment**
+
 ## What This Is
 
 This tool transforms simple YAML and Markdown files into complete, playable HTML games. Think of it like Hugo for static websites, but for solo RPG games.
