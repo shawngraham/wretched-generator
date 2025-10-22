@@ -254,17 +254,17 @@ After building, you get:
 
 ## Themes
 
-The generator includes **three complete themes** you can use for your games:
+The generator includes **three complete themes** you can use for your games (but remember to COPY the theme you want into the `example-game` folder and then rename it `theme.yaml` in that folder :
 
 ### Dark Archaeology Theme (Default)
-- **File:** `example-game/theme.yaml`
+- **File:** `themes/theme.yaml`
 - **Platform:** Desktop
 - **Aesthetic:** Cave exploration with warm browns, golds, and scholarly Victorian atmosphere
 - **Best for:** Archaeological mysteries, historical exploration, academic pursuits
 - **Colors:** Deep browns (#2c2416), gold accents (#d4af37), cream text (#e8dcc4)
 
 ### Arctic Theme
-- **File:** `example-game/theme-arctic.yaml`
+- **File:** `themes/theme-arctic.yaml`
 - **Platform:** Desktop
 - **Aesthetic:** Icy blues, frost effects, and harsh Arctic isolation
 - **Best for:** Polar exploration, survival scenarios, frozen wasteland settings
@@ -272,7 +272,7 @@ The generator includes **three complete themes** you can use for your games:
 - **Documentation:** See [ARCTIC-THEME.md](example-game/ARCTIC-THEME.md) for details
 
 ### Wretched Mobile Theme (NEW!)
-- **File:** `templates/wretched_mobile.yaml`
+- **File:** `themes/wretched_mobile.yaml`
 - **Platform:** Mobile-first (responsive)
 - **Aesthetic:** Dark, high-contrast interface optimized for touch
 - **Best for:** Mobile gameplay, touch interfaces, battery efficiency, outdoor play
@@ -288,7 +288,7 @@ The generator includes **three complete themes** you can use for your games:
 cp example-game/theme.yaml example-game/theme-backup.yaml
 
 # Switch to Arctic theme
-cp example-game/theme-arctic.yaml example-game/theme.yaml
+cp themes/theme-arctic.yaml example-game/theme.yaml
 
 # Build with new theme
 python3 cli/wretched.py build example-game
@@ -298,11 +298,11 @@ python3 cli/wretched.py build example-game
 ```bash
 # For a new game
 python3 cli/wretched.py new my-mobile-game
-cp templates/wretched_mobile.yaml my-mobile-game/theme.yaml
+cp themes/theme-mobile.yaml my-mobile-game/theme.yaml
 python3 cli/wretched.py build my-mobile-game
 
 # For existing game
-cp templates/wretched_mobile.yaml example-game/theme.yaml
+cp themes/theme-mobile.yaml example-game/theme.yaml
 python3 cli/wretched.py build example-game
 ```
 
@@ -427,10 +427,6 @@ Check your YAML syntax. Common issues:
 2. Check browser console for JavaScript errors
 3. Make sure localStorage is enabled in browser
 
-## Contributing
-
-This is a minimal viable product (MVP). Contributions welcome!
-
 ## License
 
 Open source - use however you want!
@@ -438,7 +434,7 @@ Open source - use however you want!
 ## Credits
 
 - **System Design**: Based on "Wretched & Alone" by Chris Bissette
-- **Example Game**: "The Cave" by Shawn Graham
+- **Example Game**: "What Lies Beneath" by Shawn Graham. See more at [the solo rpg gamepad repo](https://github.com/shawngraham/solo-rpg) and also [the Wretched & Alone Game Pad](https://shawngraham.github.io/solo-rpg).
 - **Generator**: Created as proof of concept for modular game creation
 
 ## Resources
