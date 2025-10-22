@@ -249,6 +249,51 @@ The `example-game/` directory contains a fully-configured version of "The Cave" 
 After building, you get:
 - **the-cave.html** (50 KB) - Complete playable game
 
+## Themes
+
+The generator includes **two complete themes** you can use for your games:
+
+### Dark Archaeology Theme (Default)
+- **File:** `theme.yaml`
+- **Aesthetic:** Cave exploration with warm browns, golds, and scholarly Victorian atmosphere
+- **Best for:** Archaeological mysteries, historical exploration, academic pursuits
+- **Colors:** Deep browns (#2c2416), gold accents (#d4af37), cream text (#e8dcc4)
+
+### Arctic Theme
+- **File:** `theme-arctic.yaml`
+- **Aesthetic:** Icy blues, frost effects, and harsh Arctic isolation
+- **Best for:** Polar exploration, survival scenarios, frozen wasteland settings
+- **Colors:** Steel blues (#5d6d7e, #8a9ba8), ice blues (#c5d8e1), aged paper panels
+- **Documentation:** See [ARCTIC-THEME.md](example-game/ARCTIC-THEME.md) for details
+
+### Using a Theme
+
+To use the Arctic theme (or switch between themes):
+
+```bash
+# Backup current theme
+cp example-game/theme.yaml example-game/theme-backup.yaml
+
+# Switch to Arctic theme
+cp example-game/theme-arctic.yaml example-game/theme.yaml
+
+# Build with new theme
+python3 cli/wretched.py build example-game
+```
+
+### Creating Your Own Theme
+
+Themes are defined in YAML and control:
+- Color palettes (20+ customizable colors)
+- Typography (fonts, sizes, spacing)
+- Layout (grid, panels, breakpoints)
+- Components (buttons, dice, cards, journal)
+- Background effects (gradients, textures, overlays)
+- Animations and transitions
+- Narrative tone and messages
+
+See `theme.yaml` or `theme-arctic.yaml` for complete examples.
+
 ## Features
 
 ### Current Features
