@@ -1,3 +1,5 @@
+> **Note:** this is the original design/vision document. It describes ideas (a `serve` command, plugins, a `queen_counter`, etc.) that were never built exactly as written. For what the tool does today, see README.md.
+
 # Wretched & Alone Game Generator - Modular System Strategy
 
 ## Executive Summary

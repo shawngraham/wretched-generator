@@ -21,7 +21,6 @@ mechanics:
     initial: 100
     name: "Academic Credibility"
     description: "Your reputation and mental state"
-    narrative_flavor: "academic"
     
     # Risk escalation thresholds
     thresholds:
@@ -61,8 +60,6 @@ mechanics:
     initial: 10
     name: "Evidence Fragments"
     description: "Archaeological evidence you've collected"
-    count_up: false              # Tokens decrease (can go negative)
-    display_type: "numeric"      # numeric, hearts, or custom icon
     allow_negative: true
     
     # Token adjustment controls
@@ -76,7 +73,14 @@ mechanics:
     reshuffle: true
     track_history: true
     show_remaining_count: true
-  
+
+    # Suit names (shown on card prompts and in the Suits panel)
+    suits:
+      spades:   {name: "The Cave's Secrets", description: "Discoveries, mysteries and revelations within the cave"}
+      hearts:   {name: "Academic Relations", description: "Your peers, rivals, supporters and the establishment"}
+      diamonds: {name: "Resources and Methodology", description: "Tools, techniques and practical challenges"}
+      clubs:    {name: "Mental Strain", description: "Psychological pressure, exhaustion and doubt"}
+
   # Dice Configuration
   dice:
     main:
@@ -85,6 +89,16 @@ mechanics:
       sides: 6
       function: "determine_cards"   # Result determines cards to draw
       animation: true
+
+    # Free rolls the card prompts may ask for
+    binary:                      # 1d6
+      split: 3                   # 1-3 negative, 4-6 positive
+      negative: "Negative Outcome"
+      positive: "Positive Outcome"
+    interpret:                   # 2d6; first row whose max >= total wins
+      - {max: 5,  label: "Disturbing / Unexplainable"}
+      - {max: 8,  label: "Ambiguous / Debatable"}
+      - {max: 12, label: "Scientifically Significant"}
 
 # Win and Loss Conditions
 conditions:
@@ -118,8 +132,6 @@ conditions:
 
 # UI Configuration
 ui:
-  layout: "two_column"
-  
   panels:
     left_width: "400px"
     show_instructions: true
@@ -133,6 +145,10 @@ ui:
     download_button: true
     load_button: true
   
+  labels:
+    turn_flavor: "Each card is a discovery, challenge or moment in your excavation."
+    new_game_label: "Begin Another Excavation"
+
   controls:
     new_game_confirmation: true
     show_card_history: true
@@ -140,13 +156,16 @@ ui:
 
 # Special Game-Specific Mechanics
 special:
-  # Some games track Queens for alternate endings
+  # Alternate ending when the player draws `threshold` Queens (default 4)
   queen_tracker:
     enabled: false
+    # threshold: 4
+    # ending: {title: "The Fourth Queen", text: "..."}
   
   # Some games have Ace of Hearts special rules
+  # (true = the Ace of Hearts roll in cards.yaml `special_cards` is active)
   ace_of_hearts:
-    enabled: false
+    enabled: true
   
   # Custom: Draw multiple cards per turn based on dice
   turn_sequence:
@@ -166,17 +185,11 @@ flow:
     
     Draw cards and respond to their prompts in your journal.
   
-  end_turn_button: false    # Game is free-form, no explicit turns
-  auto_advance: false
 
-# Localization
+# Localization (sets the page language)
 locale:
   language: "en"
-  date_format: "MMMM DD, YYYY"
-  time_format: "12h"
 
 # Build Options
 build:
   minify: true
-  inline_assets: true
-  generate_print_version: false

@@ -51,8 +51,8 @@ Your **Evidence Fragments** represent the quality and quantity of archaeological
 
 - Start with **10 Evidence Fragments**
 - Cards can add or remove Evidence
-- If you reach **0 Evidence**, you've destroyed or lost all the proof of your discovery
-- You can go negative (representing fabricated or questionable evidence)
+- If you reach **0 Evidence**, you've destroyed or lost all the proof of your discovery and the game ends
+- A single card can push you past zero into the negatives (fabricated or questionable evidence), but the game still ends
 
 ### Academic Credibility (The Tower)
 
@@ -65,13 +65,17 @@ Your **Academic Credibility** represents both your reputation and your mental st
 - If Credibility reaches **0**, your reputation collapses and the game ends
 
 The escalating risk mechanics:
-- **Above 50:** Low risk (stable)
-- **20-50:** Moderate risk (dangerous)
-- **Below 20:** High risk (critical)
+- **51-100:** Low risk (you lose a die on a roll of 1)
+- **21-50:** Moderate risk (you lose a die on a roll of 1-2)
+- **20 or less:** High risk (you lose a die on a roll of 1-3)
+
+Each time you pull a block you roll one die for every point of Credibility you have. Every die that comes up at or under the risk number costs you a point, and you always lose at least one.
 
 ### Winning
 
-There's no winning, not really. It's all just a matter of how you go.
+If you draw and resolve **every card in the deck** while you still have Evidence Fragments and Academic Credibility, your work survives peer review and the game ends in triumph. Write the opening of your public lecture.
+
+Few excavations get that far.
 
 ### Losing
 

@@ -1,10 +1,15 @@
 # Wretched Mobile Theme
 
+> **How themes work now:** the generator reads `colors`, `fonts`, `layout`, `custom_css` and `custom_js` from a theme file.
+> Other sections in the file (components, background, animations, ...) are design notes and are not applied.
+> Fastest way to try a theme without copying anything: `python3 cli/wretched.py build my-game --theme mobile`
+
+
 A mobile-first base theme for Wretched & Alone games, optimized for touch interfaces and small screens.
 
 ## Overview
 
-The **wretched_mobile** theme is designed specifically for mobile gameplay, prioritizing:
+The **mobile** theme is designed specifically for mobile gameplay, prioritizing:
 - **Touch-friendly interfaces** with 44px minimum touch targets
 - **Single-column layout** that stacks vertically
 - **Performance optimization** with minimal animations and effects
@@ -59,7 +64,7 @@ The **wretched_mobile** theme is designed specifically for mobile gameplay, prio
 python3 cli/wretched.py new my-mobile-game
 
 # Copy the mobile theme
-cp templates/wretched_mobile.yaml my-mobile-game/theme.yaml
+cp themes/theme-mobile.yaml my-mobile-game/theme.yaml
 
 # Build
 python3 cli/wretched.py build my-mobile-game
@@ -72,7 +77,7 @@ python3 cli/wretched.py build my-mobile-game
 cp my-game/theme.yaml my-game/theme-desktop.yaml
 
 # Use mobile theme
-cp templates/wretched_mobile.yaml my-game/theme.yaml
+cp themes/theme-mobile.yaml my-game/theme.yaml
 
 # Build
 python3 cli/wretched.py build my-game
@@ -80,12 +85,12 @@ python3 cli/wretched.py build my-game
 
 ### Hybrid Approach (Responsive)
 
-You can create a theme that inherits from `wretched_mobile` and adds desktop enhancements:
+You can create a theme that inherits from `mobile` and adds desktop enhancements:
 
 ```yaml
 theme:
   name: "My Responsive Theme"
-  base: "wretched_mobile"
+  base: "mobile"
   description: "Mobile-first with desktop enhancements"
 
   # Override for desktop
@@ -379,7 +384,7 @@ This theme is part of the Wretched & Alone Game Generator and can be freely used
 **Ready to build mobile-first?**
 
 ```bash
-cp templates/wretched_mobile.yaml my-game/theme.yaml
+cp themes/theme-mobile.yaml my-game/theme.yaml
 python3 cli/wretched.py build my-game
 ```
 

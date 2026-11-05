@@ -1,5 +1,10 @@
 # Dark Archaeology Theme
 
+> **How themes work now:** the generator reads `colors`, `fonts`, `layout`, `custom_css` and `custom_js` from a theme file.
+> Other sections in the file (components, background, animations, ...) are design notes and are not applied.
+> Fastest way to try a theme without copying anything: `python3 cli/wretched.py build my-game --theme dark-archaeology`
+
+
 The **Dark Archaeology** theme provides a Victorian, eldritch theme like that used in "The Cave"
 
 
@@ -12,7 +17,7 @@ The easiest way to use the Darck Archaeology theme:
 cd example-game
 
 # Use the arctic theme
-cp theme-dark-archaeology.yaml theme.yaml
+cp ../themes/theme-dark-archaeology.yaml theme.yaml
 
 # Build the game
 python3 ../cli/wretched.py build .
@@ -26,7 +31,7 @@ python3 cli/wretched.py new my-dark-archaeology-game
 cd my-dark-archaeology-game
 
 # Replace the default theme with arctic
-cp ../example-game/theme-dark-archaeology.yaml theme.yaml
+cp ../themes/theme-dark-archaeology.yaml theme.yaml
 
 # Edit your game content
 # ... edit config.yaml, cards.yaml, story.md ...
@@ -40,7 +45,7 @@ If you have an existing game and want to apply the Arctic theme:
 
 ```bash
 # Copy the dark-archaeology theme to your game directory
-cp example-game/theme-dark-archaeology.yaml my-game/theme.yaml
+cp themes/theme-dark-archaeology.yaml my-game/theme.yaml
 
 # Rebuild your game
 python3 cli/wretched.py build my-game

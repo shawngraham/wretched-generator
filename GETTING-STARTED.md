@@ -1,183 +1,99 @@
-# Getting Started with Wretched Generator
+# Getting Started
 
-## Installation (30 seconds)
+## Install (30 seconds)
 
 ```bash
-# 1. Make sure you have Python 3.9+ installed
-python3 --version
-
-# 2. Navigate to the generator directory
-cd wretched-generator
-
-# 3. Install dependencies
+python3 --version                  # 3.9 or newer
+cd wretched-generator-main         # the folder containing cli/, lib/, templates/
 pip install -r requirements.txt
 ```
 
-## Your First Build (1 minute)
+## Build and play the example
 
 ```bash
-# Build the included example game
 python3 cli/wretched.py build example-game
-
-# Or use the wrapper script
-./wretched build example-game
 ```
 
-You'll see:
+You will see each step (loading, validating, generating) and then:
+
 ```
-Building game from: example-game
-Loading configurations...
-Validating...
-Generating CSS...
-Generating JavaScript...
-Rendering template...
-✓ Successfully built: example-game/what-lies-beneath.html
-  File size: 49.6 KB
+✓ Build successful!
+  Output: example-game/what-lies-beneath.html
 ```
 
-## Play the Game
+Open that file in a browser. That is the whole game: one file, works offline.
 
-Open `example-game/what-lies-beneath.html` in your web browser. You now have a fully functional solo journaling RPG!
+On Linux/macOS, `./wretched build example-game` does the same thing.
 
-## Create Your Own Game (5 minutes)
-
-### Step 1: Copy the template
-```bash
-cp -r example-game my-first-game
-cd my-first-game
-```
-
-### Step 2: Edit config.yaml
-Change the basic info:
-```yaml
-game:
-  title: "My First Game"
-  author: "Your Name"
-  description: "My awesome solo RPG"
-```
-
-### Step 3: Customize a few cards
-Open `cards.yaml` and edit some cards:
-```yaml
-spades:
-  A:
-    title: "Your Opening Scene"
-    description: |
-      Write your own prompt here.
-      What happens? How do you feel?
-    tokens: 2
-    blocks: 0
-```
-
-### Step 4: Build it!
-```bash
-cd ..
-python3 cli/wretched.py build my-first-game
-```
-
-Open `my-first-game/my-first-game.html` and play!
-
-## What You Can Customize
-
-### Easy Changes (No learning curve)
-- Game title and author
-- Token and stability names
-- Starting values
-- Card prompts (your story!)
-- Basic colors
-
-### Medium Changes (Some YAML knowledge)
-- Win/loss conditions
-- Mechanical thresholds
-- UI layout preferences
-- Complete color schemes
-- Font choices
-
-### Advanced Changes (For power users)
-- Custom CSS in theme.yaml
-- Custom JavaScript mechanics
-- Special card behaviors
-- Complex conditions
-
-## Commands Cheat Sheet
+## Make your own game (5 minutes)
 
 ```bash
-# Validate your game
-./wretched validate my-game
-
-# Show game info
-./wretched info my-game
-
-# Build game
-./wretched build my-game
-
-# Build with custom output path
-./wretched build my-game -o dist/game.html
-
-# Get help
-./wretched --help
+python3 cli/wretched.py new my-game          # blank starter project
 ```
 
-## Common First Steps
-
-### Change the Theme Colors
-Edit `theme.yaml`:
-```yaml
-colors:
-  primary: "#1a1a2e"       # Your dark background
-  accent_primary: "#e63946" # Your highlight color
-  text_primary: "#f1faee"  # Your text color
-```
-
-### Write Your Own Cards
-Edit `cards.yaml` - focus on making interesting prompts:
-- Ask questions
-- Create tension
-- Develop character
-- Tell a story
-
-### Adjust Difficulty
-Edit `config.yaml`:
-```yaml
-mechanics:
-  tokens:
-    initial: 5    # Fewer = harder
-  stability:
-    initial: 75   # Lower = harder
-```
-
-## Tips for Success
-
-1. **Start Small** - Edit just a few cards first
-2. **Validate Often** - Run validate after changes
-3. **Study the Example** - What Lies Beneath shows all features
-4. **Iterate Quickly** - Build, play, adjust, rebuild
-5. **One Change at a Time** - Easier to debug
-
-## File Structure Quick Reference
+This creates `my-game/` with:
 
 ```
-your-game/
-├── config.yaml    ← Game mechanics (tokens, stability, etc.)
-├── cards.yaml     ← Your 52 card prompts
-├── theme.yaml     ← Colors, fonts, styling
-└── story.md       ← Instructions and introduction
+my-game/
+├── config.yaml   rules: dice, tower, tokens, win/lose, UI
+├── cards.yaml    52 placeholder prompts: replace them with yours
+├── theme.yaml    colours and fonts
+└── story.md      the introduction and rules text
 ```
+
+Prefer to start from a finished game? `python3 cli/wretched.py new my-game --from-example`.
+
+1. **config.yaml**: set your title, author, token and tower names, and the win/lose messages.
+2. **cards.yaml**: for each of the 52 cards write a `title` and `description`. Add `tokens: -1` or `blocks: 1` to give a card an effect.
+3. **story.md**: write your introduction and explain your rules.
+4. Check and build:
+
+```bash
+python3 cli/wretched.py validate my-game
+python3 cli/wretched.py build my-game
+```
+
+Open `my-game/<your-title>.html`. Repeat: edit, validate, build, play.
+
+## Pick a theme
+
+```bash
+python3 cli/wretched.py themes                          # list them
+python3 cli/wretched.py build my-game --theme arctic    # try one without changing files
+python3 cli/wretched.py new other-game --theme mobile   # choose at creation
+```
+
+## What you can change
+
+**Easy:** title, author, names of the tower and tokens, starting values, card text, colours.
+**Medium:** win and lose conditions, risk thresholds, the dice labels, suit names, the Ace-of-Hearts style special rolls, the Queen tracker, which UI panels show.
+**Advanced:** `custom_css` and `custom_js` in `theme.yaml`.
+
+The full list of settings is in the README ("Configuration reference").
+
+## Commands cheat sheet
+
+```bash
+wretched new <dir> [--theme NAME] [--from-example]
+wretched validate <dir>
+wretched build <dir> [-o file.html] [--theme NAME] [--minify | --no-minify]
+wretched info <dir>
+wretched themes
+wretched --help
+```
+
+(`wretched` here means `python3 cli/wretched.py` or `./wretched`.)
+
+## Tips
+
+1. Start by editing a few cards, then build and play.
+2. Validate often. It tells you exactly which card or setting is wrong.
+3. Playtest the tower: 100 stability with the default rules lasts about 11 pulls. Lower `initial`, or set `pool_size`, to change the pace.
+4. Use "Save to File" in the game to keep your journal.
 
 ## Troubleshooting
 
-**"Command not found"**
-- Use `python3 cli/wretched.py` instead of `./wretched`
-
-**"Module not found"**
-- Run `pip install -r requirements.txt`
-
-**"Validation failed"**
-- Check that all 52 cards are defined
-- Verify YAML indentation (2 spaces)
-
-**"Game doesn't work in browser"**
-- Check browser console for errors
-- Validate your config files first
-- Try with the example game to verify setup
-
+- **`./wretched: Permission denied`**: run `chmod +x wretched`, or use `python3 cli/wretched.py`.
+- **`ModuleNotFoundError`**: `pip install -r requirements.txt`.
+- **Validation errors**: the message names the file and card. All 52 cards need a title and description; keep indentation to 2 spaces.
+- **Game doesn't work in the browser**: run `validate`, then check the browser console for errors.

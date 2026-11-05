@@ -1,455 +1,230 @@
 # Wretched & Alone Game Generator
 
-A static site generator for solo journaling RPGs in the "Wretched & Alone" style. In this kind of game, you're most likely to die wretched and alone, but how you get there is up to you. Roll the die, follow the prompts, craft your story, see what happens next.
+A static site generator for solo journaling RPGs in the "Wretched & Alone" style. In this kind of game you will most likely die wretched and alone, but how you get there is up to you. Roll the dice, draw cards, follow the prompts, write your story.
 
-**Not Complete. Just an experiment**
+You write four plain-text files. You get one self-contained HTML game that works offline in any browser.
 
-## What This Is
+| You write | It controls |
+|---|---|
+| `config.yaml` | rules, dice, the tower, tokens, win/lose conditions, UI options |
+| `cards.yaml` | the 52 card prompts, their effects, and special card rolls |
+| `theme.yaml` | colours, fonts, layout, optional custom CSS/JS |
+| `story.md` | the introduction and rules shown in the game |
 
-This tool transforms simple YAML and Markdown files into complete, playable HTML games. Think of it like Hugo for static websites, but for solo RPG games.
+Based on the "Wretched & Alone" system by Chris Bissette. The included example game, "What Lies Beneath", is by Shawn Graham.
 
-**You write:**
-- Game rules in `config.yaml`
-- Card prompts in `cards.yaml`
-- Visual styling in `theme.yaml`
-- Story/instructions in `story.md`
-
-See [getting started doc.](GETTING-STARTED.md)
-
-
-**You get:**
-- A single self-contained HTML file
-- Professional-looking game
-- No coding required
-- Works in any browser
-
-## Quick Start
-
-### Installation
-
-1. Install Python 3.9 or higher
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-### Build a Game
+## Quick start
 
 ```bash
+pip install -r requirements.txt          # Python 3.9+; PyYAML, Jinja2, markdown
+
 python3 cli/wretched.py build example-game
+# -> example-game/what-lies-beneath.html   (open it in a browser)
 ```
 
-This creates `what-lies-beneath.html` - a complete, playable game!
-
-### Validate Configuration
+Make your own game:
 
 ```bash
-python3 cli/wretched.py validate example-game
-```
-
-Checks that all config files are correct and complete.
-
-### Show Game Info
-
-```bash
-python3 cli/wretched.py info example-game
-```
-
-Displays game metadata and mechanics summary.
-
-## Directory Structure
-
-```
-wretched-generator/
-├── cli/
-│   └── wretched.py          # Command-line interface
-├── lib/
-│   └── builder.py           # Core builder module
-├── templates/
-│   └── base.html            # HTML template
-├── example-game/            # Example game (The Cave)
-│   ├── config.yaml
-│   ├── cards.yaml
-│   ├── theme.yaml
-│   ├── story.md
-│   └── the-cave.html        # Generated output
-├── requirements.txt
-└── README.md
-```
-
-## Commands
-
-### new
-
-Create a new game project from template.
-
-```bash
-python3 cli/wretched.py new <project-name>
-```
-
-**Arguments:**
-- `project-name`: Name for your new game project
-
-**Example:**
-```bash
-python3 cli/wretched.py new my-awesome-game
-cd my-awesome-game
-# Edit the config files...
-python3 ../cli/wretched.py build .
-```
-
-### build
-
-Build a game from configuration files.
-
-```bash
-python3 cli/wretched.py build <game-path> [-o output.html] [-m]
-```
-
-**Arguments:**
-- `game-path`: Directory containing config files
-- `-o, --output`: Optional output path (default: `<game-title>.html`)
-- `-m, --minify`: Minify the output HTML (requires htmlmin package)
-
-**Example:**
-```bash
-python3 cli/wretched.py build example-game
-python3 cli/wretched.py build my-game -o dist/my-game.html
-python3 cli/wretched.py build my-game --minify
-```
-
-### validate
-
-Validate game configuration files.
-
-```bash
-python3 cli/wretched.py validate <game-path>
-```
-
-**Checks:**
-- All required files present
-- YAML syntax correct
-- All 52 cards defined
-- Required config fields present
-
-**Example:**
-```bash
-python3 cli/wretched.py validate example-game
-```
-
-### info
-
-Display game information.
-
-```bash
-python3 cli/wretched.py info <game-path>
-```
-
-**Shows:**
-- Game title, author, version
-- Description
-- Mechanics used
-- Card count
-
-**Example:**
-```bash
-python3 cli/wretched.py info example-game
-```
-
-### Global Options
-
-All commands support these global options:
-
-```bash
---no-color    # Disable colored output
---debug       # Show detailed error messages and stack traces
-```
-
-**Example:**
-```bash
-python3 cli/wretched.py build my-game --no-color
-python3 cli/wretched.py validate my-game --debug
-```
-
-## Creating Your Own Game
-
-### Step 1: Create New Project
-
-The easiest way to start is using the `new` command:
-
-```bash
-python3 cli/wretched.py new my-awesome-game
-cd my-awesome-game
-```
-
-Or manually copy the example:
-
-```bash
-cp -r example-game my-awesome-game
-cd my-awesome-game
-```
-
-### Step 2: Edit Config Files
-
-**config.yaml** - Define your game mechanics:
-```yaml
-game:
-  title: "My Awesome Game"
-  author: "Your Name"
-  
-mechanics:
-  tokens:
-    initial: 10
-    name: "Hope Points"
-  stability:
-    initial: 100
-    name: "Mental State"
-```
-
-**cards.yaml** - Write your 52 card prompts:
-```yaml
-spades:
-  A:
-    title: "A New Discovery"
-    description: "You find something unexpected..."
-    tokens: 2
-    blocks: 0
-```
-
-**theme.yaml** - Choose your colors and style:
-```yaml
-theme:
-  colors:
-    primary: "#1a1a2e"
-    accent: "#16213e"
-```
-
-**story.md** - Write your introduction:
-```markdown
-# My Awesome Game
-
-You are a brave explorer...
-```
-
-### Step 3: Build and Test
-
-```bash
-python3 cli/wretched.py validate my-awesome-game
-python3 cli/wretched.py build my-awesome-game
-```
-
-Open the generated HTML file in your browser!
-
-## Example Game Included
-
-The `example-game/` directory contains a fully-configured version of "What Lies Beneath" - an archaeological mystery game. Study these files to understand the system:
-
-- **config.yaml** (5.3 KB) - Game mechanics and rules
-- **cards.yaml** (17 KB) - All 52 card prompts with narrative
-- **theme.yaml** (12 KB) - Complete visual styling (dark archaeology theme)
-- **story.md** (9 KB) - Game introduction and instructions
-
-After building, you get:
-- **the-cave.html** (50 KB) - Complete playable game
-
-## Themes
-
-The generator includes **three complete themes** you can use for your games (but remember to COPY the theme you want into the `example-game` folder and then rename it `theme.yaml` in that folder :
-
-### Dark Archaeology Theme (Default)
-- **File:** `themes/theme.yaml`
-- **Platform:** Desktop
-- **Aesthetic:** Cave exploration with warm browns, golds, and scholarly Victorian atmosphere
-- **Best for:** Archaeological mysteries, historical exploration, academic pursuits
-- **Colors:** Deep browns (#2c2416), gold accents (#d4af37), cream text (#e8dcc4)
-
-### Arctic Theme
-- **File:** `themes/theme-arctic.yaml`
-- **Platform:** Desktop
-- **Aesthetic:** Icy blues, frost effects, and harsh Arctic isolation
-- **Best for:** Polar exploration, survival scenarios, frozen wasteland settings
-- **Colors:** Steel blues (#5d6d7e, #8a9ba8), ice blues (#c5d8e1), aged paper panels
-- **Documentation:** See [ARCTIC-THEME.md](example-game/ARCTIC-THEME.md) for details
-
-### Wretched Mobile Theme (NEW!)
-- **File:** `themes/wretched_mobile.yaml`
-- **Platform:** Mobile-first (responsive)
-- **Aesthetic:** Dark, high-contrast interface optimized for touch
-- **Best for:** Mobile gameplay, touch interfaces, battery efficiency, outdoor play
-- **Features:** 44px touch targets, system fonts, single-column layout, minimal animations
-- **Colors:** Dark background (#1a1a1a), bright blue accents (#4a9eff), high contrast
-- **Documentation:** See [MOBILE-THEME.md](themes/MOBILE-THEME.md) for details
-
-### Using a Theme
-
-**Desktop themes (Arctic or Dark Archaeology):**
-```bash
-# Backup current theme
-cp example-game/theme.yaml example-game/theme-backup.yaml
-
-# Switch to Arctic theme
-cp themes/theme-arctic.yaml example-game/theme.yaml
-
-# Build with new theme
-python3 cli/wretched.py build example-game
-```
-
-**Mobile theme:**
-```bash
-# For a new game
-python3 cli/wretched.py new my-mobile-game
-cp themes/theme-mobile.yaml my-mobile-game/theme.yaml
-python3 cli/wretched.py build my-mobile-game
-
-# For existing game
-cp themes/theme-mobile.yaml example-game/theme.yaml
-python3 cli/wretched.py build example-game
-```
-
-### Creating Your Own Theme
-
-Themes are defined in YAML and control:
-- Color palettes (20+ customizable colors)
-- Typography (fonts, sizes, spacing)
-- Layout (grid, panels, breakpoints)
-- Components (buttons, dice, cards, journal)
-- Background effects (gradients, textures, overlays)
-- Animations and transitions
-- Narrative tone and messages
-
-See `theme.yaml` or `theme-arctic.yaml` for complete examples.
-
-## Features
-
-### Current Features
-
-**Core Functionality**
-- Parse YAML configurations with full error handling
-- Generate CSS from theme config
-- Generate JavaScript game engine
-- Render HTML template
-- Single self-contained output
-- Comprehensive validation system
-- Full command-line interface with colored output
-
-**Game Mechanics**
-- Card deck mechanics
-- Dice rolling
-- Stability/tower system
-- Token/resource system
-- Auto-save to browser localStorage
-- Journal with download
-- Win/loss conditions
-
-### Dependencies
-
-- **Python 3.9+**
-- **PyYAML** - YAML parsing
-- **Jinja2** - Template rendering
-- **markdown** - Markdown to HTML conversion
-
-### Output Format
-
-The generated HTML file contains:
-- All CSS inlined in `<style>` tags
-- All JavaScript inlined in `<script>` tags
-- All game data as JSON
-- Story content as HTML
-- No external dependencies
-
-This means:
-- Single file distribution
-- Works offline
-- No server needed
-- Email or upload anywhere
-
-### Browser Compatibility
-
-Generated games work in:
-- Chrome/Edge (latest)
-- Firefox (latest)
-- Safari (latest)
-- Mobile browsers
-
-Uses:
-- Vanilla JavaScript (ES6+)
-- CSS3 with variables
-- LocalStorage API
-
-## How It Works
-
-1. **Load Configurations**
-   - Parse YAML files (config, cards, theme)
-   - Convert Markdown to HTML (story)
-
-2. **Validate**
-   - Check all 52 cards present
-   - Verify required fields
-   - Validate structure
-
-3. **Generate CSS**
-   - Convert theme YAML to CSS
-   - Create CSS variables
-   - Apply component styles
-
-4. **Generate JavaScript**
-   - Create game engine code
-   - Embed card data as JSON
-   - Add game logic (dice, cards, stability, tokens)
-   - Implement save/load system
-
-5. **Render Template**
-   - Inject generated CSS
-   - Inject generated JavaScript
-   - Inject story HTML
-   - Apply configuration
-
-6. **Output**
-   - Write single HTML file
-   - Self-contained and ready to play
-
-## Troubleshooting
-
-### "File not found" error
-Make sure you're running from the `wretched-generator` directory and the game path is correct.
-
-### "Missing card" validation error
-Each of the 52 cards (A-K-Q-J-10-9-8-7-6-5-4-3-2 in spades, hearts, diamonds, clubs) must be defined in `cards.yaml`.
-
-### "Invalid YAML" error
-Check your YAML syntax. Common issues:
-- Inconsistent indentation (use 2 spaces)
-- Missing colons
-- Unquoted strings with special characters
-
-### Generated game doesn't work
-1. Validate first: `python3 cli/wretched.py validate <game>`
-2. Check browser console for JavaScript errors
-3. Make sure localStorage is enabled in browser
-
-## License
-
-Open source - use however you want!
-
-## Credits
-
-- **System Design**: Based on "Wretched & Alone" by Chris Bissette
-- **Example Game**: "What Lies Beneath" by Shawn Graham. See more at [the solo rpg gamepad repo](https://github.com/shawngraham/solo-rpg) and also [the Wretched & Alone Game Pad](https://shawngraham.github.io/solo-rpg).
-- **Generator**: Created as proof of concept for modular game creation
-
-## Resources
-
-- [Wretched & Alone SRD](https://sealedlibrary.itch.io/wretched-alone-srd)
-- [Example Game Documentation](example-game/README.md)
-- [Strategy Document](../wretched-generator-strategy.md)
-
----
-
-**Ready to create your own solo journaling RPG?**
-
-```bash
-cp -r example-game my-game
-# Edit the config files
+python3 cli/wretched.py new my-game                  # blank starter with 52 placeholder cards
+python3 cli/wretched.py new my-game --theme arctic   # ...with another theme
+python3 cli/wretched.py new my-game --from-example   # or start from the finished example
+
+# edit my-game/config.yaml, cards.yaml, story.md, then:
+python3 cli/wretched.py validate my-game
 python3 cli/wretched.py build my-game
 ```
 
+On Linux/macOS you can also run `./wretched build my-game` (a small wrapper around the same script).
+
+## Commands
+
+| Command | What it does |
+|---|---|
+| `new <dir> [-t THEME] [--from-example]` | Create a project. Default is a blank starter; `--from-example` copies the example game. |
+| `build <dir> [-o FILE] [-t THEME] [-m \| --no-minify]` | Validate and build. Default output: `<dir>/<game-title>.html`. `--theme` takes a bundled name or a path and overrides `theme.yaml` for that build. Minification follows `build.minify` in config unless a flag overrides it. |
+| `validate <dir>` | Report errors (build-blocking) and warnings (settings that have no effect). |
+| `info <dir>` | Show title, author, mechanics and card count. |
+| `themes` | List bundled themes. |
+
+`--no-color` and `--debug` (full tracebacks) work before or after the command. Exit code is 0 on success, 1 on any failure.
+
+## How the game plays
+
+1. **Roll the turn dice** (default 2d6). The total is the number of cards to draw this turn (bounded by `special.turn_sequence`).
+2. **Draw the cards** one at a time. Click a card to read its prompt; resolve them in any order.
+3. **Journal** your response, then press **Apply Effects**. A card can change your tokens, pull blocks from the tower, or ask for a special roll (for example the Ace of Hearts).
+4. **Pulling a block** rolls one die per point of the tower's current stability. Every die at or under the current risk number is lost; you always lose at least one. The risk number rises as stability falls (see `failure_thresholds`).
+5. **The game ends** when stability reaches 0 (collapse), when tokens reach 0 (if configured), when the Queen tracker triggers (if enabled), or when you **resolve every card in the deck** (the win condition).
+
+Progress and journal are saved automatically in the browser (one save per game title). A finished game is restored exactly as you left it after a reload.
+
+## Configuration reference
+
+All keys are optional unless marked *required*. Anything omitted falls back to a default. `wretched validate` tells you about mistakes and about keys that have no effect.
+
+### `game`
+`title` *(required)*, `author` *(required)*, `subtitle`, `version`, `description`.
+
+### `mechanics`
+```yaml
+mechanics:
+  systems: [dice, cards, stability, tokens]   # must include "cards"; remove "stability"/"tokens" to switch them off
+
+  stability:                                  # the tower
+    initial: 100
+    name: "Academic Credibility"
+    thresholds: {critical: 20, danger: 50}    # tier boundaries: <=critical, <=danger, otherwise safe
+    failure_thresholds: {critical: 3, danger: 2, safe: 1}   # a die is lost on a roll <= this
+    risk_scaling: true                        # false = always use the "safe" number
+    pool_size: 10                             # optional: fixed pool of N dice instead of one per point
+    min_loss: 1                               # optional: minimum lost per pull (default 1)
+    messages: {safe: [...], danger: [...], critical: [...]}   # shown after each pull (random pick)
+    collapse_message: "Your reputation is ruined."
+
+  tokens:
+    initial: 10
+    name: "Evidence Fragments"
+    allow_negative: true                      # false = clamp at 0
+    controls: {show_manual_adjust: true, increment: 1}   # the +/- buttons
+
+  deck:
+    reshuffle: true            # used when there is no deck_empty win condition
+    track_history: true
+    show_remaining_count: true
+    suits:                     # names for the suit reference and card prompts
+      spades: {name: "...", description: "..."}   # likewise hearts, diamonds, clubs
+
+  dice:
+    main: {count: 2, sides: 6}                # turn dice; total = cards to draw
+    binary: {split: 3, negative: "...", positive: "..."}      # the free "Roll 1d6" button
+    interpret:                                # the free "Roll 2d6" button; first row with max >= total wins
+      - {max: 5, label: "..."}
+      - {max: 8, label: "..."}
+      - {max: 12, label: "..."}
+```
+
+> **About `pool_size`.** By default (and as originally specified) a pull rolls one die per remaining point. Because the risk number also rises at each threshold, average loss per pull is not smooth: roughly stability / 6 in the safe tier, / 3 in the danger tier and / 2 in the critical tier, so it drops sharply just below 51 and 21. If you want steady escalation, set `pool_size` (for example `10`) so loss per pull is bounded and rises only with the risk number.
+
+### `conditions`
+```yaml
+conditions:
+  win:
+    - type: deck_empty                        # every card drawn and resolved
+      additional_checks: [tokens_positive, stability_above_zero]
+      message: "..."
+  lose:
+    - type: stability_zero
+      endings: [{title: "...", text: "..."}]  # one is picked at random
+      message: "..."
+    - type: tokens_zero                       # omit this entry to make tokens harmless at 0
+      message: "..."
+```
+With a `deck_empty` win condition the deck is never reshuffled: the last turn simply draws what is left. Without one, the deck reshuffles when it runs out. A game with no `conditions.lose` list uses both losses.
+
+### `special`
+```yaml
+special:
+  turn_sequence: {min_cards: 2, max_cards: 12}   # clamp for the turn roll (defaults: dice count .. count*sides)
+  queen_tracker:                                 # optional alternate ending
+    enabled: true
+    threshold: 4                                 # Queens drawn (default 4)
+    ending: {title: "...", text: "..."}
+  ace_of_hearts: {enabled: false}                # set false to switch off the matching special_cards entry
+```
+Any `special_cards` entry can be switched off the same way, using `special.<name>.enabled: false`.
+
+### `ui` and `flow`
+```yaml
+ui:
+  panels: {show_instructions: true, show_help_button: false, show_card_reference: false, left_width: "400px"}
+  journal: {placeholder: "...", autosave: true, save_indicator: true, download_button: true, load_button: true}
+  controls: {new_game_confirmation: true, show_card_history: true, history_clear_button: false}
+  labels: {turn_heading: "Start Your Turn", turn_flavor: "", new_game_label: "Begin Another Game",
+           game_over_title: "Game Over", win_title: "The End"}
+flow:
+  starting_prompt: |      # shown in the prompt panel before the first turn
+    ...
+build:
+  minify: false
+locale:
+  language: "en"          # <html lang>
+```
+`left_width` is used only when the theme has no `layout.grid_columns`.
+
+### Keys that do nothing
+`mechanics.tokens.count_up`, `mechanics.tokens.display_type`, `mechanics.stability.narrative_flavor`, `ui.layout`, `flow.end_turn_button`, `flow.auto_advance`, `locale.date_format`, `locale.time_format`, `build.inline_assets`, `build.generate_print_version`. `validate` warns if you set them.
+
+## `cards.yaml`
+
+```yaml
+spades:
+  A:                       # A K Q J 10 9 8 7 6 5 4 3 2, in each of spades/hearts/diamonds/clubs
+    title: "The First Chamber"
+    description: |         # Markdown is rendered (paragraphs, *italics*, lists, ...)
+      You push through the narrow entrance...
+    tokens: 2              # added to your tokens (negative subtracts)
+    blocks: 0              # how many tower blocks the card pulls
+
+special_cards:
+  ace_of_hearts:           # name = <rank>_of_<suit> (ace, king, queen, jack, ten..two) ...
+    type: roll_check       # ... or give any name and set `card: hearts.A`, or reference it with `special:` on the card
+    die: "1d6"
+    success_value: 6       # success on a roll >= this
+    on_success: {tokens: 1, message: "..."}     # tokens and/or blocks
+    on_failure: {tokens: -1, message: "..."}
+    button_label: "Roll 1d6"                    # optional
+```
+Quote number ranks (`"10":`) to be safe; unquoted ones are accepted too. Only `roll_check` special cards are supported.
+
+## Themes
+
+Bundled in `themes/`: **dark-archaeology** (the default), **arctic** (light, icy), **mobile** (dark, large touch targets). List them with `wretched themes`.
+
+```bash
+python3 cli/wretched.py build my-game --theme arctic     # one-off
+python3 cli/wretched.py new my-game --theme mobile       # at creation
+cp themes/theme-arctic.yaml my-game/theme.yaml           # permanently
+```
+
+A theme file is read for: `theme.colors` (**required**: primary, secondary, tertiary, accent_primary, text_primary, text_secondary, borders; optional: success, warning, danger, shadows, ...), `theme.fonts`, `theme.layout`, and top-level `custom_css` / `custom_js` (added after the engine loads). All surfaces are derived from these colours, so light and dark palettes both work. Other sections in the bundled theme files (components, background, animations, ...) are design notes and are not applied.
+
+Playing-card faces always use paper colours; override `--card-face`, `--card-ink-black` and `--card-ink-red` in `custom_css` if you want something else.
+
+Fonts: if `fonts.google_fonts` is set, the game loads them from Google Fonts when online and falls back to the theme's font stack offline. Everything else is inlined. Use `google_fonts: []` (as the mobile theme does) for a fully offline-clean file.
+
+## Output
+
+One HTML file with all CSS, JavaScript, card data and story inlined. No server needed. Works in current Chrome, Edge, Firefox and Safari, on desktop and mobile. Game text from your files is escaped when embedded, so quotes, `&` and even `</script>` in prompts are safe.
+
+## Project layout
+
+```
+cli/wretched.py        command-line interface
+lib/builder.py         loading, validation, CSS/JS/HTML generation, `new`
+templates/             base.html, base.css, engine.js (the game engine), starter/
+themes/                bundled themes + their notes
+example-game/          "What Lies Beneath" (complete, 52 cards)
+tests/                 unit tests and browser tests
+```
+
+## Tests
+
+```bash
+python3 -m unittest discover -s tests          # builder, CLI, and (if Playwright is installed) browser play-through
+pip install -r requirements-dev.txt && playwright install chromium   # to enable the browser tests
+```
+
+## Troubleshooting
+
+- **"Missing card" / "Missing suit"**: all 52 cards (A K Q J 10 9 ... 2 in four suits) need a `title` and `description`.
+- **"Invalid YAML"**: use spaces (not tabs), a colon after each key, and quotes around text that contains `:` or `#`.
+- **Game loads but looks wrong**: run `validate`, then check the browser console.
+- **Progress seems lost**: saves live in the browser's local storage for that file; private windows and cleared site data discard them. Use "Save to File" for your journal.
+
+## License and credits
+
+Open source: use it however you like.
+
+- System: "Wretched & Alone" by Chris Bissette ([SRD](https://sealedlibrary.itch.io/wretched-alone-srd))
+- Example game: "What Lies Beneath" by Shawn Graham ([solo-rpg repo](https://github.com/shawngraham/solo-rpg), [Game Pad](https://shawngraham.github.io/solo-rpg))
+- `wretched-generator-strategy.md` is the original design/vision document and is not a description of current behaviour

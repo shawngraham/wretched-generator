@@ -1,0 +1,2 @@
+# Only needed to run the browser tests (tests/test_engine.py)
+playwright>=1.40

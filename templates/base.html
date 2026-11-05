@@ -1,327 +1,197 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ config.locale.language if config.locale and config.locale.language else 'en' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="description" content="{{ config.game.description if config.game.description else 'A solo journaling RPG' }}">
     <meta name="author" content="{{ config.game.author }}">
-    <meta name="generator" content="Wretched & Alone Game Generator">
+    <meta name="generator" content="Wretched &amp; Alone Game Generator">
     <title>{{ config.game.title }}{% if config.game.subtitle %} - {{ config.game.subtitle }}{% endif %}</title>
-
     <style>
-        {{ css | safe }}
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr !important;
-                gap: 20px;
-            }
-
-            h1 {
-                font-size: 2em !important;
-            }
-
-            h2 {
-                font-size: 1.5em !important;
-            }
-
-            .die {
-                width: 60px !important;
-                height: 60px !important;
-                font-size: 30px !important;
-            }
-
-            .panel {
-                padding: 15px !important;
-            }
-
-            .section {
-                padding: 12px !important;
-            }
-        }
-
-        /* Accessibility Improvements */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border-width: 0;
-        }
-
-        /* Focus styles for keyboard navigation */
-        button:focus,
-        textarea:focus {
-            outline: 3px solid var(--color-accent_primary);
-            outline-offset: 2px;
-        }
-
-        /* Loading state */
-        .loading {
-            opacity: 0.6;
-            pointer-events: none;
-        }
-
-        /* Print styles for journal */
-        @media print {
-            .controls-panel {
-                display: none !important;
-            }
-
-            .panel {
-                box-shadow: none !important;
-                border: 1px solid #000 !important;
-            }
-
-            button {
-                display: none !important;
-            }
-
-            textarea {
-                border: none !important;
-                background: white !important;
-                color: black !important;
-            }
-
-            body {
-                background: white !important;
-                color: black !important;
-            }
-        }
-
-        /* Better history display */
-        .history-item {
-            padding: 6px 10px;
-            margin: 4px 0;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 4px;
-            border-left: 3px solid var(--color-accent_primary);
-            font-size: 0.9em;
-        }
-
-        /* Stability color coding */
-        .stability-safe {
-            color: #4caf50;
-        }
-
-        .stability-danger {
-            color: #ff9800;
-        }
-
-        .stability-critical {
-            color: #f44336;
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        /* Game end styling */
-        .game-end {
-            text-align: center;
-            padding: 20px;
-        }
-
-        .game-end h2 {
-            margin-bottom: 15px;
-        }
-
-        /* Subtitle styling */
-        .subtitle {
-            text-align: center;
-            font-style: italic;
-            color: var(--color-text_secondary);
-            margin-bottom: 20px;
-        }
-
-        /* Better button hover effects */
-        button:active {
-            transform: translateY(0);
-        }
-
-        /* Improved modal accessibility */
-        .modal-overlay:focus {
-            outline: none;
-        }
-
-        .modal-content:focus {
-            outline: 2px solid var(--color-accent_primary);
-        }
+{{ css | safe }}
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Left Panel: Game Controls -->
+        <!-- Left panel: game controls -->
         <div class="panel controls-panel">
             <h1>{{ config.game.title }}</h1>
-            {% if config.game.subtitle %}
-            <p class="subtitle">{{ config.game.subtitle }}</p>
+            {% if config.game.subtitle %}<p class="subtitle">{{ config.game.subtitle }}</p>{% endif %}
+
+            {% if config.ui.panels.show_help_button %}
+            <div class="section">
+                <button class="btn-wide" onclick="document.getElementById('storyModal').classList.add('active')">&#10067; Help &amp; Rules</button>
+            </div>
             {% endif %}
-            
-            <!-- Turn Start Section - Roll for Card Count -->
-            <div class="section turn-section" style="background: rgba(139, 111, 71, 0.15); border: 2px solid var(--color-borders);">
-                <h3 style="font-size: 1.3em;">🎲 START YOUR TURN</h3>
-                <p style="font-size: 0.9em; color: var(--color-text_secondary); font-style: italic; margin-bottom: 10px;">
-                    Each turn, roll 1d6 to determine how many cards to draw for this day's discoveries.
-                </p>
-                <button onclick="rollForCardCount()">🎲 Roll 1d6 for Number of Cards</button>
+
+            <!-- Turn dice -->
+            <div class="section turn-section" role="region" aria-label="Start your turn">
+                <h3>&#127922; {{ labels.turn_heading }}</h3>
+                <p class="section-note">Roll {{ turn_dice }} to find out how many cards to draw this turn ({{ min_cards }}&ndash;{{ max_cards }}).{% if labels.turn_flavor %} {{ labels.turn_flavor }}{% endif %}</p>
+                <button class="game-action" onclick="rollForCardCount()">&#127922; Roll {{ turn_dice }} for Number of Cards</button>
                 <div id="cardCountResult" style="display: none;">
-                    Draw <span id="cardsToDraw">0</span> cards this turn
+                    Draw <span id="cardsToDraw">0</span> cards this turn (<span id="cardsDrawnCount">0</span> drawn)
                 </div>
             </div>
-            
-            <!-- Card Drawing Section -->
-            {% if 'cards' in config.mechanics.systems %}
-            <div class="section" role="region" aria-label="Card Drawing">
-                <h3>🎴 1. Draw Cards</h3>
-                <p style="font-size: 0.9em; color: var(--color-text_secondary); font-style: italic; margin-bottom: 10px;">
-                    Draw the number of cards indicated above. You can resolve them in any order you choose.
-                </p>
-                <button onclick="drawCard()" aria-label="Draw a card from the deck">🎴 Draw Next Event</button>
-                <div class="deck-status" id="deckStatus">
-                    <span id="deckCount">52</span> cards remaining
-                </div>
-                {% if config.mechanics.deck.track_history %}
+
+            <!-- Card drawing -->
+            <div class="section" role="region" aria-label="Card drawing">
+                <h3>&#127924; 1. Draw Cards</h3>
+                <p class="section-note">Draw the number of cards indicated above. You can resolve them in any order you choose.</p>
+                <button class="game-action" onclick="drawCard()" aria-label="Draw a card from the deck">&#127924; Draw Next Card</button>
+                <div class="notice" id="notice" role="status" aria-live="polite"></div>
+                {% if config.mechanics.deck.show_remaining_count %}
+                <div class="deck-status" id="deckStatus"><span id="deckCount">52</span> cards remaining</div>
+                {% else %}
+                <span id="deckCount" class="sr-only">52</span>
+                {% endif %}
+                {% if queen_tracker %}
+                <div class="deck-status">Queens drawn: <span id="queenCount">0</span> / {{ queen_threshold }}</div>
+                {% endif %}
+                {% if show_history %}
                 <div id="cardHistory" style="margin-top: 10px; max-height: 150px; overflow-y: auto; font-size: 0.9em;" aria-label="Recently drawn cards"></div>
+                {% if config.ui.controls.history_clear_button %}
+                <button class="btn-small" style="margin-top: 8px;" onclick="clearHistory()">Clear history</button>
+                {% endif %}
                 {% endif %}
             </div>
+
+            <!-- Free dice -->
+            {% if 'dice' in config.mechanics.systems %}
+            <div class="section" role="region" aria-label="Dice rolling">
+                <h3>&#127922; 2. Roll Dice (When Prompted)</h3>
+                <p class="section-note">Some cards ask you to roll dice:</p>
+                <div class="section-note" style="font-style: normal;">
+                    <strong>Roll 1d6:</strong> {{ binary_text }}<br>
+                    <strong>Roll 2d6:</strong> {{ interpret_text }}
+                </div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button class="game-action" onclick="rollOneDie()">Roll 1d6</button>
+                    <button class="game-action" onclick="rollTwoDice()">Roll 2d6</button>
+                </div>
+                <div class="dice-container" id="diceContainer"></div>
+                <div class="result" id="diceResult" aria-live="polite">Ready to roll when prompted</div>
+            </div>
+            {% else %}
+            <div class="dice-container" id="diceContainer"></div>
+            <div class="result" id="diceResult" aria-live="polite">Ready to roll</div>
             {% endif %}
 
-            <!-- Dice Rolling Section (for card prompts) -->
-            <div class="section" role="region" aria-label="Dice Rolling">
-                <h3>🎲 2. Roll Dice (When Prompted by Card)</h3>
-                <p style="font-size: 0.9em; color: var(--color-text_secondary); font-style: italic; margin-bottom: 10px;">
-                    Some cards require dice rolls to resolve their prompts:
-                </p>
-                <div style="margin-bottom: 10px; font-size: 0.9em; color: var(--color-text_secondary);">
-                    <strong>Roll 1d6:</strong> 1-3 = Negative, 4-6 = Positive<br>
-                    <strong>Roll 2d6 (Interpret):</strong> 2-5 = Disturbing, 6-8 = Ambiguous, 9-12 = Significant
-                </div>
-                <button onclick="rollOneDie()">Roll 1d6</button>
-                <button onclick="rollTwoDice()" style="margin-top: 5px;">Roll 2d6 (Interpret)</button>
-                <div class="dice-container" id="diceContainer"></div>
-                <div class="result" id="diceResult">Ready to roll when prompted</div>
-            </div>
-            
-            <!-- Stability Section -->
+            <!-- Stability -->
             {% if 'stability' in config.mechanics.systems %}
-            <div class="section" role="region" aria-label="Stability Tracker">
-                <h3>🏛️ 3. Pull Block (When Prompted by Card)</h3>
-                <p style="font-size: 0.9em; color: var(--color-text_secondary); font-style: italic; margin-bottom: 10px;">
-                    When a card prompts you to pull a block, your {{ config.mechanics.stability.name | lower }} is tested.
-                </p>
+            <div class="section" role="region" aria-label="{{ config.mechanics.stability.name }}">
+                <h3>&#127963; 3. Pull Block (When Prompted)</h3>
+                <p class="section-note">When a card tells you to pull a block, your {{ config.mechanics.stability.name | lower }} is tested.</p>
                 <div style="font-size: 1.5em; font-weight: bold; margin: 10px 0; text-align: center;">
-                    <span id="stabilityName">{{ config.mechanics.stability.name }}</span>: <span id="stabilityValue" class="stability-safe" aria-live="polite" role="status">{{ config.mechanics.stability.initial }}</span>
+                    <span id="stabilityName">{{ config.mechanics.stability.name }}</span>: <span id="stabilityValue" class="stability-safe" aria-live="polite">{{ config.mechanics.stability.initial }}</span>
                 </div>
-                <div class="stability-bar" role="progressbar" aria-label="Stability level" aria-valuemin="0" aria-valuemax="{{ config.mechanics.stability.initial }}">
+                <div class="stability-bar" role="progressbar" aria-label="{{ config.mechanics.stability.name }}" aria-valuemin="0" aria-valuemax="{{ config.mechanics.stability.initial }}" aria-valuenow="{{ config.mechanics.stability.initial }}">
                     <div id="stabilityBar" class="stability-fill" style="width: 100%;"></div>
                 </div>
-                <button onclick="pullBlock()" id="pullButton" style="margin-top: 15px;" aria-label="Pull a block from the stability tower">Pull Block</button>
-                <div style="font-size: 0.85em; color: var(--color-text_secondary); margin-top: 10px; line-height: 1.5;">
-                    <strong>Risk increases as stability drops:</strong><br>
-                    • 51-100: Normal risk<br>
-                    • 21-50: High risk<br>
-                    • 1-20: CRITICAL risk
+                <button class="game-action" id="pullButton" onclick="pullBlock()">Pull Block</button>
+                <div id="stabilityNote" aria-live="polite"></div>
+                <div class="risk-bands">
+                    <strong>Risk increases as {{ config.mechanics.stability.name | lower }} drops:</strong><br>
+                    {% for band in risk_bands %}&bull; {{ band }}<br>{% endfor %}
                 </div>
             </div>
             {% endif %}
 
-            <!-- Tokens Section -->
+            <!-- Tokens -->
             {% if 'tokens' in config.mechanics.systems %}
-            <div class="section" role="region" aria-label="Token Counter">
-                <h3><span id="tokenName">{{ config.mechanics.tokens.name }}</span></h3>
+            <div class="section" role="region" aria-label="{{ config.mechanics.tokens.name }}">
+                <h3 id="tokenName">{{ config.mechanics.tokens.name }}</h3>
                 <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin: 10px 0;">
-                    <button onclick="adjustTokens(-1)" aria-label="Decrease tokens by 1">-</button>
-                    <span style="font-size: 2em; font-weight: bold;" id="tokenValue" aria-live="polite" role="status">{{ config.mechanics.tokens.initial }}</span>
-                    <button onclick="adjustTokens(1)" aria-label="Increase tokens by 1">+</button>
+                    {% if config.mechanics.tokens.controls.show_manual_adjust %}
+                    <button class="game-action" onclick="adjustTokens(-1)" aria-label="Decrease {{ config.mechanics.tokens.name }}">&minus;</button>
+                    {% endif %}
+                    <span style="font-size: 2em; font-weight: bold;" id="tokenValue" aria-live="polite">{{ config.mechanics.tokens.initial }}</span>
+                    {% if config.mechanics.tokens.controls.show_manual_adjust %}
+                    <button class="game-action" onclick="adjustTokens(1)" aria-label="Increase {{ config.mechanics.tokens.name }}">+</button>
+                    {% endif %}
                 </div>
+            </div>
+            {% endif %}
+
+            {% if config.ui.panels.show_card_reference %}
+            <div class="section" role="region" aria-label="Suit reference">
+                <h3>Suits</h3>
+                <ul class="card-reference">
+                    {% for suit in suit_reference %}
+                    <li><span class="suit-symbol {{ 'red-suit' if suit.red }}">{{ suit.symbol }}</span> <strong>{{ suit.name }}</strong>{% if suit.description %} &mdash; {{ suit.description }}{% endif %}</li>
+                    {% endfor %}
+                </ul>
             </div>
             {% endif %}
 
             <div class="section">
-                <button onclick="newGame()" style="width: 100%; background: #c0392b;" aria-label="Start a new game (erases current progress)">New Game</button>
+                <button class="btn-wide btn-danger" onclick="newGame()" aria-label="Start a new game (erases current progress)">New Game</button>
             </div>
         </div>
-        
-        <!-- Right Panel: Cards and Journal -->
+
+        <!-- Right panel: cards and journal -->
         <div style="display: flex; flex-direction: column; gap: 20px;">
-            <!-- Story/Instructions -->
-            {% if story %}
-            <div class="section panel">
-                <button onclick="document.getElementById('storyModal').classList.add('active')" aria-label="Read game instructions and story">
-                    📖 Read Instructions
-                </button>
+            {% if story and config.ui.panels.show_instructions %}
+            <div class="section panel" style="margin: 0;">
+                <button onclick="document.getElementById('storyModal').classList.add('active')" aria-label="Read game instructions and story">&#128214; Read Instructions</button>
             </div>
             {% endif %}
 
-            <!-- Cards Drawn This Turn -->
-            <div class="section panel">
-                <h3>🎴 Cards This Turn</h3>
-                <p style="font-size: 0.9em; color: var(--color-text_secondary); font-style: italic; margin-bottom: 10px;">
-                    Click any card to see its prompt and resolve it. Resolved cards are dimmed.
-                </p>
-                <div class="cards-drawn-area" id="cardsDrawnArea">
-                    <div class="empty-cards-message">No cards drawn yet. Roll 1d6 and draw cards to begin.</div>
+            <div class="section panel" style="margin: 0;">
+                <h3>&#127924; Cards This Turn</h3>
+                <p class="section-note">Click any card to see its prompt. Resolved cards are dimmed.</p>
+                <div class="cards-drawn-area empty" id="cardsDrawnArea">
+                    <div class="empty-cards-message">No cards drawn yet. Roll the turn dice and draw cards to begin.</div>
                 </div>
             </div>
 
-            <!-- Card Prompt Panel -->
-            <div class="panel" id="promptPanel">
-                <div id="cardPrompt">
-                    <p style="color: var(--color-text_secondary); font-style: italic;">Roll 1d6 to start, then draw and click cards to see their prompts.</p>
-                </div>
+            <div class="panel" id="promptPanel" role="region" aria-label="Card prompt" aria-live="polite">
+                <div id="cardPrompt"></div>
             </div>
 
-            <!-- Journal Section -->
             <div class="panel journal-panel" role="region" aria-label="Journal">
-            <!-- Journal -->
-            <h2 id="journal-heading">Journal</h2>
-            <p style="font-style: italic; margin-bottom: 10px;">{{ config.ui.journal.placeholder }}</p>
-            <textarea
-                id="journal"
-                placeholder="{{ config.ui.journal.placeholder }}"
-                aria-labelledby="journal-heading"
-                aria-describedby="journal-description"></textarea>
-            <span id="journal-description" class="sr-only">Your journal entries are automatically saved to your browser's local storage</span>
+                <h2 id="journal-heading">Journal</h2>
+                <textarea id="journal" placeholder="{{ config.ui.journal.placeholder }}" aria-labelledby="journal-heading" aria-describedby="journal-description"></textarea>
+                <span id="journal-description" class="sr-only">Your journal is saved automatically in this browser's local storage.</span>
 
-            <div style="margin-top: 15px; display: flex; gap: 10px;">
-                <button onclick="downloadJournal()" aria-label="Download journal as text file">💾 Save to File</button>
-            </div>
+                <div class="journal-actions">
+                    {% if config.ui.journal.download_button %}
+                    <button onclick="downloadJournal()" aria-label="Download journal as a text file">&#128190; Save to File</button>
+                    {% endif %}
+                    {% if config.ui.journal.load_button %}
+                    <button onclick="document.getElementById('journalFile').click()" aria-label="Load a journal from a text file">&#128194; Load File</button>
+                    <input type="file" id="journalFile" accept=".txt,.md,text/plain" style="display:none" onchange="loadJournalFile(event)">
+                    {% endif %}
+                    {% if config.ui.journal.save_indicator %}<span class="save-indicator" id="saveIndicator" aria-live="polite"></span>{% endif %}
+                </div>
 
-            <div style="margin-top: 20px; font-size: 0.9em; font-style: italic; color: var(--color-text_secondary);">
-                <p>Game by {{ config.game.author }}</p>
-                {% if config.game.version %}
-                <p>Version {{ config.game.version }}</p>
-                {% endif %}
-            </div>
+                <div class="credits">
+                    <p>Game by {{ config.game.author }}</p>
+                    {% if config.game.version %}<p>Version {{ config.game.version }}</p>{% endif %}
+                </div>
             </div>
         </div>
     </div>
-    
-    <!-- Story Modal -->
+
     {% if story %}
-    <div id="storyModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="story-title">
+    <div id="storyModal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Instructions"
+         onclick="if(event.target===this)this.classList.remove('active')">
         <div class="modal-content" tabindex="-1">
-            <button
-                class="modal-close"
-                onclick="document.getElementById('storyModal').classList.remove('active')"
-                aria-label="Close instructions dialog">&times;</button>
+            <button class="modal-close" onclick="document.getElementById('storyModal').classList.remove('active')" aria-label="Close instructions">&times;</button>
             <div id="story-title">
                 {{ story | safe }}
             </div>
         </div>
     </div>
     {% endif %}
-    
+
     <script>
-        {{ js | safe }}
+{{ js | safe }}
     </script>
+    {% if custom_js %}
+    <script>
+{{ custom_js | safe }}
+    </script>
+    {% endif %}
 </body>
 </html>

@@ -1,5 +1,10 @@
 # Arctic Theme
 
+> **How themes work now:** the generator reads `colors`, `fonts`, `layout`, `custom_css` and `custom_js` from a theme file.
+> Other sections in the file (components, background, animations, ...) are design notes and are not applied.
+> Fastest way to try a theme without copying anything: `python3 cli/wretched.py build my-game --theme arctic`
+
+
 The **Arctic** theme provides an icy, frost-covered aesthetic inspired by polar exploration games like "Whoever Finds This Paper" (the Franklin Expedition game).
 
 ## Visual Style
@@ -67,10 +72,9 @@ The easiest way to use the Arctic theme:
 cd example-game
 
 # Backup the original theme
-mv theme.yaml theme-dark-archaeology.yaml
 
 # Use the arctic theme
-cp theme-arctic.yaml theme.yaml
+cp ../themes/theme-arctic.yaml theme.yaml
 
 # Build the game
 python3 ../cli/wretched.py build .
@@ -84,7 +88,7 @@ python3 cli/wretched.py new my-arctic-game
 cd my-arctic-game
 
 # Replace the default theme with arctic
-cp ../example-game/theme-arctic.yaml theme.yaml
+cp ../themes/theme-arctic.yaml theme.yaml
 
 # Edit your game content
 # ... edit config.yaml, cards.yaml, story.md ...
@@ -98,7 +102,7 @@ If you have an existing game and want to apply the Arctic theme:
 
 ```bash
 # Copy the arctic theme to your game directory
-cp example-game/theme-arctic.yaml my-game/theme.yaml
+cp themes/theme-arctic.yaml my-game/theme.yaml
 
 # Rebuild your game
 python3 cli/wretched.py build my-game

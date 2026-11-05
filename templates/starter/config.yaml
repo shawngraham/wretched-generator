@@ -1,0 +1,94 @@
+# Game configuration. Everything marked (optional) can be deleted.
+# See README.md ("Configuration reference") for every setting.
+
+game:
+  title: "My Wretched Game"
+  subtitle: "A Solo Journaling RPG"
+  author: "Your Name"
+  version: "0.1.0"
+  description: "Describe your game in a sentence."
+
+mechanics:
+  systems: [dice, cards, stability, tokens]
+
+  stability:                      # the tower: pulling blocks lowers it
+    initial: 100
+    name: "Stability"
+    thresholds: {critical: 20, danger: 50}
+    failure_thresholds: {critical: 3, danger: 2, safe: 1}
+    risk_scaling: true
+    messages:                     # (optional) flavour text shown after each pull
+      safe: ["You hold steady."]
+      danger: ["Things are getting precarious."]
+      critical: ["One more mistake and it all comes down."]
+    collapse_message: "Everything collapses."
+
+  tokens:
+    initial: 10
+    name: "Tokens"
+    allow_negative: true
+    controls: {show_manual_adjust: true, increment: 1}
+
+  deck:
+    reshuffle: true
+    track_history: true
+    show_remaining_count: true
+    suits:                        # names shown in the suit reference and on card prompts
+      spades:   {name: "Spades",   description: "What the spade cards are about"}
+      hearts:   {name: "Hearts",   description: "What the heart cards are about"}
+      diamonds: {name: "Diamonds", description: "What the diamond cards are about"}
+      clubs:    {name: "Clubs",    description: "What the club cards are about"}
+
+  dice:
+    main: {count: 2, sides: 6}    # rolled each turn; the total is how many cards to draw
+    binary:
+      split: 3                    # 1d6: 1..split = negative, above = positive
+      negative: "Negative Outcome"
+      positive: "Positive Outcome"
+    interpret:                    # 2d6 oracle: first row whose max >= total wins
+      - {max: 5, label: "Bad / Disturbing"}
+      - {max: 8, label: "Ambiguous"}
+      - {max: 12, label: "Good / Significant"}
+
+conditions:
+  win:
+    - type: deck_empty
+      additional_checks: [tokens_positive, stability_above_zero]
+      message: |
+        You made it to the end of the deck.
+        Write your final entry.
+  lose:
+    - type: stability_zero
+      endings:                    # (optional) one is picked at random
+        - {title: "First Ending", text: "Describe how it falls apart."}
+        - {title: "Second Ending", text: "Describe another way it can end."}
+      message: "Record your final thoughts in your journal..."
+    - type: tokens_zero
+      message: |
+        You have nothing left.
+        Write how it ends.
+
+ui:
+  panels:
+    show_instructions: true
+    show_help_button: false
+    show_card_reference: true
+  journal:
+    placeholder: "Write your journal here..."
+    autosave: true
+    save_indicator: true
+    download_button: true
+    load_button: true
+  controls:
+    new_game_confirmation: true
+    show_card_history: true
+    history_clear_button: false
+  labels:
+    new_game_label: "Begin Another Game"
+
+flow:
+  starting_prompt: |
+    Roll the turn dice, draw that many cards, and answer each prompt in your journal.
+
+build:
+  minify: false

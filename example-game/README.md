@@ -87,7 +87,7 @@ The system:
    - No external dependencies
    - Self-contained and portable
 
-The result: `the-cave.html` - a complete, playable game.
+The result: `what-lies-beneath.html` - a complete, playable game.
 
 ## Customization Examples
 
@@ -157,7 +157,7 @@ Result: The generator creates code for your custom mechanic.
 
 ### For Players
 
-- **Single file download** - the-cave.html contains everything
+- **Single file download** - what-lies-beneath.html contains everything
 - **No installation** - Open in any web browser
 - **Works offline** - No internet connection needed
 - **Auto-saves** - Progress stored in browser
@@ -212,7 +212,7 @@ This starts a local server at `http://localhost:8000` where you can:
 wretched build example-game --minify
 ```
 
-Creates: `dist/the-cave.html`
+Creates: `dist/what-lies-beneath.html`
 
 This file is:
 - Fully self-contained
@@ -224,7 +224,7 @@ This file is:
 
 ### Before (Monolithic HTML)
 
-The original `the-cave.html` file you examined has:
+The original `what-lies-beneath.html` file you examined has:
 - 2,212 lines of mixed HTML, CSS, and JavaScript
 - Hard to modify without breaking something
 - All content, style, and logic intertwined
