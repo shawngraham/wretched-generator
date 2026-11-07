@@ -338,6 +338,117 @@ class ConfigVariantTests(unittest.TestCase):
         self.assertEqual(page.evaluate('gameState.tokens'), 9)
         self.assertFalse(page.evaluate('gameState.gameEnded'))
 
+    # ---- turn cap (special.turn_sequence.max_cards) --------------------------
+
+    def test_max_cards_caps_turn_even_with_2d6(self):
+        page = self.variant('cap', lambda c: c['special'].update(
+            turn_sequence={'min_cards': 1, 'max_cards': 6}))
+        worst = page.evaluate("""(() => { let max = 0;
+            for (let i = 0; i < 400; i++) { gameState.cardsDrawnThisTurn = 0; rollForCardCount();
+                max = Math.max(max, gameState.cardsToDraw); } return max; })()""")
+        self.assertLessEqual(worst, 6)
+        self.assertGreaterEqual(worst, 1)
+
+    def test_single_die_turn_is_worded_as_one_die(self):
+        def cfg(c):
+            c['mechanics']['dice']['main'] = {'count': 1, 'sides': 6}
+            c['special']['turn_sequence'] = {'min_cards': 1, 'max_cards': 6}
+        page = self.variant('onedie', cfg)
+        page.evaluate('Math.random = () => 0.99; rollForCardCount();')
+        text = page.inner_text('#diceResult')
+        self.assertIn('Turn die: 6', text)
+        self.assertIn('Draw 6 cards', text)
+        self.assertEqual(page.evaluate('gameState.cardsToDraw'), 6)
+
+
+@unittest.skipIf(sync_playwright is None, 'playwright not installed')
+class PhoneLayoutTests(unittest.TestCase):
+    """The phone layout: sticky status strip, bottom action bar, one contextual primary button."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp = Path(tempfile.mkdtemp())
+        game = cls.tmp / 'game'
+        shutil.copytree(ROOT / 'example-game', game, ignore=shutil.ignore_patterns('*.html'))
+        cls.pages = {n: GameBuilder(game, theme_file=p).build(game / f'{n}.html')
+                     for n, p in available_themes().items()}
+        cls.pw = sync_playwright().start()
+        cls.browser = cls.pw.chromium.launch()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.browser.close()
+        cls.pw.stop()
+        shutil.rmtree(cls.tmp, ignore_errors=True)
+
+    def open(self, theme=None, width=390, height=844, touch=True):
+        theme = theme or sorted(self.pages)[0]
+        ctx = self.browser.new_context(viewport={'width': width, 'height': height},
+                                       has_touch=touch, is_mobile=touch)
+        self.addCleanup(ctx.close)
+        page = ctx.new_page()
+        self.errors = []
+        page.on('pageerror', lambda e: self.errors.append(str(e)))
+        page.on('dialog', lambda d: d.accept())
+        page.goto('file://' + str(self.pages[theme]))
+        page.evaluate('localStorage.clear()')
+        page.reload()
+        return page
+
+    def tearDown(self):
+        self.assertEqual(getattr(self, 'errors', []), [])
+
+    def test_bar_and_status_visible_on_phone_hidden_on_desktop(self):
+        phone = self.open()
+        self.assertTrue(phone.is_visible('.mobile-actions'))
+        self.assertTrue(phone.is_visible('.mobile-status'))
+        desktop = self.open(width=1280, height=900, touch=False)
+        self.assertFalse(desktop.is_visible('.mobile-actions'))
+        self.assertFalse(desktop.is_visible('.mobile-status'))
+
+    def test_primary_button_follows_the_game(self):
+        page = self.open()
+        label = lambda: page.inner_text('#mobilePrimary')
+        self.assertIn('Roll', label())
+        page.click('#mobilePrimary')                       # roll the turn dice
+        page.wait_for_timeout(100)
+        self.assertIn('Draw a card', label())
+        page.click('#mobilePrimary')                       # draw the first card
+        page.wait_for_timeout(100)
+        state = page.evaluate('({drawn: gameState.cardsDrawnThisTurn, active: gameState.activeCardIndex})')
+        self.assertEqual(state['drawn'], 1)
+        self.assertTrue(any(w in label() for w in ('Apply', 'Done', 'Roll 1d6', 'Draw', 'Open')))
+
+    def test_status_strip_tracks_state(self):
+        page = self.open()
+        page.evaluate('gameState.tokens = 4; refreshAll();')
+        self.assertEqual(page.inner_text('#msOil').strip(), '4')
+        self.assertEqual(page.inner_text('#msDeck').strip(), '52')
+
+    def test_status_strip_stays_in_view_after_scrolling(self):
+        page = self.open()
+        page.evaluate('window.scrollTo(0, document.body.scrollHeight)')
+        box = page.locator('.mobile-status').bounding_box()
+        self.assertLessEqual(abs(box['y']), 1)
+
+    def test_every_theme_fits_every_phone_size_with_big_targets(self):
+        for theme in self.pages:
+            for w, h in ((360, 640), (390, 844), (844, 390)):
+                page = self.open(theme, w, h)
+                self.assertLessEqual(page.evaluate('document.documentElement.scrollWidth'), w, (theme, w))
+                self.assertTrue(page.is_visible('.mobile-actions'), (theme, w))
+                small = page.evaluate("""[...document.querySelectorAll('.mobile-actions button, .ms-rules')]
+                    .filter(b => b.offsetParent).map(b => b.getBoundingClientRect())
+                    .filter(r => r.height < 44 || r.width < 44).length""")
+                self.assertEqual(small, 0, (theme, w))
+
+    def test_bar_hides_while_typing_in_journal(self):
+        page = self.open()
+        page.focus('#journal')
+        self.assertFalse(page.is_visible('.mobile-actions'))
+        page.evaluate('document.activeElement.blur()')
+        self.assertTrue(page.is_visible('.mobile-actions'))
+
 
 if __name__ == '__main__':
     unittest.main()

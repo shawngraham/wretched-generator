@@ -187,10 +187,14 @@ function rollForCardCount() {
     gameState.turn++;
 
     showDice(rolls, TURN_DICE.sides);
-    setDiceResult(`Turn dice: ${rolls.join(' + ')} = ${rolls.reduce((a, b) => a + b, 0)}. Draw ${total} ${plural(total, 'card', 'cards')}.${note}`);
+    const rawTotal = rolls.reduce((a, b) => a + b, 0);
+    const rolled = rolls.length === 1 ? `Turn die: ${rolls[0]}.` : `Turn dice: ${rolls.join(' + ')} = ${rawTotal}.`;
+    const clampNote = rawTotal !== total && !note ? ` (limited to ${total} per turn)` : '';
+    setDiceResult(`${rolled} Draw ${total} ${plural(total, 'card', 'cards')}.${clampNote}${note}`);
     notify('');
     refreshAll();
     saveGameState();
+    focusOnMobile('cardsSection');
 }
 
 function drawCard() {
@@ -237,6 +241,7 @@ function viewCard(index) {
     gameState.activeCardIndex = index;
     refreshAll();
     saveGameState();
+    focusOnMobile('promptPanel');
 }
 
 function pendingEffects(obj) {
@@ -259,6 +264,7 @@ function markCardResolved(index) {
     gameState.activeCardIndex = null;
     refreshAll();
     saveGameState();
+    focusOnMobile('cardsSection');
     checkWin();
 }
 
@@ -315,6 +321,7 @@ function applyBasicCardEffects(index) {
     }
     refreshAll();
     saveGameState();
+    focusOnMobile('promptPanel');
     checkGameEnd();
 }
 
@@ -341,6 +348,7 @@ function rollSpecial(index) {
     applyOutcome(obj, outcome);
     refreshAll();
     saveGameState();
+    focusOnMobile('promptPanel');
     checkGameEnd();
 }
 
@@ -610,7 +618,7 @@ function cardPromptHtml(index) {
     let effects = '';
     if (TOK && tokens !== 0) effects += `<li>${signed(tokens)} ${esc(TOKEN_NAME)}</li>`;
     if (STAB && blocks > 0) effects += `<li>Pull ${blocks} ${plural(blocks, 'block', 'blocks')} (tests your ${esc(STAB_NAME)})</li>`;
-    if (effects) html += `<ul class="effects">${effects}</ul>`;
+    if (effects && !obj.applied) html += `<ul class="effects">${effects}</ul>`;   // once applied, the log below says what happened
 
     const spec = findSpecial(obj.card);
     const buttons = [];
@@ -647,11 +655,11 @@ function hintHtml() {
     }
     const left = g.cardsToDraw - g.cardsDrawnThisTurn;
     if (left > 0) {
-        return `<p class="hint">Draw ${left} more ${plural(left, 'card', 'cards')}, then click a card to read its prompt.</p>`;
+        return `<p class="hint">Draw ${left} more ${plural(left, 'card', 'cards')}, then tap a card to read its prompt.</p>`;
     }
     const open = g.drawnCards.filter(c => !c.resolved).length;
     if (open > 0) {
-        return `<p class="hint">${open} ${plural(open, 'card', 'cards')} remaining. Click any unresolved card to continue.</p>`;
+        return `<p class="hint">${open} ${plural(open, 'card', 'cards')} remaining. Tap any unresolved card to continue.</p>`;
     }
     return '<p class="hint done">All cards resolved! Roll to start your next turn.</p>';
 }
@@ -673,6 +681,7 @@ function updateButtonState() {
 }
 
 function refreshAll() {
+    updateMobileBar();
     updateTokenDisplay();
     updateStabilityDisplay();
     updateDeckDisplay();
@@ -681,6 +690,80 @@ function refreshAll() {
     updateCardsDrawnDisplay();
     renderPromptPanel();
     updateButtonState();
+}
+
+// ---------------------------------------------------------------------------
+// Phone layout: sticky status bar + one contextual action button
+// ---------------------------------------------------------------------------
+const MOBILE_QUERY = '(max-width: 768px), (pointer: coarse) and (max-height: 500px)';   // keep in step with base.css
+function isMobile() { return window.matchMedia(MOBILE_QUERY).matches; }
+
+function scrollToId(id) {
+    const target = el(id);
+    if (!target) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+}
+function focusOnMobile(id) { if (isMobile()) scrollToId(id); }
+
+// What the single big button on the phone does next, given where the turn is.
+function computePrimaryAction() {
+    const g = gameState;
+    if (g.gameEnded) return { label: LABELS.new_game_label || 'Begin Another Game', run: newGame, kind: 'end' };
+
+    const obj = g.activeCardIndex !== null ? g.drawnCards[g.activeCardIndex] : null;
+    if (obj && !obj.resolved) {
+        const idx = g.activeCardIndex;
+        const data = CARD_DATA[obj.card.suit][obj.card.value];
+        const hasBasic = !obj.applied && ((data.tokens || 0) !== 0 || (data.blocks || 0) > 0);
+        const spec = findSpecial(obj.card);
+        if (hasBasic) return { label: 'Apply effects', run: () => applyBasicCardEffects(idx), kind: 'apply' };
+        if (spec && !obj.special) {
+            return { label: spec.button_label || `Roll ${spec.die || '1d6'}`, run: () => rollSpecial(idx), kind: 'apply' };
+        }
+        return { label: '\u2713 Done with this card', run: () => markCardResolved(idx), kind: 'done' };
+    }
+    if (g.cardsToDraw > 0 && g.cardsDrawnThisTurn < g.cardsToDraw) {
+        const left = g.cardsToDraw - g.cardsDrawnThisTurn;
+        return { label: `Draw a card (${left} left)`, run: drawCard, kind: 'draw' };
+    }
+    const next = g.drawnCards.findIndex(c => !c.resolved);
+    if (next >= 0) return { label: 'Open next card', run: () => viewCard(next), kind: 'open' };
+    return { label: `\uD83C\uDFB2 Roll ${TURN_DICE.count}d${TURN_DICE.sides}`, run: rollForCardCount, kind: 'roll' };
+}
+
+// Keep the scroll offset equal to the real height of the sticky status strip.
+function syncStatusHeight() {
+    const bar = document.querySelector('.mobile-status');
+    if (bar && bar.offsetHeight) document.documentElement.style.setProperty('--status-h', bar.offsetHeight + 'px');
+}
+window.addEventListener('resize', syncStatusHeight);
+
+let currentPrimary = null;
+function mobilePrimaryClick() { if (currentPrimary) currentPrimary.run(); }
+
+function updateMobileBar() {
+    const set = (id, v) => { const e = el(id); if (e) e.textContent = v; };
+    set('msOil', gameState.tokens);
+    set('msStab', gameState.stability);
+    set('msDeck', gameState.deck.length);
+    set('msTurn', gameState.cardsToDraw > 0 ? `${gameState.cardsDrawnThisTurn}/${gameState.cardsToDraw}` : '\u2013');
+    if (STAB) {
+        const tier = riskTier(gameState.stability);
+        const v = el('msStab');
+        if (v) v.className = 'stability-' + tier;
+        const bar = el('msStabBar');
+        if (bar) {
+            bar.style.width = Math.max(0, Math.min(100, (gameState.stability / STAB.initial) * 100)) + '%';
+            bar.className = tier === 'safe' ? '' : tier;
+        }
+    }
+    currentPrimary = computePrimaryAction();
+    const btn = el('mobilePrimary');
+    if (btn) {
+        btn.textContent = currentPrimary.label;
+        btn.dataset.kind = currentPrimary.kind;
+    }
 }
 
 function clearHistory() {
@@ -818,6 +901,7 @@ function initGame() {
     }
 
     refreshAll();
+    syncStatusHeight();
     saveGameState();
     if (!gameState.gameEnded) checkGameEnd();
     checkWin();

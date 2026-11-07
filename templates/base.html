@@ -2,7 +2,7 @@
 <html lang="{{ config.locale.language if config.locale and config.locale.language else 'en' }}">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <meta name="description" content="{{ config.game.description if config.game.description else 'A solo journaling RPG' }}">
     <meta name="author" content="{{ config.game.author }}">
     <meta name="generator" content="Wretched &amp; Alone Game Generator">
@@ -12,10 +12,31 @@
     </style>
 </head>
 <body>
+    <!-- Phone only: sticky status bar (hidden on wide screens) -->
+    <div class="mobile-status" role="region" aria-label="Game status">
+        <div class="ms-row">
+            <span class="ms-title">{{ config.game.title }}</span>
+            {% if story and config.ui.panels.show_instructions %}
+            <button class="ms-rules" onclick="document.getElementById('storyModal').classList.add('active')" aria-label="Read the rules">&#128214;</button>
+            {% endif %}
+        </div>
+        <div class="ms-stats">
+            {% if 'tokens' in config.mechanics.systems %}
+            <div class="ms-stat"><span class="ms-label">{{ config.mechanics.tokens.name }}</span><strong id="msOil">{{ config.mechanics.tokens.initial }}</strong></div>
+            {% endif %}
+            {% if 'stability' in config.mechanics.systems %}
+            <div class="ms-stat ms-stat-wide"><span class="ms-label">{{ config.mechanics.stability.name }}</span><strong id="msStab" class="stability-safe">{{ config.mechanics.stability.initial }}</strong>
+                <div class="ms-bar"><div id="msStabBar"></div></div></div>
+            {% endif %}
+            <div class="ms-stat"><span class="ms-label">Deck</span><strong id="msDeck">52</strong></div>
+            <div class="ms-stat"><span class="ms-label">Cards</span><strong id="msTurn">&ndash;</strong></div>
+        </div>
+    </div>
+
     <div class="container">
         <!-- Left panel: game controls -->
         <div class="panel controls-panel">
-            <h1>{{ config.game.title }}</h1>
+            <h1 class="game-title">{{ config.game.title }}</h1>
             {% if config.game.subtitle %}<p class="subtitle">{{ config.game.subtitle }}</p>{% endif %}
 
             {% if config.ui.panels.show_help_button %}
@@ -25,7 +46,7 @@
             {% endif %}
 
             <!-- Turn dice -->
-            <div class="section turn-section" role="region" aria-label="Start your turn">
+            <div class="section turn-section sec-turn" role="region" aria-label="Start your turn">
                 <h3>&#127922; {{ labels.turn_heading }}</h3>
                 <p class="section-note">Roll {{ turn_dice }} to find out how many cards to draw this turn ({{ min_cards }}&ndash;{{ max_cards }}).{% if labels.turn_flavor %} {{ labels.turn_flavor }}{% endif %}</p>
                 <button class="game-action" onclick="rollForCardCount()">&#127922; Roll {{ turn_dice }} for Number of Cards</button>
@@ -35,7 +56,7 @@
             </div>
 
             <!-- Card drawing -->
-            <div class="section" role="region" aria-label="Card drawing">
+            <div class="section sec-draw" role="region" aria-label="Card drawing">
                 <h3>&#127924; 1. Draw Cards</h3>
                 <p class="section-note">Draw the number of cards indicated above. You can resolve them in any order you choose.</p>
                 <button class="game-action" onclick="drawCard()" aria-label="Draw a card from the deck">&#127924; Draw Next Card</button>
@@ -58,14 +79,14 @@
 
             <!-- Free dice -->
             {% if 'dice' in config.mechanics.systems %}
-            <div class="section" role="region" aria-label="Dice rolling">
+            <div class="section sec-oracle" role="region" aria-label="Dice rolling">
                 <h3>&#127922; 2. Roll Dice (When Prompted)</h3>
                 <p class="section-note">Some cards ask you to roll dice:</p>
                 <div class="section-note" style="font-style: normal;">
                     <strong>Roll 1d6:</strong> {{ binary_text }}<br>
                     <strong>Roll 2d6:</strong> {{ interpret_text }}
                 </div>
-                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <div class="dice-buttons">
                     <button class="game-action" onclick="rollOneDie()">Roll 1d6</button>
                     <button class="game-action" onclick="rollTwoDice()">Roll 2d6</button>
                 </div>
@@ -73,13 +94,15 @@
                 <div class="result" id="diceResult" aria-live="polite">Ready to roll when prompted</div>
             </div>
             {% else %}
-            <div class="dice-container" id="diceContainer"></div>
-            <div class="result" id="diceResult" aria-live="polite">Ready to roll</div>
+            <div class="sec-oracle">
+                <div class="dice-container" id="diceContainer"></div>
+                <div class="result" id="diceResult" aria-live="polite">Ready to roll</div>
+            </div>
             {% endif %}
 
             <!-- Stability -->
             {% if 'stability' in config.mechanics.systems %}
-            <div class="section" role="region" aria-label="{{ config.mechanics.stability.name }}">
+            <div class="section sec-tower" role="region" aria-label="{{ config.mechanics.stability.name }}">
                 <h3>&#127963; 3. Pull Block (When Prompted)</h3>
                 <p class="section-note">When a card tells you to pull a block, your {{ config.mechanics.stability.name | lower }} is tested.</p>
                 <div style="font-size: 1.5em; font-weight: bold; margin: 10px 0; text-align: center;">
@@ -99,7 +122,7 @@
 
             <!-- Tokens -->
             {% if 'tokens' in config.mechanics.systems %}
-            <div class="section" role="region" aria-label="{{ config.mechanics.tokens.name }}">
+            <div class="section sec-tokens" role="region" aria-label="{{ config.mechanics.tokens.name }}">
                 <h3 id="tokenName">{{ config.mechanics.tokens.name }}</h3>
                 <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin: 10px 0;">
                     {% if config.mechanics.tokens.controls.show_manual_adjust %}
@@ -114,7 +137,7 @@
             {% endif %}
 
             {% if config.ui.panels.show_card_reference %}
-            <div class="section" role="region" aria-label="Suit reference">
+            <div class="section sec-suits" role="region" aria-label="Suit reference">
                 <h3>Suits</h3>
                 <ul class="card-reference">
                     {% for suit in suit_reference %}
@@ -124,22 +147,22 @@
             </div>
             {% endif %}
 
-            <div class="section">
+            <div class="section sec-new">
                 <button class="btn-wide btn-danger" onclick="newGame()" aria-label="Start a new game (erases current progress)">New Game</button>
             </div>
         </div>
 
         <!-- Right panel: cards and journal -->
-        <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div class="main-col">
             {% if story and config.ui.panels.show_instructions %}
-            <div class="section panel" style="margin: 0;">
+            <div class="section panel instructions-bar" style="margin: 0;">
                 <button onclick="document.getElementById('storyModal').classList.add('active')" aria-label="Read game instructions and story">&#128214; Read Instructions</button>
             </div>
             {% endif %}
 
-            <div class="section panel" style="margin: 0;">
+            <div class="section panel cards-section" id="cardsSection" style="margin: 0;">
                 <h3>&#127924; Cards This Turn</h3>
-                <p class="section-note">Click any card to see its prompt. Resolved cards are dimmed.</p>
+                <p class="section-note">Tap any card to see its prompt. Resolved cards are dimmed.</p>
                 <div class="cards-drawn-area empty" id="cardsDrawnArea">
                     <div class="empty-cards-message">No cards drawn yet. Roll the turn dice and draw cards to begin.</div>
                 </div>
@@ -149,7 +172,7 @@
                 <div id="cardPrompt"></div>
             </div>
 
-            <div class="panel journal-panel" role="region" aria-label="Journal">
+            <div class="panel journal-panel" id="journalPanel" role="region" aria-label="Journal">
                 <h2 id="journal-heading">Journal</h2>
                 <textarea id="journal" placeholder="{{ config.ui.journal.placeholder }}" aria-labelledby="journal-heading" aria-describedby="journal-description"></textarea>
                 <span id="journal-description" class="sr-only">Your journal is saved automatically in this browser's local storage.</span>
@@ -184,6 +207,13 @@
         </div>
     </div>
     {% endif %}
+
+    <!-- Phone only: bottom action bar. The big button always does the next sensible thing. -->
+    <nav class="mobile-actions" aria-label="Game actions">
+        <button class="ma-secondary" onclick="scrollToId('cardsSection')" aria-label="Jump to the cards">&#127924;<span>Cards</span></button>
+        <button class="ma-secondary" onclick="scrollToId('journalPanel')" aria-label="Jump to the journal">&#9998;<span>Journal</span></button>
+        <button class="ma-primary" id="mobilePrimary" onclick="mobilePrimaryClick()">Roll</button>
+    </nav>
 
     <script>
 {{ js | safe }}

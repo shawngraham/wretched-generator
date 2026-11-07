@@ -26,6 +26,8 @@ Where the docs/config and the engine disagreed, the docs/config were treated as 
 - Engine moved from `new_js_template.txt` to `templates/engine.js`; stylesheet to `templates/base.css`.
 
 ### Added
+- **Phone layout.** On screens up to 768px wide (and short landscape touch screens) the page reorders itself: a sticky status strip (tokens, tower, deck, cards this turn), the cards first, then the card prompt, dice and journal, and a fixed bottom bar with one big button that always does the next sensible thing (roll the turn dice, draw, apply effects, roll for a special card, mark done, open the next card, new game). The rest of the controls move below the journal. 16px journal text (no iOS zoom), 44px touch targets, safe-area insets, no horizontal scroll. Desktop layout is unchanged.
+- **Per-turn card cap.** `special.turn_sequence.max_cards` limits the cards drawn in a turn whatever the dice say (for example `{min_cards: 1, max_cards: 6}`). One-die turns read "Turn die: 4. Draw 4 cards."
 - Config-driven text: suit names/descriptions, dice labels, button labels, game-over/win titles, `flow.starting_prompt`.
 - UI options now honoured: `show_help_button`, `show_card_reference`, `show_remaining_count`, `history_clear_button`, `load_button`, `download_button`, `save_indicator`, `autosave`, `new_game_confirmation`, `tokens.controls`, `left_width`.
 - CLI: `themes` command; `build/validate --theme`; `new --theme`; `new --from-example`; `--no-minify`; `--no-color` and `--debug` work anywhere; `NO_COLOR` respected.

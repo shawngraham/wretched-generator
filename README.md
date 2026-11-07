@@ -50,7 +50,7 @@ On Linux/macOS you can also run `./wretched build my-game` (a small wrapper arou
 
 ## How the game plays
 
-1. **Roll the turn dice** (default 2d6). The total is the number of cards to draw this turn (bounded by `special.turn_sequence`).
+1. **Roll the turn dice** (default 2d6). The total is the number of cards to draw this turn (bounded by `special.turn_sequence`; set `max_cards: 6` for a six-card ceiling).
 2. **Draw the cards** one at a time. Click a card to read its prompt; resolve them in any order.
 3. **Journal** your response, then press **Apply Effects**. A card can change your tokens, pull blocks from the tower, or ask for a special roll (for example the Ace of Hearts).
 4. **Pulling a block** rolls one die per point of the tower's current stability. Every die at or under the current risk number is lost; you always lose at least one. The risk number rises as stability falls (see `failure_thresholds`).
@@ -131,6 +131,7 @@ special:
     ending: {title: "...", text: "..."}
   ace_of_hearts: {enabled: false}                # set false to switch off the matching special_cards entry
 ```
+`max_cards` is a hard ceiling per turn: with `main: {count: 1, sides: 6}` and `{min_cards: 1, max_cards: 6}` a turn is one to six cards, and even a 2d6 roll never draws more than the cap.
 Any `special_cards` entry can be switched off the same way, using `special.<name>.enabled: false`.
 
 ### `ui` and `flow`
@@ -191,6 +192,17 @@ A theme file is read for: `theme.colors` (**required**: primary, secondary, tert
 Playing-card faces always use paper colours; override `--card-face`, `--card-ink-black` and `--card-ink-red` in `custom_css` if you want something else.
 
 Fonts: if `fonts.google_fonts` is set, the game loads them from Google Fonts when online and falls back to the theme's font stack offline. Everything else is inlined. Use `google_fonts: []` (as the mobile theme does) for a fully offline-clean file.
+
+## On a phone
+
+No setup needed. On narrow screens (up to 768px) and short landscape touch screens the page switches to a single-column layout:
+
+- A **sticky status strip** at the top shows tokens, the tower, cards left in the deck and cards drawn this turn, plus a 📖 rules button.
+- **Cards come first**, then the card prompt, the dice, and the journal. Tower, tokens, suit reference and New Game sit below.
+- A fixed **bottom bar** has Cards and Journal jump buttons and one large primary button that changes with the game: *Roll*, *Draw a card (N left)*, *Apply effects*, a special-roll button, *Done with this card*, *Open next card*, or the new-game button when the game is over. The bar hides while you type in the journal so it never covers the keyboard.
+- Touch targets are at least 44px, journal text is 16px (no zoom on iOS), and safe-area insets are respected.
+
+Everything is derived from your theme colours, so all themes work. Wide screens keep the two-column layout.
 
 ## Output
 

@@ -90,6 +90,7 @@ wretched --help
 2. Validate often. It tells you exactly which card or setting is wrong.
 3. Playtest the tower: 100 stability with the default rules lasts about 11 pulls. Lower `initial`, or set `pool_size`, to change the pace.
 4. Use "Save to File" in the game to keep your journal.
+5. Want shorter turns? Set `special.turn_sequence.max_cards` (for example 6). Playing on a phone needs no setup: the game switches layout by itself.
 
 ## Troubleshooting
 
