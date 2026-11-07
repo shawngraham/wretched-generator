@@ -1,6 +1,6 @@
 # What Lies Beneath - Example Game Configuration
 
-This directory contains a complete example of how a game would be configured in the Wretched & Alone Game Generator system. These files demonstrate the separation of concerns between content, mechanics, and presentation.
+This directory contains a complete example of how a game would be configured in the Wretched Generator system. These files demonstrate the separation of concerns between content, mechanics, and presentation.
 
 ## Files in This Example
 
@@ -13,7 +13,7 @@ This directory contains a complete example of how a game would be configured in 
 - UI layout preferences
 - Special game-specific mechanics
 
-**Key insight:** An author can completely change how the game plays by editing this file—without touching any code.
+You can completely change how the game plays by editing this file—without touching any code.
 
 ### `cards.yaml` - Card Definitions
 **What it does:** Defines all 52 playing cards and their effects
@@ -22,7 +22,7 @@ This directory contains a complete example of how a game would be configured in 
 - Special card behaviors (like Ace of Hearts requiring a roll)
 - Organized by suit with thematic consistency
 
-**Key insight:** This is where 90% of your creative writing happens. The generator handles turning this YAML into interactive card displays.
+This is where 90% of your creative writing happens. The generator handles turning this YAML into interactive card displays.
 
 ### `theme.yaml` - Visual Theme
 **What it does:** Controls every aspect of how the game looks
@@ -34,7 +34,7 @@ This directory contains a complete example of how a game would be configured in 
 - Animation settings
 - Narrative tone for flavor text
 
-**Key insight:** You can completely reskin the game without changing any content—just by editing colors and styles.
+You can completely reskin the game without changing any code, just by editing colors and styles.
 
 ### `story.md` - Narrative Content
 **What it does:** Contains all the non-interactive text content
@@ -45,14 +45,20 @@ This directory contains a complete example of how a game would be configured in 
 - Tips and suggestions
 - About section
 
-**Key insight:** Written in simple Markdown, familiar to most content creators. No HTML knowledge required.
+Written in simple Markdown. No HTML knowledge required. But of course, if you do know html, you can then tinker with the result to your heart's content.
 
 ## How These Files Work Together
 
 When you run the generator:
 
 ```bash
-wretched build example-game
+$ ./wretched build example-game
+```
+
+or
+
+```bash
+$ python cli/wretched.py build example-game
 ```
 
 The system:
@@ -101,7 +107,7 @@ colors:
   accent_primary: "#ff6b6b"  # Change gold to red
 ```
 
-Result: The entire game UI updates to use your new colors.
+Result upon rebuild: The entire game UI updates to use your new colors.
 
 ### Medium: Adjust Mechanics
 
@@ -115,7 +121,7 @@ mechanics:
     initial: 5               # Start with less Evidence
 ```
 
-Result: A more challenging version of the same game.
+Result upon rebuild: A more challenging version of the same game.
 
 ### Advanced: Create New Card Content
 
@@ -130,7 +136,7 @@ spades:
     blocks: 1
 ```
 
-Result: The same game system tells your story.
+Result upon rebuild: The same game system tells your story.
 
 ### Expert: Add Custom Mechanics
 
@@ -144,7 +150,7 @@ special:
     effect: "Drawing 3 Queens triggers a special ending"
 ```
 
-Result: The generator creates code for your custom mechanic.
+Result upon rebuild: The generator creates code for your custom mechanic.
 
 ## File Structure Benefits
 
@@ -169,12 +175,14 @@ Result: The generator creates code for your custom mechanic.
 - **Mix and match** - Arctic theme + cave cards = new game
 - **Version control friendly** - YAML files work great with Git
 
+An easy place to get your work online is to go to netlify.app and use their 'drop' service to get your .html file out there.
+
 ## Validation
 
 The generator validates your configs:
 
 ```bash
-wretched validate example-game
+./wretched validate example-game
 ```
 
 This checks:
@@ -197,7 +205,7 @@ Example validation output:
 ## Testing Your Game
 
 ```bash
-wretched serve example-game
+./wretched serve example-game
 ```
 
 This starts a local server at `http://localhost:8000` where you can:
@@ -209,7 +217,7 @@ This starts a local server at `http://localhost:8000` where you can:
 ## Building for Distribution
 
 ```bash
-wretched build example-game --minify
+./wretched build example-game --minify
 ```
 
 Creates: `dist/what-lies-beneath.html`
@@ -220,25 +228,6 @@ This file is:
 - Ready to upload to itch.io, your website, or share directly
 - Can be opened directly from the file system
 
-## Comparison: Before and After
-
-### Before (Monolithic HTML)
-
-The original `what-lies-beneath.html` file you examined has:
-- 2,212 lines of mixed HTML, CSS, and JavaScript
-- Hard to modify without breaking something
-- All content, style, and logic intertwined
-- Difficult to reuse or adapt
-- Requires HTML/CSS/JS knowledge
-
-### After (Modular Config System)
-
-The new system has:
-- 4 separate, focused files
-- Easy to modify one aspect
-- Content, style, and mechanics separated
-- Easy to create variations
-- No code knowledge required
 
 ## Creating Your Own Game
 
@@ -272,8 +261,8 @@ To create a new game based on this example:
 
 6. **Build and test**
    ```bash
-   wretched build my-new-game
-   wretched serve my-new-game
+   ./wretched build my-new-game
+   ./wretched serve my-new-game
    ```
 
 ## Advanced: Template Inheritance
@@ -313,8 +302,4 @@ With this example, you can:
 
 The power of the modular system is that you can focus on what matters—telling a great story—while the generator handles the technical details.
 
----
 
-**Ready to create your own archaeological mystery, arctic expedition, haunted house, or space station crisis?**
-
-Start with these files, make them your own, and build something amazing.
