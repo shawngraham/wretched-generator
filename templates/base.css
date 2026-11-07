@@ -264,6 +264,9 @@ textarea {
 .card-reference .red-suit { color: var(--bad); }
 .save-indicator { font-size: 0.85em; font-style: italic; color: var(--color-text_secondary); margin-left: 10px; align-self: center; }
 .journal-actions { margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.attribution { font-size: 0.8em; font-style: normal; line-height: 1.5; margin-top: 12px; color: var(--color-text_secondary); overflow-wrap: anywhere; }
+.attribution a { color: inherit; text-decoration: underline; }
+.attribution-modal { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--color-borders); }
 .credits { margin-top: 20px; font-size: 0.9em; font-style: italic; color: var(--color-text_secondary); }
 .sr-only {
     position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;

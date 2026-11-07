@@ -27,6 +27,23 @@ class BuilderTests(unittest.TestCase):
         self.tmp = Path(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, self.tmp, ignore_errors=True)
 
+    def test_cc_attribution_is_in_every_build(self):
+        text = ('This work is based on The Wretched (found at http://loottheroom.itch.io/wretched), '
+                'product of Chris Bissette and Loot The Room, and licensed for our use under the '
+                'Creative Commons Attribution 3.0 Unported license (http://creativecommons.org/licenses/by/3.0/).')
+        game = copy_example(self.tmp)
+        for minify in (False, True):
+            html = GameBuilder(game).build(game / f'a{minify}.html', minify=minify).read_text()
+            plain = html.replace('<a href="http://loottheroom.itch.io/wretched" target="_blank" rel="noopener">', '')
+            import re
+            visible = re.sub(r'<[^>]+>', '', html)
+            self.assertIn('Chris Bissette and Loot The Room', visible)
+            self.assertIn('http://creativecommons.org/licenses/by/3.0/', visible)
+            self.assertIn(text, html)                       # meta tag carries the exact wording
+            self.assertGreaterEqual(html.count('Loot The Room'), 3)   # footer, rules dialog, meta
+        self.assertIn(text, (ROOT / 'NOTICE.md').read_text())
+        self.assertIn(text, (ROOT / 'README.md').read_text())
+
     def test_example_validates_without_errors(self):
         b = GameBuilder(ROOT / 'example-game')
         b.load_all()

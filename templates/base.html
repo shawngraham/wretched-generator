@@ -1,10 +1,14 @@
 <!DOCTYPE html>
+<!--
+    This work is based on The Wretched (found at http://loottheroom.itch.io/wretched), product of Chris Bissette and Loot The Room, and licensed for our use under the Creative Commons Attribution 3.0 Unported license (http://creativecommons.org/licenses/by/3.0/).
+-->
 <html lang="{{ config.locale.language if config.locale and config.locale.language else 'en' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <meta name="description" content="{{ config.game.description if config.game.description else 'A solo journaling RPG' }}">
     <meta name="author" content="{{ config.game.author }}">
+    <meta name="license" content="This work is based on The Wretched (found at http://loottheroom.itch.io/wretched), product of Chris Bissette and Loot The Room, and licensed for our use under the Creative Commons Attribution 3.0 Unported license (http://creativecommons.org/licenses/by/3.0/).">
     <meta name="generator" content="Wretched &amp; Alone Game Generator">
     <title>{{ config.game.title }}{% if config.game.subtitle %} - {{ config.game.subtitle }}{% endif %}</title>
     <style>
@@ -191,6 +195,7 @@
                 <div class="credits">
                     <p>Game by {{ config.game.author }}</p>
                     {% if config.game.version %}<p>Version {{ config.game.version }}</p>{% endif %}
+                    <p class="attribution">This work is based on <a href="http://loottheroom.itch.io/wretched" target="_blank" rel="noopener">The Wretched</a> (found at <a href="http://loottheroom.itch.io/wretched" target="_blank" rel="noopener">http://loottheroom.itch.io/wretched</a>), product of Chris Bissette and Loot The Room, and licensed for our use under the <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">Creative Commons Attribution 3.0 Unported license</a> (<a href="http://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">http://creativecommons.org/licenses/by/3.0/</a>).</p>
                 </div>
             </div>
         </div>
@@ -204,6 +209,7 @@
             <div id="story-title">
                 {{ story | safe }}
             </div>
+            <p class="attribution attribution-modal">This work is based on <a href="http://loottheroom.itch.io/wretched" target="_blank" rel="noopener">The Wretched</a> (found at <a href="http://loottheroom.itch.io/wretched" target="_blank" rel="noopener">http://loottheroom.itch.io/wretched</a>), product of Chris Bissette and Loot The Room, and licensed for our use under the <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">Creative Commons Attribution 3.0 Unported license</a> (<a href="http://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">http://creativecommons.org/licenses/by/3.0/</a>).</p>
         </div>
     </div>
     {% endif %}

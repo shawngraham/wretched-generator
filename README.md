@@ -11,7 +11,7 @@ You write four plain-text files. You get one self-contained HTML game that works
 | `theme.yaml` | colours, fonts, layout, optional custom CSS/JS |
 | `story.md` | the introduction and rules shown in the game |
 
-Based on the "Wretched & Alone" system by Chris Bissette. The included example game, "What Lies Beneath", is by Shawn Graham.
+This work is based on [The Wretched](http://loottheroom.itch.io/wretched), product of Chris Bissette and Loot The Room, and licensed for our use under the [Creative Commons Attribution 3.0 Unported license](http://creativecommons.org/licenses/by/3.0/). Based on the "Wretched & Alone" system by Chris Bissette. The included example game, "What Lies Beneath", is by Shawn Graham.
 
 ## Quick start
 
@@ -234,6 +234,10 @@ pip install -r requirements-dev.txt && playwright install chromium   # to enable
 - **Progress seems lost**: saves live in the browser's local storage for that file; private windows and cleared site data discard them. Use "Save to File" for your journal.
 
 ## License and credits
+
+> This work is based on The Wretched (found at http://loottheroom.itch.io/wretched), product of Chris Bissette and Loot The Room, and licensed for our use under the Creative Commons Attribution 3.0 Unported license (http://creativecommons.org/licenses/by/3.0/).
+
+This attribution is built into every game the generator produces (journal footer, rules dialog, and the HTML source). See `NOTICE.md`.
 
 Open source: use it however you like.
 
