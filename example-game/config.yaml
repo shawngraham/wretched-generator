@@ -180,10 +180,20 @@ flow:
   starting_prompt: |
     Welcome, Dr. Blackwood.
     
+    The cave waits. It has waited for thousands of years. It can wait a little longer.
+
+    But you cannot. Your funding is limited. Your critics are watching. Your reputation hangs in the balance.
+
+    Light your lamp. Pick up your trowel. Open your journal.
+    
+    Before you do anything else, write your first entry. What winding road brought you here? What do your academic rivals say about your theories? What did the old farmer tell you about the cave's history? So much to do, so much to do. 
+    
     Roll the dice to determine how many cards to draw this turn.
     Each card represents a discovery, challenge, or moment in your excavation.
     
     Draw cards and respond to their prompts in your journal.
+
+    ...and be careful.
   
 
 # Localization (sets the page language)

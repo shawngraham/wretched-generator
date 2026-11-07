@@ -1,0 +1,2090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+<meta name="description" content="You are Dr. Elisabeth Blackwood, excavating a mysterious cave in 1924. Can you survive the discovery?">
+<meta name="author" content="Shawn Graham">
+<meta name="license" content="This work is based on The Wretched (found at http://loottheroom.itch.io/wretched), product of Chris Bissette and Loot The Room, and licensed for our use under the Creative Commons Attribution 3.0 Unported license (http://creativecommons.org/licenses/by/3.0/).">
+<meta name="generator" content="Wretched &amp; Alone Game Generator">
+<title>What Lies Beneath - An Archaeological Mystery</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400;1,600&family=IM+Fell+English:ital,wght@0,400;1,400&family=Cinzel:ital,wght@0,400;0,600&display=swap');
+:root {
+--color-primary: #2c2416;
+--color-secondary: #1a1410;
+--color-tertiary: #3a2f1f;
+--color-accent_primary: #d4af37;
+--color-accent_secondary: #8b6f47;
+--color-text_primary: #e8dcc4;
+--color-text_secondary: #b8936f;
+--color-text_tertiary: #8b7355;
+--color-borders: #8b6f47;
+--color-shadows: rgba(0,0,0,0.6);
+--color-success: #4ade80;
+--color-warning: #fbbf24;
+--color-danger: #ef4444;
+--color-info: #60a5fa;
+--color-suits-spades: #4a4a4a;
+--color-suits-hearts: #c41e3a;
+--color-suits-diamonds: #0066cc;
+--color-suits-clubs: #006400;
+--color-hover: #9b7f57;
+--color-active: #7b6447;
+--color-disabled: rgba(255,255,255,0.3);
+--font-title: 'IM Fell English', serif;
+--font-body: 'Crimson Text', serif;
+--font-ui: 'Crimson Text', serif;
+--font-monospace: 'Courier New', monospace;
+--layout-max-width: 1600px;
+--layout-columns: 400px 1fr;
+--layout-gap: 30px;
+}
+:root {
+--surface: color-mix(in srgb, var(--color-text_primary) 7%, transparent);
+--inset: color-mix(in srgb, var(--color-text_primary) 5%, var(--color-tertiary));
+--button-bg: color-mix(in srgb, var(--color-text_primary) 12%, var(--color-tertiary));
+--button-bg-hover: color-mix(in srgb, var(--color-text_primary) 20%, var(--color-tertiary));
+--ok: var(--color-success, #3aa655);
+--warn: var(--color-warning, #e0a020);
+--bad: var(--color-danger, #d64545);
+--card-face: #f7f1e1;
+--card-ink-black: #1c1c1c;
+--card-ink-red: #b5222f;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+font-family: var(--font-body, Georgia, serif);
+background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+background-attachment: fixed;
+color: var(--color-text_primary);
+min-height: 100vh;
+padding: 20px;
+overflow-x: hidden;
+}
+h1, h2, h3 {
+font-family: var(--font-title, var(--font-body, Georgia, serif));
+color: var(--color-accent_primary);
+text-shadow: 1px 1px 2px var(--color-shadows, rgba(0,0,0,0.3));
+}
+h1 { font-size: 3em; text-align: center; margin-bottom: 10px; letter-spacing: 2px; }
+h2 { font-size: 2em; margin-bottom: 15px; }
+h3 { font-size: 1.5em; margin-bottom: 12px; }
+.container {
+max-width: var(--layout-max-width, 1600px);
+margin: 0 auto;
+display: grid;
+grid-template-columns: var(--layout-columns, 400px 1fr);
+gap: var(--layout-gap, 30px);
+align-items: start;
+}
+.panel {
+background: linear-gradient(135deg, var(--color-tertiary) 0%, var(--color-secondary) 100%);
+border: 3px solid var(--color-borders);
+border-radius: 12px;
+padding: 25px;
+box-shadow: 0 8px 32px var(--color-shadows, rgba(0,0,0,0.4));
+}
+.section {
+background: var(--surface);
+border: 1px solid var(--color-borders);
+border-radius: 8px;
+padding: 15px;
+margin: 15px 0;
+}
+.subtitle { text-align: center; font-style: italic; color: var(--color-text_secondary); margin-bottom: 20px; }
+.hint, .section-note { color: var(--color-text_secondary); font-style: italic; }
+.section-note { font-size: 0.9em; margin-bottom: 10px; }
+.hint.done { color: var(--color-accent_primary); font-weight: bold; font-style: normal; }
+.start-prompt { white-space: pre-line; }
+button {
+background: var(--button-bg);
+color: var(--color-text_primary);
+border: 2px solid var(--color-accent_primary);
+padding: 12px 20px;
+border-radius: 6px;
+cursor: pointer;
+font-family: var(--font-ui, var(--font-body, inherit));
+font-size: 1em;
+font-weight: 600;
+transition: transform 0.2s ease, background 0.2s ease;
+box-shadow: 0 3px 6px var(--color-shadows, rgba(0,0,0,0.3));
+}
+button:hover:not(:disabled) { background: var(--button-bg-hover); transform: translateY(-1px); }
+button:active:not(:disabled) { transform: translateY(0); }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+button:focus-visible, textarea:focus-visible, .drawn-card:focus-visible {
+outline: 3px solid var(--color-accent_primary);
+outline-offset: 2px;
+}
+.btn-apply { border-color: var(--ok); }
+.btn-done { border-color: var(--color-borders); }
+.btn-newgame, .btn-danger { border-color: var(--bad); }
+.btn-wide { width: 100%; }
+.btn-small { padding: 6px 12px; font-size: 0.85em; }
+.prompt-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+textarea {
+width: 100%;
+min-height: 400px;
+background: var(--inset);
+color: var(--color-text_primary);
+border: 2px solid var(--color-borders);
+border-radius: 8px;
+padding: 20px;
+font-family: var(--font-body, Georgia, serif);
+font-size: 1.1em;
+line-height: 1.8;
+resize: vertical;
+}
+.dice-container { display: flex; gap: 15px; justify-content: center; margin: 15px 0; flex-wrap: wrap; }
+.die {
+position: relative;
+width: 80px; height: 80px;
+background: var(--card-face);
+border: 3px solid var(--color-borders);
+border-radius: 12px;
+display: flex; align-items: center; justify-content: center;
+font-size: 40px; font-weight: bold;
+color: var(--card-ink-black);
+box-shadow: 0 4px 8px var(--color-shadows, rgba(0,0,0,0.4));
+}
+.die.rolling { animation: diceRoll 0.6s ease-in-out; }
+.die-label { position: absolute; bottom: 4px; font-size: 12px; font-weight: normal; opacity: 0.6; }
+@keyframes diceRoll {
+0%, 100% { transform: rotate(0deg); }
+25% { transform: rotate(90deg) scale(1.1); }
+50% { transform: rotate(180deg) scale(1.05); }
+75% { transform: rotate(270deg) scale(1.1); }
+}
+.result {
+background: var(--surface);
+border: 1px solid var(--color-borders);
+padding: 12px; border-radius: 6px; margin-top: 10px;
+text-align: center; font-weight: 600; min-height: 40px;
+display: flex; align-items: center; justify-content: center;
+}
+.cards-drawn-area {
+background: var(--inset);
+border: 3px solid var(--color-borders);
+border-radius: 12px;
+padding: 20px; min-height: 150px;
+display: flex; flex-wrap: wrap; gap: 15px;
+align-items: flex-start; justify-content: center;
+}
+.cards-drawn-area.empty { align-items: center; }
+.empty-cards-message { color: var(--color-text_secondary); font-style: italic; text-align: center; }
+.drawn-card {
+position: relative;
+width: 100px; height: 140px;
+background: var(--card-face);
+border: 3px solid var(--color-borders);
+border-radius: 10px; cursor: pointer;
+display: flex; flex-direction: column; align-items: center; justify-content: center;
+transition: transform 0.2s ease, box-shadow 0.2s ease;
+box-shadow: 0 4px 8px var(--color-shadows, rgba(0,0,0,0.4));
+}
+.drawn-card:hover { transform: translateY(-8px) scale(1.04); border-color: var(--color-accent_primary); }
+.drawn-card.resolved { opacity: 0.45; }
+.drawn-card.active { border: 4px solid var(--color-accent_primary); box-shadow: 0 0 18px var(--color-accent_primary); }
+.drawn-card-value { font-size: 2em; font-weight: bold; margin-bottom: 5px; }
+.drawn-card-suit { font-size: 1.5em; }
+.drawn-card.black-card .drawn-card-value, .drawn-card.black-card .drawn-card-suit { color: var(--card-ink-black); }
+.drawn-card.red-card .drawn-card-value, .drawn-card.red-card .drawn-card-suit { color: var(--card-ink-red); }
+.drawn-card-resolved-badge {
+position: absolute; top: 5px; right: 5px;
+background: var(--ok); color: #fff; border-radius: 50%;
+width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
+font-size: 0.8em; font-weight: bold;
+}
+#cardCountResult {
+background: var(--surface);
+border: 2px solid var(--color-accent_primary);
+border-radius: 8px; padding: 12px; margin-top: 10px;
+text-align: center; font-size: 1.1em; font-weight: bold;
+color: var(--color-accent_primary);
+}
+.deck-status { text-align: center; color: var(--color-text_secondary); margin-top: 10px; font-style: italic; }
+.notice { min-height: 1.4em; margin-top: 8px; color: var(--color-accent_primary); font-style: italic; font-size: 0.95em; }
+.history-item {
+padding: 6px 10px; margin: 4px 0;
+background: var(--surface);
+border-radius: 4px;
+border-left: 3px solid var(--color-accent_primary);
+font-size: 0.9em;
+}
+.history-item.red-suit { color: var(--bad); }
+.prompt-title.red-suit { color: var(--bad); }
+#promptPanel { min-height: 120px; }
+.prompt-suit { color: var(--color-text_secondary); font-size: 0.85em; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+.prompt-desc { font-size: 1.1em; line-height: 1.6; margin: 12px 0; }
+.prompt-desc p { margin-bottom: 0.8em; }
+.effects, .effect-log { margin: 10px 0 0 22px; }
+.effects li { font-weight: bold; }
+.effect-log li { color: var(--color-text_secondary); }
+.special-result.good { color: var(--ok); }
+.special-result.bad { color: var(--bad); }
+.stability-bar {
+width: 100%; height: 20px;
+background: var(--inset);
+border-radius: 10px; overflow: hidden; margin: 10px 0;
+border: 2px solid var(--color-borders);
+}
+.stability-fill { height: 100%; width: 100%; transition: width 0.5s ease, background-color 0.5s ease; background: var(--ok); }
+.stability-fill.danger { background: var(--warn); }
+.stability-fill.critical { background: var(--bad); animation: pulse 1.5s ease-in-out infinite; }
+.stability-safe { color: var(--ok); }
+.stability-danger { color: var(--warn); }
+.stability-critical { color: var(--bad); animation: pulse 1.5s ease-in-out infinite; }
+#stabilityNote { min-height: 1.4em; font-style: italic; color: var(--color-text_secondary); margin-top: 8px; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+.risk-bands { font-size: 0.85em; color: var(--color-text_secondary); margin-top: 10px; line-height: 1.5; }
+.game-end { text-align: center; padding: 20px; border: 3px solid var(--bad); border-radius: 12px; background: var(--surface); }
+.game-end.win { border-color: var(--ok); }
+.game-end h2 { margin-bottom: 15px; color: var(--bad); }
+.game-end.win h2 { color: var(--ok); }
+.game-end h3 { margin: 10px 0 6px; }
+.end-text { line-height: 1.8; white-space: pre-line; margin-bottom: 10px; }
+.end-strong { font-weight: bold; }
+.game-end button { margin-top: 15px; }
+.modal-overlay {
+display: none; position: fixed; inset: 0;
+background: rgba(0, 0, 0, 0.8);
+z-index: 1000; padding: 20px; overflow-y: auto;
+}
+.modal-overlay.active { display: flex; align-items: center; justify-content: center; }
+.modal-content {
+background: linear-gradient(135deg, var(--color-tertiary) 0%, var(--color-secondary) 100%);
+border: 3px solid var(--color-borders);
+border-radius: 12px; padding: 40px;
+max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto;
+box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+position: relative; line-height: 1.6;
+}
+.modal-content h1, .modal-content h2, .modal-content h3 { margin-top: 1em; }
+.modal-content ul, .modal-content ol { margin: 0.6em 0 0.6em 1.5em; }
+.modal-content p { margin: 0.6em 0; }
+.modal-close {
+position: absolute; top: 10px; right: 10px;
+background: transparent; border: none; box-shadow: none;
+font-size: 30px; color: var(--color-accent_primary);
+padding: 5px 10px;
+}
+.card-reference { list-style: none; font-size: 0.9em; }
+.card-reference li { margin: 6px 0; }
+.card-reference .suit-symbol { display: inline-block; width: 1.4em; font-weight: bold; }
+.card-reference .red-suit { color: var(--bad); }
+.save-indicator { font-size: 0.85em; font-style: italic; color: var(--color-text_secondary); margin-left: 10px; align-self: center; }
+.journal-actions { margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.attribution { font-size: 0.8em; font-style: normal; line-height: 1.5; margin-top: 12px; color: var(--color-text_secondary); overflow-wrap: anywhere; }
+.attribution a { color: inherit; text-decoration: underline; }
+.attribution-modal { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--color-borders); }
+.credits { margin-top: 20px; font-size: 0.9em; font-style: italic; color: var(--color-text_secondary); }
+.sr-only {
+position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;
+}
+.main-col { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.mobile-status, .mobile-actions { display: none; }
+@media (max-width: 768px), (pointer: coarse) and (max-height: 500px) {
+:root {
+--bar-bg: color-mix(in srgb, var(--color-tertiary) 94%, var(--color-primary));
+--status-h: 78px;
+}
+html { scroll-padding-top: calc(var(--status-h) + 8px); -webkit-text-size-adjust: 100%; }
+body { padding: 0 0 calc(88px + env(safe-area-inset-bottom)); font-size: 16px; }
+.container { display: flex; flex-direction: column; align-items: stretch; gap: 14px; padding: 12px; max-width: none; }
+.controls-panel, .main-col { display: contents; }
+.mobile-status {
+display: block; position: sticky; top: 0; z-index: 60;
+padding: calc(8px + env(safe-area-inset-top)) 14px 8px;
+background: var(--bar-bg);
+border-bottom: 2px solid var(--color-borders);
+box-shadow: 0 2px 10px var(--color-shadows, rgba(0, 0, 0, 0.3));
+}
+.ms-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.ms-title {
+font-family: var(--font-title, inherit); font-weight: 700; font-size: 1.05em;
+color: var(--color-accent_primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ms-rules { padding: 2px 10px; min-height: 44px; min-width: 44px; margin: -4px 0; box-shadow: none; font-size: 1.05em; }
+.ms-stats { display: flex; gap: 12px; margin-top: 4px; }
+.ms-stat { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.15; }
+.ms-stat-wide { flex: 1.7; }
+.ms-label {
+font-size: 0.66em; text-transform: uppercase; letter-spacing: 0.06em;
+color: var(--color-text_secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ms-stat strong { font-size: 1.25em; }
+.ms-bar {
+height: 6px; margin-top: 3px; border-radius: 3px; overflow: hidden;
+background: var(--inset); border: 1px solid var(--color-borders);
+}
+.ms-bar > div { height: 100%; width: 100%; background: var(--ok); transition: width 0.4s ease; }
+.ms-bar > div.danger { background: var(--warn); }
+.ms-bar > div.critical { background: var(--bad); }
+.game-title { order: 0; font-size: 1.7em; margin: 4px 0 0; letter-spacing: 1px; }
+.subtitle { order: 0; margin: 0 0 2px; font-size: 0.95em; }
+.cards-section { order: 10; }
+.sec-draw { order: 15; }
+#promptPanel { order: 20; }
+.sec-oracle { order: 30; }
+.journal-panel { order: 40; }
+.sec-tower { order: 50; }
+.sec-tokens { order: 60; }
+.sec-suits { order: 70; }
+.sec-new { order: 80; }
+.sec-turn, .instructions-bar { display: none; }
+.sec-draw > *:not(#notice) { display: none; }
+.section.sec-draw { display: none; background: none; border: 0; padding: 0; margin: 0; }
+.section.sec-draw:has(#notice:not(:empty)) { display: block; }
+#notice { margin: 0; min-height: 0; padding: 0 4px; font-size: 1em; }
+.section, .section.panel {
+margin: 0; padding: 14px; border-radius: 12px;
+background: color-mix(in srgb, var(--color-tertiary) 88%, transparent);
+border: 2px solid var(--color-borders);
+}
+h1, h2, h3 {
+color: color-mix(in srgb, var(--color-accent_primary) 50%, var(--color-text_primary));
+text-shadow: none;
+}
+.section h3 { font-size: 1.15em; margin-bottom: 8px; }
+.section-note { font-size: 0.9em; }
+.cards-section .section-note, .sec-oracle .section-note { display: none; }
+#cardPrompt .hint { margin-top: 10px; }
+.cards-drawn-area {
+display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+gap: 10px; padding: 12px; min-height: 100px; border-width: 2px;
+}
+.cards-drawn-area.empty { display: flex; }
+.drawn-card { width: auto; height: auto; aspect-ratio: 5 / 7; min-width: 0; }
+.drawn-card:hover { transform: none; }
+.drawn-card-value { font-size: 1.5em; margin-bottom: 2px; }
+.drawn-card-suit { font-size: 1.2em; }
+#promptPanel { padding: 16px; min-height: 0; border-width: 2px; }
+.prompt-title { font-size: 1.25em; }
+.prompt-desc { font-size: 1.05em; line-height: 1.55; }
+.prompt-buttons { display: none; }
+.game-end { padding: 14px; }
+.game-end .btn-newgame { display: none; }
+.dice-buttons { display: flex; gap: 10px; }
+.dice-buttons button { flex: 1; min-height: 48px; }
+.die { width: 56px; height: 56px; font-size: 28px; border-radius: 10px; }
+.die-label { display: none; }
+.dice-container { margin: 10px 0 4px; gap: 10px; }
+.journal-panel { padding: 16px; border-width: 2px; }
+.journal-panel h2 { font-size: 1.3em; margin-bottom: 10px; }
+textarea { min-height: 45vh; padding: 14px; font-size: 16px; line-height: 1.6; border-radius: 10px; }
+.journal-actions button { flex: 1 1 40%; min-height: 48px; }
+.save-indicator { flex: 1 0 100%; margin: 0; }
+#pullButton, .btn-wide { width: 100%; min-height: 48px; }
+.sec-tokens button { min-width: 56px; min-height: 52px; font-size: 1.3em; }
+.risk-bands { font-size: 0.82em; }
+.mobile-actions {
+display: flex; gap: 8px; position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+background: var(--bar-bg); border-top: 2px solid var(--color-borders);
+box-shadow: 0 -2px 10px var(--color-shadows, rgba(0, 0, 0, 0.3));
+}
+.mobile-actions button { min-height: 54px; font-size: 1.05em; margin: 0; }
+.ma-secondary {
+flex: 0 0 auto; padding: 4px 10px; display: flex; flex-direction: column;
+align-items: center; justify-content: center; line-height: 1.1; font-size: 1.15em;
+}
+.ma-secondary span { font-size: 0.6em; font-weight: 600; letter-spacing: 0.03em; }
+.ma-primary {
+flex: 1; min-width: 0; background: var(--color-accent_primary); color: var(--color-tertiary);
+border-color: var(--color-accent_primary); font-size: 1.15em;
+}
+.ma-primary:hover:not(:disabled) { background: var(--color-accent_primary); filter: brightness(1.1); }
+.ma-primary[data-kind="end"] { background: var(--bad); border-color: var(--bad); color: #fff; }
+body:has(#journal:focus) .mobile-actions { display: none; }
+.modal-overlay { padding: 0; align-items: stretch; }
+.modal-content {
+width: 100%; max-width: none; height: 100%; max-height: none; margin: 0;
+border-radius: 0; border-width: 0; padding: 56px 18px 32px;
+}
+.modal-close { top: 6px; right: 6px; min-width: 48px; min-height: 48px; font-size: 34px; }
+}
+@media (max-height: 500px) and (pointer: coarse) {
+.ms-row { display: none; }
+:root { --status-h: 52px; }
+textarea { min-height: 60vh; }
+}
+@media (prefers-reduced-motion: reduce) {
+*, *::before, *::after { animation: none !important; transition: none !important; }
+}
+@media print {
+.controls-panel, button, .modal-overlay { display: none !important; }
+body { background: #fff !important; color: #000 !important; }
+.panel { box-shadow: none !important; border: 1px solid #000 !important; background: #fff !important; }
+textarea { border: none !important; background: #fff !important; color: #000 !important; min-height: 0; }
+h1, h2, h3 { color: #000 !important; text-shadow: none !important; }
+}
+.special-highlight {
+border-left: 4px solid #d4af37;
+padding-left: 15px;
+}
+.quote-box {
+background: rgba(212, 175, 55, 0.1);
+border: 2px solid #8b6f47;
+border-radius: 8px;
+padding: 20px;
+font-style: italic;
+margin: 20px 0;
+}
+</style>
+</head>
+<body>
+<div class="mobile-status" role="region" aria-label="Game status">
+<div class="ms-row">
+<span class="ms-title">What Lies Beneath</span>
+<button class="ms-rules" onclick="document.getElementById('storyModal').classList.add('active')" aria-label="Read the rules">&#128214;</button>
+</div>
+<div class="ms-stats">
+<div class="ms-stat"><span class="ms-label">Evidence Fragments</span><strong id="msOil">10</strong></div>
+<div class="ms-stat ms-stat-wide"><span class="ms-label">Academic Credibility</span><strong id="msStab" class="stability-safe">100</strong>
+<div class="ms-bar"><div id="msStabBar"></div></div></div>
+<div class="ms-stat"><span class="ms-label">Deck</span><strong id="msDeck">52</strong></div>
+<div class="ms-stat"><span class="ms-label">Cards</span><strong id="msTurn">&ndash;</strong></div>
+</div>
+</div>
+<div class="container">
+<div class="panel controls-panel">
+<h1 class="game-title">What Lies Beneath</h1>
+<p class="subtitle">An Archaeological Mystery</p>
+<div class="section">
+<button class="btn-wide" onclick="document.getElementById('storyModal').classList.add('active')">&#10067; Help &amp; Rules</button>
+</div>
+<div class="section turn-section sec-turn" role="region" aria-label="Start your turn">
+<h3>&#127922; Start Your Turn</h3>
+<p class="section-note">Roll 2d6 to find out how many cards to draw this turn (2&ndash;12). Each card is a discovery, challenge or moment in your excavation.</p>
+<button class="game-action" onclick="rollForCardCount()">&#127922; Roll 2d6 for Number of Cards</button>
+<div id="cardCountResult" style="display: none;">
+Draw <span id="cardsToDraw">0</span> cards this turn (<span id="cardsDrawnCount">0</span> drawn)
+</div>
+</div>
+<div class="section sec-draw" role="region" aria-label="Card drawing">
+<h3>&#127924; 1. Draw Cards</h3>
+<p class="section-note">Draw the number of cards indicated above. You can resolve them in any order you choose.</p>
+<button class="game-action" onclick="drawCard()" aria-label="Draw a card from the deck">&#127924; Draw Next Card</button>
+<div class="notice" id="notice" role="status" aria-live="polite"></div>
+<div class="deck-status" id="deckStatus"><span id="deckCount">52</span> cards remaining</div>
+<div id="cardHistory" style="margin-top: 10px; max-height: 150px; overflow-y: auto; font-size: 0.9em;" aria-label="Recently drawn cards"></div>
+<button class="btn-small" style="margin-top: 8px;" onclick="clearHistory()">Clear history</button>
+</div>
+<div class="section sec-oracle" role="region" aria-label="Dice rolling">
+<h3>&#127922; 2. Roll Dice (When Prompted)</h3>
+<p class="section-note">Some cards ask you to roll dice:</p>
+<div class="section-note" style="font-style: normal;">
+<strong>Roll 1d6:</strong> 1–3 = Negative Outcome, 4–6 = Positive Outcome<br>
+<strong>Roll 2d6:</strong> 2–5 = Disturbing / Unexplainable, 6–8 = Ambiguous / Debatable, 9–12 = Scientifically Significant
+</div>
+<div class="dice-buttons">
+<button class="game-action" onclick="rollOneDie()">Roll 1d6</button>
+<button class="game-action" onclick="rollTwoDice()">Roll 2d6</button>
+</div>
+<div class="dice-container" id="diceContainer"></div>
+<div class="result" id="diceResult" aria-live="polite">Ready to roll when prompted</div>
+</div>
+<div class="section sec-tower" role="region" aria-label="Academic Credibility">
+<h3>&#127963; 3. Pull Block (When Prompted)</h3>
+<p class="section-note">When a card tells you to pull a block, your academic credibility is tested.</p>
+<div style="font-size: 1.5em; font-weight: bold; margin: 10px 0; text-align: center;">
+<span id="stabilityName">Academic Credibility</span>: <span id="stabilityValue" class="stability-safe" aria-live="polite">100</span>
+</div>
+<div class="stability-bar" role="progressbar" aria-label="Academic Credibility" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+<div id="stabilityBar" class="stability-fill" style="width: 100%;"></div>
+</div>
+<button class="game-action" id="pullButton" onclick="pullBlock()">Pull Block</button>
+<div id="stabilityNote" aria-live="polite"></div>
+<div class="risk-bands">
+<strong>Risk increases as academic credibility drops:</strong><br>
+&bull; 51–100: normal risk (a die is lost on a 1)<br>&bull; 21–50: high risk (a die is lost on 1–2)<br>&bull; 1–20: CRITICAL risk (a die is lost on 1–3)<br>
+</div>
+</div>
+<div class="section sec-tokens" role="region" aria-label="Evidence Fragments">
+<h3 id="tokenName">Evidence Fragments</h3>
+<div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin: 10px 0;">
+<button class="game-action" onclick="adjustTokens(-1)" aria-label="Decrease Evidence Fragments">&minus;</button>
+<span style="font-size: 2em; font-weight: bold;" id="tokenValue" aria-live="polite">10</span>
+<button class="game-action" onclick="adjustTokens(1)" aria-label="Increase Evidence Fragments">+</button>
+</div>
+</div>
+<div class="section sec-suits" role="region" aria-label="Suit reference">
+<h3>Suits</h3>
+<ul class="card-reference">
+<li><span class="suit-symbol ">♠</span> <strong>The Cave&#39;s Secrets</strong> &mdash; Discoveries, mysteries and revelations within the cave</li>
+<li><span class="suit-symbol red-suit">♥</span> <strong>Academic Relations</strong> &mdash; Your peers, rivals, supporters and the establishment</li>
+<li><span class="suit-symbol red-suit">♦</span> <strong>Resources and Methodology</strong> &mdash; Tools, techniques and practical challenges</li>
+<li><span class="suit-symbol ">♣</span> <strong>Mental Strain</strong> &mdash; Psychological pressure, exhaustion and doubt</li>
+</ul>
+</div>
+<div class="section sec-new">
+<button class="btn-wide btn-danger" onclick="newGame()" aria-label="Start a new game (erases current progress)">New Game</button>
+</div>
+</div>
+<div class="main-col">
+<div class="section panel instructions-bar" style="margin: 0;">
+<button onclick="document.getElementById('storyModal').classList.add('active')" aria-label="Read game instructions and story">&#128214; Read Instructions</button>
+</div>
+<div class="section panel cards-section" id="cardsSection" style="margin: 0;">
+<h3>&#127924; Cards This Turn</h3>
+<p class="section-note">Tap any card to see its prompt. Resolved cards are dimmed.</p>
+<div class="cards-drawn-area empty" id="cardsDrawnArea">
+<div class="empty-cards-message">No cards drawn yet. Roll the turn dice and draw cards to begin.</div>
+</div>
+</div>
+<div class="panel" id="promptPanel" role="region" aria-label="Card prompt" aria-live="polite">
+<div id="cardPrompt"></div>
+</div>
+<div class="panel journal-panel" id="journalPanel" role="region" aria-label="Journal">
+<h2 id="journal-heading">Journal</h2>
+<textarea id="journal" placeholder="Record your archaeological discoveries here..." aria-labelledby="journal-heading" aria-describedby="journal-description"></textarea>
+<span id="journal-description" class="sr-only">Your journal is saved automatically in this browser's local storage.</span>
+<div class="journal-actions">
+<button onclick="downloadJournal()" aria-label="Download journal as a text file">&#128190; Save to File</button>
+<button onclick="document.getElementById('journalFile').click()" aria-label="Load a journal from a text file">&#128194; Load File</button>
+<input type="file" id="journalFile" accept=".txt,.md,text/plain" style="display:none" onchange="loadJournalFile(event)">
+<span class="save-indicator" id="saveIndicator" aria-live="polite"></span>
+</div>
+<div class="credits">
+<p>Story by Shawn Graham.</p>
+<p>Version 1.0.0</p>
+<p class="attribution">Generated using the <a href="https://github.com/shawngraham/wretched-generator" target="_blank" rel="noopener">Wretched Generator</a>.</p>
+<p class="attribution">This work is based on <a href="http://loottheroom.itch.io/wretched" target="_blank" rel="noopener">The Wretched</a> (found at <a href="http://loottheroom.itch.io/wretched" target="_blank" rel="noopener">http://loottheroom.itch.io/wretched</a>), product of Chris Bissette and Loot The Room, and licensed for our use under the <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">Creative Commons Attribution 3.0 Unported license</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="storyModal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Instructions"
+onclick="if(event.target===this)this.classList.remove('active')">
+<div class="modal-content" tabindex="-1">
+<button class="modal-close" onclick="document.getElementById('storyModal').classList.remove('active')" aria-label="Close instructions">&times;</button>
+<div id="story-title">
+<h1>What Lies Beneath: An Archaeological Mystery</h1>
+<h2>Your Character</h2>
+<p><strong>Name:</strong> Dr. Elisabeth Blackwood<br />
+<strong>Occupation:</strong> The Most Junior Member of the Department <br />
+<strong>Location:</strong> A remote cave system in the English countryside<br />
+<strong>Date:</strong> June 15th, 1924</p>
+<p>You are Dr. Elisabeth Blackwood, one of the few women working in the male-dominated field of archaeology. After years of being dismissed by the academic establishment, you've staked everything on this excavation.</p>
+<p>A local farmer told you about a cave on his land—a cave with strange markings and rumors of ancient habitation. The Royal Archaeological Society laughed at your proposal. Your former mentor politely declined to help. Your family thinks you've lost your mind.</p>
+<p>But you know. You've always known. This cave holds secrets that could revolutionize everything we understand about prehistoric Britain.</p>
+<p>You've set up camp near the entrance. Your equipment is modest: trowels, brushes, notebooks, a camera, and determination. The cave waits, dark and silent, holding its mysteries close.</p>
+<p>Your academic reputation is on the line. Your evidence is limited. Your mental state is fragile. But this is your chance—perhaps your only chance—to prove yourself.</p>
+<h2>How to Play</h2>
+<h3>Setup</h3>
+<ul>
+<li>Begin with <strong>10 Evidence Fragments</strong> (representing the archaeological evidence you collect)</li>
+<li>Your <strong>Academic Credibility</strong> starts at 100 (representing your reputation and mental state)</li>
+<li>You have a standard deck of 52 playing cards</li>
+<li>Keep a journal to record your discoveries</li>
+</ul>
+<h3>The Core Loop</h3>
+<p>Each session of excavation follows this pattern:</p>
+<ol>
+<li><strong>Roll 2d6</strong> to determine your focus for this session</li>
+<li><strong>Draw cards</strong> equal to the dice total (2-12 cards)</li>
+<li><strong>Respond to each card's prompt</strong> in your journal</li>
+<li><strong>Follow any special instructions</strong> on the cards</li>
+<li><strong>Continue</strong> until the deck is empty or the game ends</li>
+</ol>
+<h3>The Cards</h3>
+<p>The deck represents the unpredictable nature of archaeological work. Each card draws you deeper into the cave's mystery:</p>
+<ul>
+<li><strong>♠️ Spades - The Cave's Secrets:</strong> Discoveries, mysteries, and revelations within the cave</li>
+<li><strong>♥️ Hearts - Academic Relations:</strong> Your peers, rivals, supporters, and the establishment</li>
+<li><strong>♦️ Diamonds - Resources and Methodology:</strong> Tools, techniques, and practical challenges</li>
+<li><strong>♣️ Clubs - Mental Strain:</strong> Psychological pressure, exhaustion, and doubt</li>
+</ul>
+<h3>Evidence Fragments</h3>
+<p>Your <strong>Evidence Fragments</strong> represent the quality and quantity of archaeological evidence you've collected. This is your currency of credibility.</p>
+<ul>
+<li>Start with <strong>10 Evidence Fragments</strong></li>
+<li>Cards can add or remove Evidence</li>
+<li>If you reach <strong>0 Evidence</strong>, you've destroyed or lost all the proof of your discovery and the game ends</li>
+<li>A single card can push you past zero into the negatives (fabricated or questionable evidence), but the game still ends</li>
+</ul>
+<h3>Academic Credibility (The Tower)</h3>
+<p>Your <strong>Academic Credibility</strong> represents both your reputation and your mental state. Like a Jenga tower, it starts stable but becomes increasingly precarious.</p>
+<ul>
+<li>Start with <strong>100 Credibility</strong></li>
+<li>Some cards require you to <strong>Pull Blocks</strong> (reduce your Credibility)</li>
+<li>When you pull blocks, the game simulates removing pieces from a tower</li>
+<li><strong>The risk escalates:</strong> Lower Credibility means higher chance of losing more points</li>
+<li>If Credibility reaches <strong>0</strong>, your reputation collapses and the game ends</li>
+</ul>
+<p>The escalating risk mechanics:<br />
+- <strong>51-100:</strong> Low risk (you lose a die on a roll of 1)<br />
+- <strong>21-50:</strong> Moderate risk (you lose a die on a roll of 1-2)<br />
+- <strong>20 or less:</strong> High risk (you lose a die on a roll of 1-3)</p>
+<p>Each time you pull a block you roll one die for every point of Credibility you have. Every die that comes up at or under the risk number costs you a point, and you always lose at least one.</p>
+<h3>Winning</h3>
+<p>If you draw and resolve <strong>every card in the deck</strong> while you still have Evidence Fragments and Academic Credibility, your work survives peer review and the game ends in triumph. Write the opening of your public lecture.</p>
+<p>Few excavations get that far.</p>
+<h3>Losing</h3>
+<p>You <strong>lose</strong> if either:</p>
+<ol>
+<li>
+<p><strong>Academic Credibility reaches 0:</strong> Your reputation collapses. You might retreat in shame or become an unpaid assistant to a rival.</p>
+</li>
+<li>
+<p><strong>Evidence Fragments reach 0:</strong> You've destroyed all archaeological evidence. The cave has lost its mystery. You become a schoolmistress in a local village, your dreams of archaeology behind you.</p>
+</li>
+</ol>
+<h2>Game Mechanics Detail</h2>
+<h3>Turn Structure</h3>
+<ol>
+<li><strong>Begin your excavation session</strong> by rolling 2d6</li>
+<li>The total determines how many cards to draw this turn (2-12)</li>
+<li><strong>Draw the indicated cards one at a time</strong></li>
+<li>Read each card's prompt and follow its instructions</li>
+<li><strong>Write your response</strong> in your journal—this is where the story lives</li>
+<li>Apply any mechanical effects (Evidence changes, block pulls)</li>
+<li>When all cards for the turn are resolved, you can:<br />
+- Roll again to continue excavating<br />
+- Take a break to organize your notes<br />
+- End the session</li>
+</ol>
+<h3>Special Cards</h3>
+<h4>Ace of Hearts: "Letter from the Society"</h4>
+<p>This card requires a special roll:<br />
+- Roll 1d6<br />
+- On a <strong>6:</strong> Your defense is persuasive. Gain 1 Evidence<br />
+- On <strong>1-5:</strong> Your defense falls flat. Lose 1 Evidence</p>
+<p>This represents the Society's judgment of your work.</p>
+<h3>Journaling</h3>
+<p>Your journal is the heart of the game. This is where you:</p>
+<ul>
+<li><strong>Describe discoveries</strong> in vivid detail</li>
+<li><strong>Express your character's emotions</strong> and thoughts</li>
+<li><strong>Record the academic politics</strong> and personal struggles</li>
+<li><strong>Build the narrative</strong> of your excavation</li>
+<li><strong>Document evidence</strong> as a Victorian scholar would</li>
+</ul>
+<p>There's no wrong way to journal, but consider:<br />
+- Writing in first person as Dr. Blackwood<br />
+- Dating your entries<br />
+- Using period-appropriate language and perspective<br />
+- Describing not just what you find, but how it feels<br />
+- Grappling with the isolation, pressure, and wonder</p>
+<h3>Saving Your Work</h3>
+<p>The game automatically saves your progress to your browser. You can also:<br />
+- <strong>Save to File</strong> to download your journal as a text file<br />
+- <strong>Load File</strong> to restore a previous journal<br />
+- <strong>Start New Game</strong> to begin fresh (warning: this erases everything)</p>
+<h2>Tips for Play</h2>
+<h3>For Your First Game</h3>
+<ul>
+<li>Don't rush. Read each card carefully.</li>
+<li>Really imagine yourself in the cave—the darkness, the damp, the weight of earth above.</li>
+<li>Let your journal entries be messy and emotional. You're under pressure!</li>
+<li>Don't worry about "winning"—the story you create is the real victory.</li>
+</ul>
+<h3>For Deeper Immersion</h3>
+<ul>
+<li>Play with atmospheric music (cave sounds, Victorian-era music, or silence)</li>
+<li>Dim the lights</li>
+<li>Actually write by hand in a physical journal</li>
+<li>Research real Victorian archaeology to inspire your descriptions</li>
+<li>Set a timer and treat it like a real excavation session (2-3 hours)</li>
+</ul>
+<h3>Managing Risk</h3>
+<ul>
+<li><strong>Early game:</strong> Be bold. You have plenty of Credibility to spare.</li>
+<li><strong>Mid game:</strong> Start being cautious. Consider the risk before pulling blocks.</li>
+<li><strong>Late game:</strong> Every block pull is terrifying. Choose wisely.</li>
+</ul>
+<p>Remember: The game is designed to create tension. The escalating risk means the endgame should feel genuinely dangerous.</p>
+<h3>Interpreting Cards</h3>
+<p>The cards provide prompts, but you decide how to interpret them:<br />
+- Maybe that "golden idol" is actually an elaborate hoax<br />
+- Perhaps "academic jealousy" motivates you rather than demoralizes you<br />
+- The "burial site" could rewrite everything we know about the period</p>
+<p>Let the cards guide you, but the story is yours.</p>
+<h2>Historical Context</h2>
+<h3>Archaeology in 1924</h3>
+<p>The 1920s were a transformative time for archaeology:<br />
+- Tutankhamun's tomb was discovered in 1922<br />
+- New scientific methods were emerging<br />
+- Women in archaeology faced immense barriers<br />
+- The field was dominated by wealthy amateurs and established academics</p>
+<h3>Dr. Elisabeth Blackwood</h3>
+<p>You are pushing against an establishment that doesn't want you there. You're one of the first generation of professionally trained female archaeologists. You've had to work twice as hard for half the recognition.</p>
+<p>This cave is your chance to prove yourself—but also to make a genuine contribution to human knowledge. The cave doesn't care about your gender. The ancient people who lived there left their mark for someone to find. That someone is you.</p>
+<h3>The Setting</h3>
+<p>The cave is fictional, but inspired by real archaeological sites:<br />
+- Creswell Crags in Derbyshire<br />
+- Chauvet Cave in France<br />
+- Various British cave systems with evidence of human habitation</p>
+<p>The Victorian countryside, the academic politics, the isolation—all rooted in historical reality.</p>
+<h2>About This Game</h2>
+<p><strong>The Cave</strong> is a solo journaling RPG using the "Wretched &amp; Alone" game system created by Chris Bissette. It explores themes of:</p>
+<ul>
+<li><strong>Ambition and obsession</strong></li>
+<li><strong>Gender barriers in academia</strong></li>
+<li><strong>The weight of history</strong></li>
+<li><strong>Isolation and discovery</strong></li>
+<li><strong>The price of knowledge</strong></li>
+</ul>
+<p>The game asks: What would you sacrifice for recognition? For truth? For the chance to touch the past?</p>
+<hr />
+<h2>Ready to Begin?</h2>
+<p>The cave waits. It has waited for thousands of years. It can wait a little longer.</p>
+<p>But you cannot. Your funding is limited. Your critics are watching. Your reputation hangs in the balance.</p>
+<p>Light your lamp. Pick up your trowel. Open your journal.</p>
+<p><em>The excavation begins now.</em></p>
+<hr />
+<p><em>Dr. Blackwood, the cave is calling. Will you answer?</em></p>
+</div>
+<p class="attribution attribution-modal">This work is based on <a href="http://loottheroom.itch.io/wretched" target="_blank" rel="noopener">The Wretched</a> (found at <a href="http://loottheroom.itch.io/wretched" target="_blank" rel="noopener">http://loottheroom.itch.io/wretched</a>), product of Chris Bissette and Loot The Room, and licensed for our use under the <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">Creative Commons Attribution 3.0 Unported license</a> (<a href="http://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">http://creativecommons.org/licenses/by/3.0/</a>).</p>
+</div>
+</div>
+<nav class="mobile-actions" aria-label="Game actions">
+<button class="ma-secondary" onclick="scrollToId('cardsSection')" aria-label="Jump to the cards">&#127924;<span>Cards</span></button>
+<button class="ma-secondary" onclick="scrollToId('journalPanel')" aria-label="Jump to the journal">&#9998;<span>Journal</span></button>
+<button class="ma-primary" id="mobilePrimary" onclick="mobilePrimaryClick()">Roll</button>
+</nav>
+<script>
+'use strict';
+const GAME_CONFIG = {
+"game": {
+"title": "What Lies Beneath",
+"subtitle": "An Archaeological Mystery",
+"author": "Shawn Graham",
+"version": "1.0.0",
+"description": "You are Dr. Elisabeth Blackwood, excavating a mysterious cave in 1924. Can you survive the discovery?"
+},
+"mechanics": {
+"systems": [
+"dice",
+"cards",
+"stability",
+"tokens"
+],
+"tokens": {
+"initial": 10,
+"name": "Evidence Fragments",
+"allow_negative": true,
+"controls": {
+"show_manual_adjust": true,
+"increment": 1
+},
+"description": "Archaeological evidence you've collected"
+},
+"stability": {
+"initial": 100,
+"name": "Academic Credibility",
+"risk_scaling": true,
+"thresholds": {
+"critical": 20,
+"danger": 50,
+"safe": 51
+},
+"failure_thresholds": {
+"critical": 3,
+"danger": 2,
+"safe": 1
+},
+"messages": {
+"safe": [
+"Your methodology remains sound and systematic.",
+"The work proceeds with scholarly precision.",
+"You maintain your academic composure."
+],
+"danger": [
+"Self-doubt creeps into your thinking.",
+"The pressure from your peers weighs heavily.",
+"Your confidence wavers slightly."
+],
+"critical": [
+"Your reputation hangs by a thread.",
+"Desperation clouds your judgment.",
+"The academic world watches, waiting for you to fail."
+]
+},
+"description": "Your reputation and mental state",
+"collapse_message": "💔 Academic Credibility Destroyed - Your reputation is ruined."
+},
+"deck": {
+"reshuffle": true,
+"track_history": true,
+"show_remaining_count": true,
+"suits": {
+"spades": {
+"name": "The Cave's Secrets",
+"description": "Discoveries, mysteries and revelations within the cave"
+},
+"hearts": {
+"name": "Academic Relations",
+"description": "Your peers, rivals, supporters and the establishment"
+},
+"diamonds": {
+"name": "Resources and Methodology",
+"description": "Tools, techniques and practical challenges"
+},
+"clubs": {
+"name": "Mental Strain",
+"description": "Psychological pressure, exhaustion and doubt"
+}
+},
+"type": "standard_52"
+},
+"dice": {
+"main": {
+"count": 2,
+"sides": 6,
+"name": "Turn Dice",
+"function": "determine_cards",
+"animation": true
+},
+"binary": {
+"split": 3,
+"negative": "Negative Outcome",
+"positive": "Positive Outcome"
+},
+"interpret": [
+{
+"max": 5,
+"label": "Disturbing / Unexplainable"
+},
+{
+"max": 8,
+"label": "Ambiguous / Debatable"
+},
+{
+"max": 12,
+"label": "Scientifically Significant"
+}
+]
+}
+},
+"conditions": {
+"win": [
+{
+"type": "deck_empty",
+"additional_checks": [
+"tokens_positive",
+"stability_above_zero"
+],
+"message": "🏆 TRIUMPHANT SUCCESS!\nYour work survives peer review and publication. You revolutionize archaeology!\n\nWrite the opening for your public lecture at The Society's annual meeting.\n\nDr. Elisabeth Blackwood's name will echo through history.\n"
+}
+],
+"lose": [
+{
+"type": "stability_zero",
+"endings": [
+{
+"title": "Retreat in Shame",
+"text": "Your academic reputation is ruined. You retreat to a cottage in the far country, spending your days cataloguing moss."
+},
+{
+"title": "Unpaid Assistant",
+"text": "Sir Reginald Watterly smiles with satisfaction as he deposits your paper in the wastebasket. You become his unpaid assistant."
+}
+],
+"message": "Record your final thoughts in your journal..."
+},
+{
+"type": "tokens_zero",
+"message": "💔 All Evidence Destroyed\nYou have managed to destroy all archaeological evidence. The cave has lost its mystery.\nYou develop a reputation for carelessness and take a schoolmistress position in the village.\n"
+}
+]
+},
+"ui": {
+"panels": {
+"show_instructions": true,
+"show_help_button": true,
+"show_card_reference": true,
+"left_width": "400px"
+},
+"journal": {
+"placeholder": "Record your archaeological discoveries here...",
+"autosave": true,
+"save_indicator": true,
+"download_button": true,
+"load_button": true
+},
+"controls": {
+"new_game_confirmation": true,
+"show_card_history": true,
+"history_clear_button": true
+},
+"labels": {
+"turn_heading": "Start Your Turn",
+"turn_flavor": "Each card is a discovery, challenge or moment in your excavation.",
+"new_game_label": "Begin Another Excavation",
+"game_over_title": "Game Over",
+"win_title": "The End"
+}
+},
+"special": {
+"queen_tracker": {
+"enabled": false
+},
+"ace_of_hearts": {
+"enabled": true
+},
+"turn_sequence": {
+"roll_determines_cards": true,
+"formula": "sum",
+"min_cards": 2,
+"max_cards": 12
+}
+},
+"flow": {
+"starting_prompt": "Welcome, Dr. Blackwood.\n\nRoll the dice to determine how many cards to draw this turn.\nEach card represents a discovery, challenge, or moment in your excavation.\n\nDraw cards and respond to their prompts in your journal.\n"
+},
+"locale": {
+"language": "en"
+},
+"build": {
+"minify": true
+}
+};
+const CARD_DATA = {
+"spades": {
+"A": {
+"title": "The First Chamber",
+"description": "You push through the narrow entrance and emerge into a vast underground chamber. \nThe walls glitter with moisture and ancient mineral deposits. In the flickering light \nof your torch, you can make out marks on the walls—deliberate patterns, perhaps?\n\n*What do you hope to find here?*",
+"tokens": 2,
+"blocks": 0,
+"description_html": "<p>You push through the narrow entrance and emerge into a vast underground chamber. \nThe walls glitter with moisture and ancient mineral deposits. In the flickering light \nof your torch, you can make out marks on the walls—deliberate patterns, perhaps?<\/p>\n<p><em>What do you hope to find here?<\/em><\/p>"
+},
+"K": {
+"title": "The Inscription",
+"description": "On the far wall, you discover a series of carved symbols—a written language! \nYour heart races. This could revolutionize everything we know about this region's history.\nBut the symbols are unlike anything in the literature...\n\n*What do the symbols seem to depict?*",
+"tokens": 3,
+"blocks": 0,
+"description_html": "<p>On the far wall, you discover a series of carved symbols—a written language! \nYour heart races. This could revolutionize everything we know about this region's history.\nBut the symbols are unlike anything in the literature...<\/p>\n<p><em>What do the symbols seem to depict?<\/em><\/p>"
+},
+"Q": {
+"title": "The Golden Idol",
+"description": "Half-buried in sediment, you uncover a golden figurine—exquisitely crafted, \ndepicting a figure with outstretched arms. It's beautiful, valuable, and unlike \nanything found in this region before. But removing it might destabilize the cave structure.\n\n*Do you take it? What does it represent?*",
+"tokens": 3,
+"blocks": 2,
+"description_html": "<p>Half-buried in sediment, you uncover a golden figurine—exquisitely crafted, \ndepicting a figure with outstretched arms. It's beautiful, valuable, and unlike \nanything found in this region before. But removing it might destabilize the cave structure.<\/p>\n<p><em>Do you take it? What does it represent?<\/em><\/p>"
+},
+"J": {
+"title": "Ancient Tools",
+"description": "You find a cache of stone tools—scrapers, blades, and points—still sharp after \nmillennia. They're arranged with care, perhaps a craftsperson's kit. Evidence of \nsophisticated technology!\n\n*What does this tell you about the people who lived here?*",
+"tokens": 2,
+"blocks": 0,
+"description_html": "<p>You find a cache of stone tools—scrapers, blades, and points—still sharp after \nmillennia. They're arranged with care, perhaps a craftsperson's kit. Evidence of \nsophisticated technology!<\/p>\n<p><em>What does this tell you about the people who lived here?<\/em><\/p>"
+},
+"10": {
+"title": "The Fossil Wall",
+"description": "An entire wall is embedded with fossils—shells, ancient fish, strange plants. \nThis area was underwater millions of years ago. The geological evidence is pristine.\n\n*What does this reveal about the site's history?*",
+"tokens": 2,
+"blocks": 0,
+"description_html": "<p>An entire wall is embedded with fossils—shells, ancient fish, strange plants. \nThis area was underwater millions of years ago. The geological evidence is pristine.<\/p>\n<p><em>What does this reveal about the site's history?<\/em><\/p>"
+},
+"9": {
+"title": "Wall Paintings",
+"description": "You discover ochre paintings on the cave wall—animals, hand prints, abstract \npatterns. Art! Human expression from thousands of years ago. Each image tells a story.\n\n*What scenes are depicted? What do they mean?*",
+"tokens": 3,
+"blocks": 0,
+"description_html": "<p>You discover ochre paintings on the cave wall—animals, hand prints, abstract \npatterns. Art! Human expression from thousands of years ago. Each image tells a story.<\/p>\n<p><em>What scenes are depicted? What do they mean?<\/em><\/p>"
+},
+"8": {
+"title": "The Burial Site",
+"description": "You uncover human remains, carefully arranged with grave goods—beads, tools, \nand a peculiar clay vessel. A burial chamber. Someone was laid to rest here with honor.\n\n*Who was this person? What do the grave goods suggest?*",
+"tokens": 2,
+"blocks": 1,
+"description_html": "<p>You uncover human remains, carefully arranged with grave goods—beads, tools, \nand a peculiar clay vessel. A burial chamber. Someone was laid to rest here with honor.<\/p>\n<p><em>Who was this person? What do the grave goods suggest?<\/em><\/p>"
+},
+"7": {
+"title": "Strange Acoustics",
+"description": "You notice the cave has unusual acoustic properties. Certain spots amplify sound \nin eerie ways. Was this intentional? A ceremonial space, perhaps?\n\n*Test the acoustics. What do you hear?*",
+"tokens": 1,
+"blocks": 0,
+"description_html": "<p>You notice the cave has unusual acoustic properties. Certain spots amplify sound \nin eerie ways. Was this intentional? A ceremonial space, perhaps?<\/p>\n<p><em>Test the acoustics. What do you hear?<\/em><\/p>"
+},
+"6": {
+"title": "Animal Bones",
+"description": "A scatter of animal bones—deer, rabbit, birds. Some show cut marks from butchering. \nEvidence of meals, of daily life. The mundane details that make history human.\n\n*What can you learn from these remains?*",
+"tokens": 1,
+"blocks": 0,
+"description_html": "<p>A scatter of animal bones—deer, rabbit, birds. Some show cut marks from butchering. \nEvidence of meals, of daily life. The mundane details that make history human.<\/p>\n<p><em>What can you learn from these remains?<\/em><\/p>"
+},
+"5": {
+"title": "The Side Passage",
+"description": "You discover a narrow side passage you hadn't noticed before. It slopes downward \ninto darkness. Do you follow it, or continue in the main chamber?\n\n*What do you do? What might lie deeper?*",
+"tokens": 1,
+"blocks": 1,
+"description_html": "<p>You discover a narrow side passage you hadn't noticed before. It slopes downward \ninto darkness. Do you follow it, or continue in the main chamber?<\/p>\n<p><em>What do you do? What might lie deeper?<\/em><\/p>"
+},
+"4": {
+"title": "Pottery Shards",
+"description": "You find fragments of pottery—decorated with geometric patterns. The pieces are \ntoo broken to reconstruct fully, but the craftsmanship is evident.\n\n*What patterns do you see? What might the vessels have contained?*",
+"tokens": 1,
+"blocks": 0,
+"description_html": "<p>You find fragments of pottery—decorated with geometric patterns. The pieces are \ntoo broken to reconstruct fully, but the craftsmanship is evident.<\/p>\n<p><em>What patterns do you see? What might the vessels have contained?<\/em><\/p>"
+},
+"3": {
+"title": "The Echo Chamber",
+"description": "You find a small alcove that creates perfect echoes. Standing here, you imagine \nancient voices, songs, stories told in this very spot.\n\n*What do you imagine was said here?*",
+"tokens": 1,
+"blocks": 0,
+"description_html": "<p>You find a small alcove that creates perfect echoes. Standing here, you imagine \nancient voices, songs, stories told in this very spot.<\/p>\n<p><em>What do you imagine was said here?<\/em><\/p>"
+},
+"2": {
+"title": "Charcoal Marks",
+"description": "Black marks on the ceiling—charcoal from ancient fires. Evidence of habitation, \nof warmth and cooking. You can date these marks!\n\n*What do the fire patterns tell you?*",
+"tokens": 1,
+"blocks": 0,
+"description_html": "<p>Black marks on the ceiling—charcoal from ancient fires. Evidence of habitation, \nof warmth and cooking. You can date these marks!<\/p>\n<p><em>What do the fire patterns tell you?<\/em><\/p>"
+}
+},
+"hearts": {
+"A": {
+"title": "Letter from the Society",
+"description": "A telegram arrives from London. The Royal Archaeological Society questions your \nmethods and demands you return immediately for review. Roll a die—on a 6, your \ndefense is persuasive enough to buy time.\n\n*How do you respond to their challenge?*",
+"tokens": 0,
+"blocks": 0,
+"special": "roll_for_token_adjustment",
+"description_html": "<p>A telegram arrives from London. The Royal Archaeological Society questions your \nmethods and demands you return immediately for review. Roll a die—on a 6, your \ndefense is persuasive enough to buy time.<\/p>\n<p><em>How do you respond to their challenge?<\/em><\/p>"
+},
+"K": {
+"title": "Sir Reginald's Mockery",
+"description": "You receive word that Sir Reginald Watterly has published an article dismissing \nyour work as \"amateur speculation by a woman playing at archaeology.\" The old guard \ncloses ranks against you.\n\n*How does this affect your resolve?*",
+"tokens": -1,
+"blocks": 1,
+"description_html": "<p>You receive word that Sir Reginald Watterly has published an article dismissing \nyour work as \"amateur speculation by a woman playing at archaeology.\" The old guard \ncloses ranks against you.<\/p>\n<p><em>How does this affect your resolve?<\/em><\/p>"
+},
+"Q": {
+"title": "Unexpected Ally",
+"description": "Professor Morrison from Cambridge sends an encouraging letter. She believes in \nyour work and promises to defend your findings at the next conference. A rare \nsupporter in a hostile field.\n\n*Write your grateful reply.*",
+"tokens": 1,
+"blocks": 0,
+"description_html": "<p>Professor Morrison from Cambridge sends an encouraging letter. She believes in \nyour work and promises to defend your findings at the next conference. A rare \nsupporter in a hostile field.<\/p>\n<p><em>Write your grateful reply.<\/em><\/p>"
+},
+"J": {
+"title": "The Journalist",
+"description": "A journalist from The Times wants to write about your excavation. This could \nbring attention—and funding—but also scrutiny. Do you grant an interview?\n\n*What do you tell them?*",
+"tokens": 0,
+"blocks": 1,
+"description_html": "<p>A journalist from The Times wants to write about your excavation. This could \nbring attention—and funding—but also scrutiny. Do you grant an interview?<\/p>\n<p><em>What do you tell them?<\/em><\/p>"
+},
+"10": {
+"title": "Funding Crisis",
+"description": "Your benefactor writes that they're withdrawing support unless you produce results \nimmediately. The financial pressure mounts. You need discoveries, now.\n\n*How do you cope with this pressure?*",
+"tokens": -2,
+"blocks": 1,
+"description_html": "<p>Your benefactor writes that they're withdrawing support unless you produce results \nimmediately. The financial pressure mounts. You need discoveries, now.<\/p>\n<p><em>How do you cope with this pressure?<\/em><\/p>"
+},
+"9": {
+"title": "Academic Jealousy",
+"description": "You learn that Dr. Thornton is planning his own expedition to a nearby site, \nhoping to overshadow your work. The race is on.\n\n*How does competition affect your work?*",
+"tokens": 0,
+"blocks": 1,
+"description_html": "<p>You learn that Dr. Thornton is planning his own expedition to a nearby site, \nhoping to overshadow your work. The race is on.<\/p>\n<p><em>How does competition affect your work?<\/em><\/p>"
+},
+"8": {
+"title": "Supportive Letter",
+"description": "Your former mentor writes with encouragement and advice. Their wisdom steadies you. \nRemember why you became an archaeologist.\n\n*What wisdom do they share?*",
+"tokens": 1,
+"blocks": 0,
+"description_html": "<p>Your former mentor writes with encouragement and advice. Their wisdom steadies you. \nRemember why you became an archaeologist.<\/p>\n<p><em>What wisdom do they share?<\/em><\/p>"
+},
+"7": {
+"title": "Museum Interest",
+"description": "The British Museum expresses interest in your finds. They want first right to \nany significant artifacts. This is validation—but also pressure.\n\n*How do you feel about their interest?*",
+"tokens": 1,
+"blocks": 0,
+"description_html": "<p>The British Museum expresses interest in your finds. They want first right to \nany significant artifacts. This is validation—but also pressure.<\/p>\n<p><em>How do you feel about their interest?<\/em><\/p>"
+},
+"6": {
+"title": "Peer Review Fears",
+"description": "You worry about how your peers will receive your findings. What if you're wrong? \nWhat if they ridicule you? The doubt gnaws at you.\n\n*Confront these fears in your journal.*",
+"tokens": 0,
+"blocks": 1,
+"description_html": "<p>You worry about how your peers will receive your findings. What if you're wrong? \nWhat if they ridicule you? The doubt gnaws at you.<\/p>\n<p><em>Confront these fears in your journal.<\/em><\/p>"
+},
+"5": {
+"title": "Conference Invitation",
+"description": "You're invited to present preliminary findings at a regional conference. \nAn opportunity—or a trap? They'll scrutinize every claim.\n\n*Do you accept? What will you present?*",
+"tokens": 0,
+"blocks": 0,
+"description_html": "<p>You're invited to present preliminary findings at a regional conference. \nAn opportunity—or a trap? They'll scrutinize every claim.<\/p>\n<p><em>Do you accept? What will you present?<\/em><\/p>"
+},
+"4": {
+"title": "Student's Letter",
+"description": "A student writes asking to join your excavation. Fresh enthusiasm and an extra \npair of hands—but also responsibility and teaching duties.\n\n*Do you accept the student?*",
+"tokens": 0,
+"blocks": 0,
+"description_html": "<p>A student writes asking to join your excavation. Fresh enthusiasm and an extra \npair of hands—but also responsibility and teaching duties.<\/p>\n<p><em>Do you accept the student?<\/em><\/p>"
+},
+"3": {
+"title": "Praise and Pressure",
+"description": "A colleague praises your ambition but warns that you're risking everything on \nthis one site. What if it yields nothing spectacular?\n\n*How do you respond to this warning?*",
+"tokens": 0,
+"blocks": 1,
+"description_html": "<p>A colleague praises your ambition but warns that you're risking everything on \nthis one site. What if it yields nothing spectacular?<\/p>\n<p><em>How do you respond to this warning?<\/em><\/p>"
+},
+"2": {
+"title": "Family Concern",
+"description": "A letter from home. Your family worries about you, alone in this remote place, \npursuing what they see as a quixotic dream. They want you to come home.\n\n*What do you tell them?*",
+"tokens": 0,
+"blocks": 0,
+"description_html": "<p>A letter from home. Your family worries about you, alone in this remote place, \npursuing what they see as a quixotic dream. They want you to come home.<\/p>\n<p><em>What do you tell them?<\/em><\/p>"
+}
+},
+"diamonds": {
+"A": {
+"title": "Perfect Documentation",
+"description": "You achieve perfect documentation of a key find—photographs, sketches, measurements, \ncontext. This is the gold standard of archaeological work. Your methodology is impeccable.\n\n*What have you documented so perfectly?*",
+"tokens": 3,
+"blocks": 0,
+"description_html": "<p>You achieve perfect documentation of a key find—photographs, sketches, measurements, \ncontext. This is the gold standard of archaeological work. Your methodology is impeccable.<\/p>\n<p><em>What have you documented so perfectly?<\/em><\/p>"
+},
+"K": {
+"title": "Tool Malfunction",
+"description": "Your best trowel breaks. A lamp fails. Equipment wears out in the damp cave environment. \nYou'll need to improvise or work more slowly.\n\n*How do you adapt?*",
+"tokens": -1,
+"blocks": 1,
+"description_html": "<p>Your best trowel breaks. A lamp fails. Equipment wears out in the damp cave environment. \nYou'll need to improvise or work more slowly.<\/p>\n<p><em>How do you adapt?<\/em><\/p>"
+},
+"Q": {
+"title": "Revolutionary Technique",
+"description": "You develop a new excavation technique perfectly suited to the cave's conditions. \nThis method could become standard practice. A methodological breakthrough!\n\n*Describe your innovation.*",
+"tokens": 2,
+"blocks": 0,
+"description_html": "<p>You develop a new excavation technique perfectly suited to the cave's conditions. \nThis method could become standard practice. A methodological breakthrough!<\/p>\n<p><em>Describe your innovation.<\/em><\/p>"
+},
+"J": {
+"title": "Supply Shipment",
+"description": "Fresh supplies arrive from town—new notebooks, lamp oil, preservation materials. \nYou're well-equipped to continue the work.\n\n*What supplies are most welcome?*",
+"tokens": 2,
+"blocks": 0,
+"description_html": "<p>Fresh supplies arrive from town—new notebooks, lamp oil, preservation materials. \nYou're well-equipped to continue the work.<\/p>\n<p><em>What supplies are most welcome?<\/em><\/p>"
+},
+"10": {
+"title": "Weather Delay",
+"description": "Heavy rain makes the cave entrance treacherous. You must halt work for days. \nFrustrating delays, but safety first. Time to catch up on notes.\n\n*How do you use this forced break?*",
+"tokens": 0,
+"blocks": 0,
+"description_html": "<p>Heavy rain makes the cave entrance treacherous. You must halt work for days. \nFrustrating delays, but safety first. Time to catch up on notes.<\/p>\n<p><em>How do you use this forced break?<\/em><\/p>"
+},
+"9": {
+"title": "Careful Excavation",
+"description": "You work with painstaking care, brushing away sediment grain by grain. Slow, \nmeticulous, professional. This is how it should be done.\n\n*What emerges from your careful work?*",
+"tokens": 2,
+"blocks": 0,
+"description_html": "<p>You work with painstaking care, brushing away sediment grain by grain. Slow, \nmeticulous, professional. This is how it should be done.<\/p>\n<p><em>What emerges from your careful work?<\/em><\/p>"
+},
+"8": {
+"title": "Contamination Risk",
+"description": "You realize you've been careless—modern materials have mixed with ancient deposits. \nThis could compromise dating. A methodological error that haunts you.\n\n*How do you address this mistake?*",
+"tokens": -2,
+"blocks": 1,
+"description_html": "<p>You realize you've been careless—modern materials have mixed with ancient deposits. \nThis could compromise dating. A methodological error that haunts you.<\/p>\n<p><em>How do you address this mistake?<\/em><\/p>"
+},
+"7": {
+"title": "Photography Session",
+"description": "Perfect lighting today. You photograph everything from multiple angles, creating \na comprehensive visual record. These images will be invaluable.\n\n*What do the photographs reveal?*",
+"tokens": 1,
+"blocks": 0,
+"description_html": "<p>Perfect lighting today. You photograph everything from multiple angles, creating \na comprehensive visual record. These images will be invaluable.<\/p>\n<p><em>What do the photographs reveal?<\/em><\/p>"
+},
+"6": {
+"title": "Note-Taking Marathon",
+"description": "You spend the day organizing field notes, cross-referencing observations, building \na coherent narrative from scattered details. The intellectual work of archaeology.\n\n*What patterns emerge from your notes?*",
+"tokens": 1,
+"blocks": 0,
+"description_html": "<p>You spend the day organizing field notes, cross-referencing observations, building \na coherent narrative from scattered details. The intellectual work of archaeology.<\/p>\n<p><em>What patterns emerge from your notes?<\/em><\/p>"
+},
+"5": {
+"title": "Equipment Shortage",
+"description": "You're running low on essential supplies—paper for notes, lamp oil, preservation \nchemicals. You'll need to ration carefully.\n\n*What do you prioritize?*",
+"tokens": -1,
+"blocks": 0,
+"description_html": "<p>You're running low on essential supplies—paper for notes, lamp oil, preservation \nchemicals. You'll need to ration carefully.<\/p>\n<p><em>What do you prioritize?<\/em><\/p>"
+},
+"4": {
+"title": "Sampling Success",
+"description": "You collect perfect samples for dating—charcoal, bone, sediment—all properly \nlabeled and preserved. Laboratory analysis will be conclusive.\n\n*What do you hope the lab results will show?*",
+"tokens": 1,
+"blocks": 0,
+"description_html": "<p>You collect perfect samples for dating—charcoal, bone, sediment—all properly \nlabeled and preserved. Laboratory analysis will be conclusive.<\/p>\n<p><em>What do you hope the lab results will show?<\/em><\/p>"
+},
+"3": {
+"title": "Mapping Progress",
+"description": "Your map of the cave grows more detailed. Every passage, every chamber, carefully \nmeasured and drawn. A cartographic achievement.\n\n*What does the map reveal about the cave's structure?*",
+"tokens": 1,
+"blocks": 0,
+"description_html": "<p>Your map of the cave grows more detailed. Every passage, every chamber, carefully \nmeasured and drawn. A cartographic achievement.<\/p>\n<p><em>What does the map reveal about the cave's structure?<\/em><\/p>"
+},
+"2": {
+"title": "Preservation Challenge",
+"description": "A delicate artifact begins to deteriorate in the air. You must stabilize it \nimmediately with the materials at hand. A race against decay.\n\n*How do you save it?*",
+"tokens": 0,
+"blocks": 1,
+"description_html": "<p>A delicate artifact begins to deteriorate in the air. You must stabilize it \nimmediately with the materials at hand. A race against decay.<\/p>\n<p><em>How do you save it?<\/em><\/p>"
+}
+},
+"clubs": {
+"A": {
+"title": "Existential Crisis",
+"description": "In the darkness, you question everything. Why are you here? What does any of \nthis matter? The weight of time presses down. Who will remember these ancient \npeople—or you?\n\n*Confront these dark thoughts.*",
+"tokens": 0,
+"blocks": 2,
+"description_html": "<p>In the darkness, you question everything. Why are you here? What does any of \nthis matter? The weight of time presses down. Who will remember these ancient \npeople—or you?<\/p>\n<p><em>Confront these dark thoughts.<\/em><\/p>"
+},
+"K": {
+"title": "Physical Exhaustion",
+"description": "Your body aches. Days of crouching, crawling, digging have taken their toll. \nEvery muscle screams. You're not as young as you once were.\n\n*How do you push through?*",
+"tokens": 0,
+"blocks": 2,
+"description_html": "<p>Your body aches. Days of crouching, crawling, digging have taken their toll. \nEvery muscle screams. You're not as young as you once were.<\/p>\n<p><em>How do you push through?<\/em><\/p>"
+},
+"Q": {
+"title": "Nightmare",
+"description": "You dream of the cave collapsing, of being buried alive, of failure and mockery. \nYou wake in a cold sweat. The dreams are becoming more frequent.\n\n*What haunts your dreams?*",
+"tokens": 0,
+"blocks": 1,
+"description_html": "<p>You dream of the cave collapsing, of being buried alive, of failure and mockery. \nYou wake in a cold sweat. The dreams are becoming more frequent.<\/p>\n<p><em>What haunts your dreams?<\/em><\/p>"
+},
+"J": {
+"title": "Isolation",
+"description": "The loneliness weighs on you. Days without real conversation. Just you and the \nsilent stones. Sometimes you talk to yourself just to hear a human voice.\n\n*What do you miss most about civilization?*",
+"tokens": 0,
+"blocks": 1,
+"description_html": "<p>The loneliness weighs on you. Days without real conversation. Just you and the \nsilent stones. Sometimes you talk to yourself just to hear a human voice.<\/p>\n<p><em>What do you miss most about civilization?<\/em><\/p>"
+},
+"10": {
+"title": "Claustrophobia",
+"description": "The walls seem closer today. The ceiling lower. Your breath quickens. The weight \nof rock above you is suddenly, terribly real. You need air.\n\n*How do you calm yourself?*",
+"tokens": 0,
+"blocks": 2,
+"description_html": "<p>The walls seem closer today. The ceiling lower. Your breath quickens. The weight \nof rock above you is suddenly, terribly real. You need air.<\/p>\n<p><em>How do you calm yourself?<\/em><\/p>"
+},
+"9": {
+"title": "Doubt and Despair",
+"description": "What if this cave yields nothing significant? What if years of work produce \nnothing but mundane artifacts? What if you've wasted everything?\n\n*Fight back against despair.*",
+"tokens": -1,
+"blocks": 1,
+"description_html": "<p>What if this cave yields nothing significant? What if years of work produce \nnothing but mundane artifacts? What if you've wasted everything?<\/p>\n<p><em>Fight back against despair.<\/em><\/p>"
+},
+"8": {
+"title": "The Darkness",
+"description": "Your lamp flickers. For a moment, absolute darkness. The terror of being lost \nforever in the earth. The lamp steadies, but the fear remains.\n\n*Describe that moment of darkness.*",
+"tokens": 0,
+"blocks": 1,
+"description_html": "<p>Your lamp flickers. For a moment, absolute darkness. The terror of being lost \nforever in the earth. The lamp steadies, but the fear remains.<\/p>\n<p><em>Describe that moment of darkness.<\/em><\/p>"
+},
+"7": {
+"title": "Fever",
+"description": "You feel unwell—perhaps the damp, perhaps bad food, perhaps exhaustion. You \nwork through it, but you're not at your best. Mistakes creep in.\n\n*What mistakes do you make?*",
+"tokens": -1,
+"blocks": 1,
+"description_html": "<p>You feel unwell—perhaps the damp, perhaps bad food, perhaps exhaustion. You \nwork through it, but you're not at your best. Mistakes creep in.<\/p>\n<p><em>What mistakes do you make?<\/em><\/p>"
+},
+"6": {
+"title": "Paranoia",
+"description": "You sense you're being watched. Ridiculous, of course. You're alone. But the \nfeeling persists. Shadows move at the edge of your vision.\n\n*What's real and what's imagination?*",
+"tokens": 0,
+"blocks": 1,
+"description_html": "<p>You sense you're being watched. Ridiculous, of course. You're alone. But the \nfeeling persists. Shadows move at the edge of your vision.<\/p>\n<p><em>What's real and what's imagination?<\/em><\/p>"
+},
+"5": {
+"title": "Memory Lapse",
+"description": "You can't remember if you documented a crucial find. Did you photograph it? \nMeasure it? Take notes? The fatigue is affecting your mind.\n\n*Retrace your steps.*",
+"tokens": 0,
+"blocks": 1,
+"description_html": "<p>You can't remember if you documented a crucial find. Did you photograph it? \nMeasure it? Take notes? The fatigue is affecting your mind.<\/p>\n<p><em>Retrace your steps.<\/em><\/p>"
+},
+"4": {
+"title": "Accident",
+"description": "You slip and fall, dropping your equipment. A scrape, a bruise, a close call. \nThe cave is dangerous. You could get seriously hurt here.\n\n*How does this affect your caution?*",
+"tokens": 0,
+"blocks": 1,
+"description_html": "<p>You slip and fall, dropping your equipment. A scrape, a bruise, a close call. \nThe cave is dangerous. You could get seriously hurt here.<\/p>\n<p><em>How does this affect your caution?<\/em><\/p>"
+},
+"3": {
+"title": "Homesickness",
+"description": "You long for familiar places—a comfortable chair, a proper meal, friends who \nunderstand. The primitive conditions wear on you.\n\n*What comforts do you miss?*",
+"tokens": 0,
+"blocks": 1,
+"description_html": "<p>You long for familiar places—a comfortable chair, a proper meal, friends who \nunderstand. The primitive conditions wear on you.<\/p>\n<p><em>What comforts do you miss?<\/em><\/p>"
+},
+"2": {
+"title": "Lost Time",
+"description": "Hours pass and you realize you've been staring at the wall, mind blank. Fatigue \nor something worse? You're losing track of time.\n\n*What breaks your trance?*",
+"tokens": 0,
+"blocks": 1,
+"description_html": "<p>Hours pass and you realize you've been staring at the wall, mind blank. Fatigue \nor something worse? You're losing track of time.<\/p>\n<p><em>What breaks your trance?<\/em><\/p>"
+}
+}
+};
+const SPECIAL_CARDS = {
+"ace_of_hearts": {
+"type": "roll_check",
+"die": "1d6",
+"success_value": 6,
+"on_success": {
+"tokens": 1,
+"message": "Rolled a 6! Your defense is persuasive. Gain 1 Evidence."
+},
+"on_failure": {
+"tokens": -1,
+"message": "Your defense falls flat. Lose 1 Evidence."
+}
+}
+};
+const GAME_META = {
+"storageKey": "wretched:what-lies-beneath",
+"slug": "what-lies-beneath"
+};
+const SUITS = ['spades', 'hearts', 'diamonds', 'clubs'];
+const VALUES = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2'];
+const SUIT_SYMBOLS = { spades: '♠', hearts: '♥', diamonds: '♦', clubs: '♣' };
+const RANK_NAMES = {
+A: 'ace', K: 'king', Q: 'queen', J: 'jack', '10': 'ten', '9': 'nine', '8': 'eight',
+'7': 'seven', '6': 'six', '5': 'five', '4': 'four', '3': 'three', '2': 'two'
+};
+const MECH = GAME_CONFIG.mechanics || {};
+const COND = GAME_CONFIG.conditions || {};
+const UI = GAME_CONFIG.ui || {};
+const SPECIAL = GAME_CONFIG.special || {};
+const LABELS = UI.labels || {};
+const SYSTEMS = MECH.systems || [];
+const TOK = SYSTEMS.includes('tokens') ? (MECH.tokens || null) : null;
+const STAB = SYSTEMS.includes('stability') ? (MECH.stability || null) : null;
+const TOKEN_NAME = TOK ? (TOK.name || 'tokens') : 'tokens';
+const STAB_NAME = STAB ? (STAB.name || 'stability') : 'stability';
+const TURN_DICE = Object.assign({ count: 1, sides: 6 }, (MECH.dice && MECH.dice.main) || {});
+const TURN_SEQ = SPECIAL.turn_sequence || {};
+const MIN_CARDS = Number.isFinite(TURN_SEQ.min_cards) ? TURN_SEQ.min_cards : TURN_DICE.count;
+const MAX_CARDS = Number.isFinite(TURN_SEQ.max_cards) ? TURN_SEQ.max_cards : TURN_DICE.count * TURN_DICE.sides;
+const BINARY = Object.assign({ split: 3, negative: 'Negative Outcome', positive: 'Positive Outcome' },
+(MECH.dice && MECH.dice.binary) || {});
+const INTERPRET = (MECH.dice && Array.isArray(MECH.dice.interpret) && MECH.dice.interpret.length)
+? MECH.dice.interpret
+: [{ max: 5, label: 'Low' }, { max: 8, label: 'Middle' }, { max: 12, label: 'High' }];
+const THRESHOLDS = Object.assign({ critical: 20, danger: 50 }, (STAB && STAB.thresholds) || {});
+const FAILURE = Object.assign({ safe: 1, danger: 2, critical: 3 }, (STAB && STAB.failure_thresholds) || {});
+const WIN = (COND.win || []).find(c => c.type === 'deck_empty') || null;
+const LOSE = COND.lose || null;           // null => defaults (both losses active)
+const loseCond = type => (LOSE ? LOSE.find(c => c.type === type) : undefined);
+const TOKENS_END_GAME = !!TOK && (!LOSE || !!loseCond('tokens_zero'));
+const QUEEN = SPECIAL.queen_tracker && SPECIAL.queen_tracker.enabled ? SPECIAL.queen_tracker : null;
+const STORAGE_KEY = GAME_META.storageKey;
+const JOURNAL_KEY = STORAGE_KEY + ':journal';
+const STATE_VERSION = 2;
+function esc(s) {
+return String(s === undefined || s === null ? '' : s).replace(/[&<>"']/g, c =>
+({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function el(id) { return document.getElementById(id); }
+function rollDie(sides) { return Math.floor(Math.random() * sides) + 1; }
+function pick(arr) { return arr && arr.length ? arr[Math.floor(Math.random() * arr.length)] : null; }
+function plural(n, one, many) { return n === 1 ? one : many; }
+function signed(n) { return (n > 0 ? '+' : '') + n; }
+const store = {
+get(key) { try { return localStorage.getItem(key); } catch (e) { return null; } },
+set(key, val) { try { localStorage.setItem(key, val); return true; } catch (e) { return false; } },
+remove(key) { try { localStorage.removeItem(key); } catch (e) { /* ignore */ }
+}
+};
+function parseDice(spec) {
+const m = /^(\d+)d(\d+)$/i.exec(String(spec || '1d6').trim());
+return m ? { count: parseInt(m[1], 10), sides: parseInt(m[2], 10) } : { count: 1, sides: 6 };
+}
+function freshState() {
+return {
+v: STATE_VERSION,
+tokens: TOK ? TOK.initial : 0,
+stability: STAB ? STAB.initial : 0,
+deck: [],
+cardHistory: [],
+gameEnded: false,
+endInfo: null,
+cardsToDraw: 0,
+cardsDrawnThisTurn: 0,
+drawnCards: [],      // { card, resolved, applied, special, log[] }
+activeCardIndex: null,
+queens: 0,
+turn: 0,
+stabilityNote: ''
+};
+}
+let gameState = freshState();
+function isValidCard(c) {
+return !!c && SUITS.includes(c.suit) && VALUES.includes(c.value) &&
+!!(CARD_DATA[c.suit] && CARD_DATA[c.suit][c.value]);
+}
+function buildShuffledDeck(exclude) {
+const skip = new Set((exclude || []).map(c => c.suit + ':' + c.value));
+const deck = [];
+for (const suit of SUITS) {
+for (const value of VALUES) {
+if (!skip.has(suit + ':' + value)) deck.push({ suit, value });
+}
+}
+for (let i = deck.length - 1; i > 0; i--) {
+const j = Math.floor(Math.random() * (i + 1));
+[deck[i], deck[j]] = [deck[j], deck[i]];
+}
+return deck;
+}
+function initializeDeck() {
+gameState.deck = buildShuffledDeck();
+}
+function reshuffleDeck() {
+gameState.deck = buildShuffledDeck(gameState.drawnCards.map(c => c.card));
+gameState.cardHistory = [];
+notify('The deck was empty and has been reshuffled.');
+}
+function turnInProgress() {
+return gameState.cardsToDraw > 0 &&
+(gameState.cardsDrawnThisTurn < gameState.cardsToDraw || gameState.drawnCards.some(c => !c.resolved));
+}
+function showDice(values, sides, label) {
+const container = el('diceContainer');
+if (!container) return;
+container.innerHTML = values.map(v =>
+`<div class="die rolling">${v}<div class="die-label">d${sides}</div></div>`).join('');
+setTimeout(() => container.querySelectorAll('.die').forEach(d => d.classList.remove('rolling')), 600);
+}
+function setDiceResult(text) {
+const r = el('diceResult');
+if (r) r.textContent = text;
+}
+function rollForCardCount() {
+if (gameState.gameEnded) return;
+if (turnInProgress() &&
+!confirm('This turn is not finished (cards still to draw or resolve). Start a new turn anyway?')) {
+return;
+}
+const rolls = [];
+for (let i = 0; i < TURN_DICE.count; i++) rolls.push(rollDie(TURN_DICE.sides));
+let total = rolls.reduce((a, b) => a + b, 0);
+total = Math.max(MIN_CARDS, Math.min(MAX_CARDS, total));
+let note = '';
+const remaining = gameState.deck.length;
+if (WIN && remaining > 0 && total > remaining) {
+total = remaining;
+note = ` Only ${remaining} ${plural(remaining, 'card is', 'cards are')} left in the deck.`;
+}
+gameState.cardsToDraw = total;
+gameState.cardsDrawnThisTurn = 0;
+gameState.drawnCards = [];
+gameState.activeCardIndex = null;
+gameState.turn++;
+showDice(rolls, TURN_DICE.sides);
+const rawTotal = rolls.reduce((a, b) => a + b, 0);
+const rolled = rolls.length === 1 ? `Turn die: ${rolls[0]}.` : `Turn dice: ${rolls.join(' + ')} = ${rawTotal}.`;
+const clampNote = rawTotal !== total && !note ? ` (limited to ${total} per turn)` : '';
+setDiceResult(`${rolled} Draw ${total} ${plural(total, 'card', 'cards')}.${clampNote}${note}`);
+notify('');
+refreshAll();
+saveGameState();
+focusOnMobile('cardsSection');
+}
+function drawCard() {
+if (gameState.gameEnded) return;
+if (gameState.cardsToDraw === 0) {
+notify('Roll the turn dice first to find out how many cards to draw.');
+return;
+}
+if (gameState.cardsDrawnThisTurn >= gameState.cardsToDraw) {
+notify(`You have drawn all ${gameState.cardsToDraw} cards for this turn. Resolve them, then roll to start a new turn.`);
+return;
+}
+if (gameState.deck.length === 0) {
+if (MECH.deck && MECH.deck.reshuffle === false) {
+notify('The deck is empty.');
+return;
+}
+reshuffleDeck();
+}
+const card = gameState.deck.pop();
+gameState.cardHistory.push(card);
+gameState.cardsDrawnThisTurn++;
+gameState.drawnCards.push({ card, resolved: false, applied: false, special: null, log: [] });
+if (QUEEN && card.value === 'Q') {
+gameState.queens++;
+if (gameState.queens >= (QUEEN.threshold || 4)) {
+refreshAll();
+endGame('queens');
+return;
+}
+}
+notify('');
+refreshAll();
+saveGameState();
+}
+function viewCard(index) {
+if (gameState.gameEnded) return;
+if (!gameState.drawnCards[index]) return;
+gameState.activeCardIndex = index;
+refreshAll();
+saveGameState();
+focusOnMobile('promptPanel');
+}
+function pendingEffects(obj) {
+const data = CARD_DATA[obj.card.suit][obj.card.value];
+const hasBasic = !obj.applied && ((data.tokens || 0) !== 0 || (data.blocks || 0) > 0);
+const spec = findSpecial(obj.card);
+const hasSpecial = !!spec && !obj.special;
+return hasBasic || hasSpecial;
+}
+function markCardResolved(index) {
+const obj = gameState.drawnCards[index];
+if (!obj || obj.resolved || gameState.gameEnded) return;
+if (pendingEffects(obj) &&
+!confirm('This card has effects you have not applied. Mark it done anyway?')) {
+return;
+}
+obj.resolved = true;
+gameState.activeCardIndex = null;
+refreshAll();
+saveGameState();
+focusOnMobile('cardsSection');
+checkWin();
+}
+function changeTokens(amount) {
+if (!TOK) return;
+gameState.tokens += amount;
+if (TOK.allow_negative === false && gameState.tokens < 0) gameState.tokens = 0;
+}
+function findSpecial(card) {
+const data = CARD_DATA[card.suit][card.value];
+const rank = RANK_NAMES[card.value];
+const candidates = [`${rank}_of_${card.suit}`, `${card.value}_of_${card.suit}`];
+if (data.special) candidates.push(data.special);
+for (const key of candidates) {
+const spec = SPECIAL_CARDS[key];
+if (spec && SPECIAL[key] && SPECIAL[key].enabled === false) continue;
+if (spec && spec.type === 'roll_check') return Object.assign({ key }, spec);
+}
+for (const key of Object.keys(SPECIAL_CARDS)) {
+const spec = SPECIAL_CARDS[key];
+if (spec && spec.card === `${card.suit}.${card.value}` && spec.type === 'roll_check' &&
+!(SPECIAL[key] && SPECIAL[key].enabled === false)) {
+return Object.assign({ key }, spec);
+}
+}
+return null;
+}
+function applyOutcome(obj, outcome) {
+if (!outcome) return;
+if (outcome.tokens) changeTokens(outcome.tokens);
+for (let i = 0; i < (outcome.blocks || 0) && gameState.stability > 0; i++) {
+obj.log.push(performPull().text);
+}
+}
+function applyBasicCardEffects(index) {
+const obj = gameState.drawnCards[index];
+if (!obj || obj.applied || gameState.gameEnded) return;
+const data = CARD_DATA[obj.card.suit][obj.card.value];
+obj.applied = true;
+if (TOK && (data.tokens || 0) !== 0) {
+changeTokens(data.tokens);
+obj.log.push(`${signed(data.tokens)} ${TOKEN_NAME}.`);
+}
+for (let i = 0; i < (data.blocks || 0) && gameState.stability > 0; i++) {
+obj.log.push(performPull().text);
+}
+refreshAll();
+saveGameState();
+focusOnMobile('promptPanel');
+checkGameEnd();
+}
+function rollSpecial(index) {
+const obj = gameState.drawnCards[index];
+if (!obj || obj.special || gameState.gameEnded) return;
+const spec = findSpecial(obj.card);
+if (!spec) return;
+const dice = parseDice(spec.die);
+const rolls = [];
+for (let i = 0; i < dice.count; i++) rolls.push(rollDie(dice.sides));
+const total = rolls.reduce((a, b) => a + b, 0);
+const success = total >= (spec.success_value !== undefined ? spec.success_value : dice.sides);
+const outcome = success ? spec.on_success : spec.on_failure;
+showDice(rolls, dice.sides);
+setDiceResult(`Rolled ${rolls.join(' + ')}${rolls.length > 1 ? ' = ' + total : ''}.`);
+obj.special = {
+roll: total,
+success,
+message: (outcome && outcome.message) || (success ? 'Success.' : 'Failure.')
+};
+applyOutcome(obj, outcome);
+refreshAll();
+saveGameState();
+focusOnMobile('promptPanel');
+checkGameEnd();
+}
+function rollOneDie() {
+if (gameState.gameEnded) return 0;
+const die = rollDie(6);
+showDice([die], 6);
+setDiceResult(`Rolled ${die}: ${die <= BINARY.split ? BINARY.negative : BINARY.positive}`);
+return die;
+}
+function rollTwoDice() {
+if (gameState.gameEnded) return 0;
+const d1 = rollDie(6), d2 = rollDie(6), total = d1 + d2;
+showDice([d1, d2], 6);
+const tier = INTERPRET.find(t => total <= t.max) || INTERPRET[INTERPRET.length - 1];
+setDiceResult(`Rolled ${d1} + ${d2} = ${total}: ${tier.label}`);
+return total;
+}
+function riskTier(stability) {
+if (stability <= THRESHOLDS.critical) return 'critical';
+if (stability <= THRESHOLDS.danger) return 'danger';
+return 'safe';
+}
+function failureThresholdFor(stability) {
+if (STAB && STAB.risk_scaling === false) return FAILURE.safe;
+return FAILURE[riskTier(stability)];
+}
+function poolSizeFor(stability) {
+const p = STAB && STAB.pool_size;
+return (typeof p === 'number' && p > 0) ? p : stability;
+}
+function performPull() {
+if (!STAB) return { lost: 0, text: '' };
+const before = gameState.stability;
+const threshold = failureThresholdFor(before);
+const pool = poolSizeFor(before);
+let lost = 0;
+for (let i = 0; i < pool; i++) {
+if (rollDie(6) <= threshold) lost++;
+}
+const minLoss = (STAB && Number.isFinite(STAB.min_loss)) ? STAB.min_loss : 1;
+lost = Math.min(before, Math.max(lost, minLoss));
+gameState.stability = before - lost;
+let note;
+if (gameState.stability <= 0) {
+note = STAB.collapse_message || `${STAB_NAME} has collapsed.`;
+} else {
+note = pick((STAB.messages || {})[riskTier(gameState.stability)]) || '';
+}
+gameState.stabilityNote = note;
+return {
+lost,
+text: `Pulled a block: ${STAB_NAME} ${before} → ${gameState.stability} (−${lost}).` + (note ? ` ${note}` : '')
+};
+}
+function pullBlock() {
+if (!STAB || gameState.gameEnded) return;
+performPull();
+refreshAll();
+saveGameState();
+checkGameEnd();
+}
+function adjustTokens(direction) {
+if (!TOK || gameState.gameEnded) return;
+const step = Number.isFinite(TOK.controls && TOK.controls.increment) ? TOK.controls.increment : 1;
+changeTokens(direction * step);
+refreshAll();
+saveGameState();
+checkGameEnd();
+}
+const WIN_CHECKS = {
+tokens_positive: () => !TOK || gameState.tokens > 0,
+stability_above_zero: () => !STAB || gameState.stability > 0
+};
+function checkGameEnd() {
+if (gameState.gameEnded) return true;
+if (STAB && gameState.stability <= 0) { endGame('stability'); return true; }
+if (TOKENS_END_GAME && gameState.tokens <= 0) { endGame('tokens'); return true; }
+return false;
+}
+function checkWin() {
+if (!WIN || gameState.gameEnded) return false;
+if (gameState.deck.length > 0 || gameState.drawnCards.length === 0) return false;
+if (gameState.drawnCards.some(c => !c.resolved)) return false;
+const ok = (WIN.additional_checks || []).every(name => !WIN_CHECKS[name] || WIN_CHECKS[name]());
+if (!ok) return false;
+endGame('win');
+return true;
+}
+function endGame(reason) {
+if (gameState.gameEnded) return;
+gameState.gameEnded = true;
+gameState.activeCardIndex = null;
+const parts = [];
+let kind = 'lose';
+let title = LABELS.game_over_title || 'Game Over';
+if (reason === 'win') {
+kind = 'win';
+title = LABELS.win_title || 'The End';
+parts.push({ text: (WIN && WIN.message) || 'You survived to the end.' });
+} else if (reason === 'stability') {
+const cond = loseCond('stability_zero') || {};
+if (STAB && STAB.collapse_message) parts.push({ text: STAB.collapse_message, strong: true });
+const ending = pick(cond.endings);
+if (ending) parts.push({ heading: ending.title, text: ending.text });
+parts.push({ text: cond.message || `${STAB_NAME} has collapsed.` });
+} else if (reason === 'tokens') {
+const cond = loseCond('tokens_zero') || {};
+parts.push({ text: cond.message || `All ${TOKEN_NAME} are gone.` });
+} else if (reason === 'queens') {
+title = (QUEEN.ending && QUEEN.ending.title) || title;
+parts.push({ text: (QUEEN.ending && QUEEN.ending.text) || QUEEN.message || 'An alternate ending claims you.' });
+}
+const body = parts.map(p =>
+(p.heading ? `<h3>${esc(p.heading)}</h3>` : '') +
+`<p class="end-text${p.strong ? ' end-strong' : ''}">${esc(p.text)}</p>`).join('');
+gameState.endInfo = { reason, kind, title, html: body };
+refreshAll();
+saveGameState();
+}
+function endScreenHtml(info) {
+return `<div class="game-end ${esc(info.kind)}" role="alert">
+<h2>${esc(info.title)}</h2>
+${info.html}
+<button class="btn-newgame" onclick="newGame()">${esc(LABELS.new_game_label || 'Begin Another Game')}</button>
+</div>`;
+}
+function notify(msg) {
+const n = el('notice');
+if (n) n.textContent = msg || '';
+}
+function updateTokenDisplay() {
+const v = el('tokenValue');
+const n = el('tokenName');
+if (v) v.textContent = gameState.tokens;
+if (n) n.textContent = TOKEN_NAME;
+}
+function updateStabilityDisplay() {
+if (!STAB) return;
+const tier = riskTier(gameState.stability);
+const v = el('stabilityValue');
+const n = el('stabilityName');
+if (v) {
+v.textContent = gameState.stability;
+v.className = 'stability-' + tier;
+}
+if (n) n.textContent = STAB_NAME;
+const bar = el('stabilityBar');
+if (bar) {
+const pct = Math.max(0, Math.min(100, (gameState.stability / STAB.initial) * 100));
+bar.style.width = pct + '%';
+bar.className = 'stability-fill' + (tier === 'safe' ? '' : ' ' + tier);
+const wrap = bar.parentElement;
+if (wrap) wrap.setAttribute('aria-valuenow', String(Math.max(0, gameState.stability)));
+}
+const note = el('stabilityNote');
+if (note) note.textContent = gameState.stabilityNote || '';
+}
+function updateDeckDisplay() {
+const c = el('deckCount');
+if (c) c.textContent = gameState.deck.length;
+const q = el('queenCount');
+if (q && QUEEN) q.textContent = gameState.queens;
+}
+function updateHistoryDisplay() {
+const h = el('cardHistory');
+if (!h) return;
+h.innerHTML = gameState.cardHistory.slice(-10).reverse().map(card => {
+const red = card.suit === 'hearts' || card.suit === 'diamonds';
+return `<div class="history-item ${red ? 'red-suit' : ''}">${SUIT_SYMBOLS[card.suit]} ${esc(card.value)}</div>`;
+}).join('');
+}
+function updateTurnDisplay() {
+const box = el('cardCountResult');
+if (!box) return;
+box.style.display = gameState.cardsToDraw > 0 ? 'block' : 'none';
+const a = el('cardsToDraw');
+const b = el('cardsDrawnCount');
+if (a) a.textContent = gameState.cardsToDraw;
+if (b) b.textContent = gameState.cardsDrawnThisTurn;
+}
+function updateCardsDrawnDisplay() {
+const container = el('cardsDrawnArea');
+if (!container) return;
+if (gameState.drawnCards.length === 0) {
+container.className = 'cards-drawn-area empty';
+container.innerHTML = '<div class="empty-cards-message">No cards drawn yet. Roll the turn dice and draw cards to begin.</div>';
+return;
+}
+container.className = 'cards-drawn-area';
+container.innerHTML = gameState.drawnCards.map((obj, index) => {
+const card = obj.card;
+const red = card.suit === 'hearts' || card.suit === 'diamonds';
+const classes = ['drawn-card', red ? 'red-card' : 'black-card',
+obj.resolved ? 'resolved' : '', gameState.activeCardIndex === index ? 'active' : ''].join(' ');
+return `<div class="${classes}" role="button" tabindex="0"
+aria-label="${esc(card.value)} of ${esc(card.suit)}${obj.resolved ? ', resolved' : ''}"
+onclick="viewCard(${index})"
+onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();viewCard(${index});}">
+${obj.resolved ? '<div class="drawn-card-resolved-badge">✓</div>' : ''}
+<div class="drawn-card-value">${esc(card.value)}</div>
+<div class="drawn-card-suit">${SUIT_SYMBOLS[card.suit]}</div>
+</div>`;
+}).join('');
+}
+function cardPromptHtml(index) {
+const obj = gameState.drawnCards[index];
+const { suit, value } = obj.card;
+const data = CARD_DATA[suit][value];
+const red = suit === 'hearts' || suit === 'diamonds';
+const suitInfo = ((MECH.deck && MECH.deck.suits) || {})[suit] || {};
+let html = `<h3 class="prompt-title ${red ? 'red-suit' : ''}">${SUIT_SYMBOLS[suit]} ${esc(value)} – ${esc(data.title)}</h3>`;
+if (suitInfo.name) html += `<p class="prompt-suit">${esc(suitInfo.name)}</p>`;
+html += `<div class="prompt-desc">${data.description_html || esc(data.description)}</div>`;
+const tokens = data.tokens || 0;
+const blocks = data.blocks || 0;
+let effects = '';
+if (TOK && tokens !== 0) effects += `<li>${signed(tokens)} ${esc(TOKEN_NAME)}</li>`;
+if (STAB && blocks > 0) effects += `<li>Pull ${blocks} ${plural(blocks, 'block', 'blocks')} (tests your ${esc(STAB_NAME)})</li>`;
+if (effects && !obj.applied) html += `<ul class="effects">${effects}</ul>`;   // once applied, the log below says what happened
+const spec = findSpecial(obj.card);
+const buttons = [];
+if (!obj.resolved) {
+if (effects && !obj.applied) {
+buttons.push(`<button class="game-action btn-apply" onclick="applyBasicCardEffects(${index})">Apply Effects</button>`);
+}
+if (spec && !obj.special) {
+const label = spec.button_label || `Roll ${spec.die || '1d6'}`;
+buttons.push(`<button class="game-action btn-apply" onclick="rollSpecial(${index})">${esc(label)}</button>`);
+}
+buttons.push(`<button class="game-action btn-done" onclick="markCardResolved(${index})">✓ Done with This Card</button>`);
+}
+if (obj.special) {
+html += `<p class="special-result ${obj.special.success ? 'good' : 'bad'}"><strong>${esc(obj.special.message)}</strong></p>`;
+}
+if (obj.log.length) {
+html += `<ul class="effect-log">${obj.log.map(l => `<li>${esc(l)}</li>`).join('')}</ul>`;
+}
+if (!obj.resolved && pendingEffects(obj)) {
+html += '<p class="hint">Write your response in the journal, then apply the effects.</p>';
+}
+if (obj.resolved) html += '<p class="hint">This card is resolved.</p>';
+return html + (buttons.length ? `<div class="prompt-buttons">${buttons.join('')}</div>` : '');
+}
+function hintHtml() {
+const g = gameState;
+if (g.cardsToDraw === 0) {
+const start = (GAME_CONFIG.flow && GAME_CONFIG.flow.starting_prompt) ||
+'Roll the turn dice to start, then draw and click cards to see their prompts.';
+return `<p class="hint start-prompt">${esc(start.trim())}</p>`;
+}
+const left = g.cardsToDraw - g.cardsDrawnThisTurn;
+if (left > 0) {
+return `<p class="hint">Draw ${left} more ${plural(left, 'card', 'cards')}, then tap a card to read its prompt.</p>`;
+}
+const open = g.drawnCards.filter(c => !c.resolved).length;
+if (open > 0) {
+return `<p class="hint">${open} ${plural(open, 'card', 'cards')} remaining. Tap any unresolved card to continue.</p>`;
+}
+return '<p class="hint done">All cards resolved! Roll to start your next turn.</p>';
+}
+function renderPromptPanel() {
+const panel = el('cardPrompt');
+if (!panel) return;
+if (gameState.gameEnded && gameState.endInfo) {
+panel.innerHTML = endScreenHtml(gameState.endInfo);
+} else if (gameState.activeCardIndex !== null && gameState.drawnCards[gameState.activeCardIndex]) {
+panel.innerHTML = cardPromptHtml(gameState.activeCardIndex);
+} else {
+panel.innerHTML = hintHtml();
+}
+}
+function updateButtonState() {
+document.querySelectorAll('.game-action').forEach(btn => { btn.disabled = gameState.gameEnded; });
+}
+function refreshAll() {
+updateMobileBar();
+updateTokenDisplay();
+updateStabilityDisplay();
+updateDeckDisplay();
+updateHistoryDisplay();
+updateTurnDisplay();
+updateCardsDrawnDisplay();
+renderPromptPanel();
+updateButtonState();
+}
+const MOBILE_QUERY = '(max-width: 768px), (pointer: coarse) and (max-height: 500px)';   // keep in step with base.css
+function isMobile() { return window.matchMedia(MOBILE_QUERY).matches; }
+function scrollToId(id) {
+const target = el(id);
+if (!target) return;
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+}
+function focusOnMobile(id) { if (isMobile()) scrollToId(id); }
+function computePrimaryAction() {
+const g = gameState;
+if (g.gameEnded) return { label: LABELS.new_game_label || 'Begin Another Game', run: newGame, kind: 'end' };
+const obj = g.activeCardIndex !== null ? g.drawnCards[g.activeCardIndex] : null;
+if (obj && !obj.resolved) {
+const idx = g.activeCardIndex;
+const data = CARD_DATA[obj.card.suit][obj.card.value];
+const hasBasic = !obj.applied && ((data.tokens || 0) !== 0 || (data.blocks || 0) > 0);
+const spec = findSpecial(obj.card);
+if (hasBasic) return { label: 'Apply effects', run: () => applyBasicCardEffects(idx), kind: 'apply' };
+if (spec && !obj.special) {
+return { label: spec.button_label || `Roll ${spec.die || '1d6'}`, run: () => rollSpecial(idx), kind: 'apply' };
+}
+return { label: '\u2713 Done with this card', run: () => markCardResolved(idx), kind: 'done' };
+}
+if (g.cardsToDraw > 0 && g.cardsDrawnThisTurn < g.cardsToDraw) {
+const left = g.cardsToDraw - g.cardsDrawnThisTurn;
+return { label: `Draw a card (${left} left)`, run: drawCard, kind: 'draw' };
+}
+const next = g.drawnCards.findIndex(c => !c.resolved);
+if (next >= 0) return { label: 'Open next card', run: () => viewCard(next), kind: 'open' };
+return { label: `\uD83C\uDFB2 Roll ${TURN_DICE.count}d${TURN_DICE.sides}`, run: rollForCardCount, kind: 'roll' };
+}
+function syncStatusHeight() {
+const bar = document.querySelector('.mobile-status');
+if (bar && bar.offsetHeight) document.documentElement.style.setProperty('--status-h', bar.offsetHeight + 'px');
+}
+window.addEventListener('resize', syncStatusHeight);
+let currentPrimary = null;
+function mobilePrimaryClick() { if (currentPrimary) currentPrimary.run(); }
+function updateMobileBar() {
+const set = (id, v) => { const e = el(id); if (e) e.textContent = v; };
+set('msOil', gameState.tokens);
+set('msStab', gameState.stability);
+set('msDeck', gameState.deck.length);
+set('msTurn', gameState.cardsToDraw > 0 ? `${gameState.cardsDrawnThisTurn}/${gameState.cardsToDraw}` : '\u2013');
+if (STAB) {
+const tier = riskTier(gameState.stability);
+const v = el('msStab');
+if (v) v.className = 'stability-' + tier;
+const bar = el('msStabBar');
+if (bar) {
+bar.style.width = Math.max(0, Math.min(100, (gameState.stability / STAB.initial) * 100)) + '%';
+bar.className = tier === 'safe' ? '' : tier;
+}
+}
+currentPrimary = computePrimaryAction();
+const btn = el('mobilePrimary');
+if (btn) {
+btn.textContent = currentPrimary.label;
+btn.dataset.kind = currentPrimary.kind;
+}
+}
+function clearHistory() {
+gameState.cardHistory = [];
+updateHistoryDisplay();
+saveGameState();
+}
+function saveGameState() {
+store.set(STORAGE_KEY, JSON.stringify(gameState));
+}
+function loadGameState() {
+const raw = store.get(STORAGE_KEY);
+if (!raw) return false;
+let s;
+try { s = JSON.parse(raw); } catch (e) { return false; }
+if (!s || s.v !== STATE_VERSION) return false;
+const fresh = freshState();
+const num = (v, d) => (typeof v === 'number' && Number.isFinite(v)) ? v : d;  // 0 is a valid value
+gameState = Object.assign(fresh, {
+tokens: num(s.tokens, fresh.tokens),
+stability: num(s.stability, fresh.stability),
+gameEnded: s.gameEnded === true,
+endInfo: s.endInfo && typeof s.endInfo.html === 'string' ? s.endInfo : null,
+cardsToDraw: num(s.cardsToDraw, 0),
+cardsDrawnThisTurn: num(s.cardsDrawnThisTurn, 0),
+queens: num(s.queens, 0),
+turn: num(s.turn, 0),
+stabilityNote: typeof s.stabilityNote === 'string' ? s.stabilityNote : ''
+});
+gameState.deck = Array.isArray(s.deck) ? s.deck.filter(isValidCard) : [];
+gameState.cardHistory = Array.isArray(s.cardHistory) ? s.cardHistory.filter(isValidCard) : [];
+gameState.drawnCards = Array.isArray(s.drawnCards)
+? s.drawnCards.filter(o => o && isValidCard(o.card)).map(o => ({
+card: o.card, resolved: o.resolved === true, applied: o.applied === true,
+special: o.special || null, log: Array.isArray(o.log) ? o.log.map(String) : []
+}))
+: [];
+const idx = s.activeCardIndex;
+gameState.activeCardIndex = (Number.isInteger(idx) && idx >= 0 && idx < gameState.drawnCards.length) ? idx : null;
+if (gameState.gameEnded && !gameState.endInfo) {
+gameState.gameEnded = false;
+checkGameEnd();
+}
+return true;
+}
+function newGame() {
+const confirmNeeded = !UI.controls || UI.controls.new_game_confirmation !== false;
+if (confirmNeeded && !confirm('Start a new game? This erases your progress and your journal. (Use "Save to File" first if you want to keep it.)')) {
+return;
+}
+store.remove(STORAGE_KEY);
+store.remove(JOURNAL_KEY);
+location.reload();
+}
+const JOURNAL_AUTOSAVE = !UI.journal || UI.journal.autosave !== false;
+const SAVE_INDICATOR = !UI.journal || UI.journal.save_indicator !== false;
+let journalTimer = null;
+function saveJournal() {
+const j = el('journal');
+if (!j) return;
+const ok = store.set(JOURNAL_KEY, j.value);
+const ind = el('saveIndicator');
+if (ind && SAVE_INDICATOR) {
+ind.textContent = ok ? 'Saved ✓ ' + new Date().toLocaleTimeString() : 'Could not save (browser storage unavailable)';
+}
+}
+function autoSaveJournal() {
+if (!JOURNAL_AUTOSAVE) return;
+clearTimeout(journalTimer);
+journalTimer = setTimeout(saveJournal, 600);
+}
+function downloadJournal() {
+const j = el('journal');
+if (!j) return;
+saveJournal();
+const blob = new Blob([j.value], { type: 'text/plain' });
+const a = document.createElement('a');
+a.href = URL.createObjectURL(blob);
+a.download = `${GAME_META.slug}-journal-${new Date().toISOString().slice(0, 10)}.txt`;
+document.body.appendChild(a);
+a.click();
+a.remove();
+setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+function loadJournalFile(event) {
+const file = event.target.files && event.target.files[0];
+const j = el('journal');
+if (!file || !j) return;
+if (j.value.trim() && !confirm('Replace the current journal text with the contents of this file?')) {
+event.target.value = '';
+return;
+}
+const reader = new FileReader();
+reader.onload = () => {
+j.value = String(reader.result || '');
+saveJournal();
+event.target.value = '';
+};
+reader.readAsText(file);
+}
+function initGame() {
+if (!loadGameState()) {
+gameState = freshState();
+initializeDeck();
+} else if (!gameState.gameEnded && gameState.deck.length === 0 && gameState.drawnCards.length === 0) {
+initializeDeck();   // saved state had no usable deck
+}
+const j = el('journal');
+if (j) {
+const saved = store.get(JOURNAL_KEY);
+if (saved !== null) j.value = saved;
+j.addEventListener('input', autoSaveJournal);
+}
+refreshAll();
+syncStatusHeight();
+saveGameState();
+if (!gameState.gameEnded) checkGameEnd();
+checkWin();
+}
+if (document.readyState === 'loading') {
+document.addEventListener('DOMContentLoaded', initGame);
+} else {
+initGame();
+}
+</script>
+<script>
+</script>
+</body>
+</html>
