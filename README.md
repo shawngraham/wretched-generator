@@ -242,5 +242,5 @@ This attribution is built into every game the generator produces (journal footer
 Open source: use it however you like.
 
 - System: "Wretched & Alone" by Chris Bissette ([SRD](https://sealedlibrary.itch.io/wretched-alone-srd))
-- Example game: "What Lies Beneath" by Shawn Graham ([solo-rpg repo](https://github.com/shawngraham/solo-rpg), [Game Pad](https://shawngraham.github.io/solo-rpg))
+- Example game: ["What Lies Beneath"](https://shawngraham.github.io/what-lies-beneath.html) by Shawn Graham
 - `wretched-generator-strategy.md` is the original design/vision document and is not a description of current behaviour
